@@ -1,0 +1,46 @@
+‹¥bonds€¬cell_resultsŠÙ$03c83868-9e19-11eb-21b0-b3ce76748e64†¦queuedÂ§runningÂ¦output…¤bodyÙ¤<div class="markdown"><pre><code class="language-julia">@static Sys.iswindows&#40;&#41; ? :a : &#40;@static Sys.isapple&#40;&#41; ? :b : :c&#41;</code></pre>
+</div>°persist_js_stateÂ¤mime©text/html²last_run_timestampËAØ#pÚˆ/¬rootassigneeÀ§cell_idÙ$03c83868-9e19-11eb-21b0-b3ce76748e64§runtimeÍ€§erroredÂÙ$03c83410-9e19-11eb-0e22-eb80ef2f7e5d†¦queuedÂ§runningÂ¦output…¤bodyÚ]<div class="markdown"><p>Note that <code>islinux</code>, <code>isapple</code>, and <code>isfreebsd</code> are mutually exclusive subsets of <code>isunix</code>. Additionally, there is a macro <code>@static</code> which makes it possible to use these functions to conditionally hide invalid code, as demonstrated in the following examples.</p>
+</div>°persist_js_stateÂ¤mime©text/html²last_run_timestampËAØ#pÙX¬rootassigneeÀ§cell_idÙ$03c83410-9e19-11eb-0e22-eb80ef2f7e5d§runtimeÍ§erroredÂÙ$03c833ca-9e19-11eb-2bc1-6588d1ebdd5c†¦queuedÂ§runningÂ¦output…¤bodyÚó<div class="markdown"><p>When writing cross-platform applications or libraries, it is often necessary to allow for differences between operating systems. The variable <code>Sys.KERNEL</code> can be used to handle such cases. There are several functions in the <code>Sys</code> module intended to make this easier, such as <code>isunix</code>, <code>islinux</code>, <code>isapple</code>, <code>isbsd</code>, <code>isfreebsd</code>, and <code>iswindows</code>. These may be used as follows:</p>
+</div>°persist_js_stateÂ¤mime©text/html²last_run_timestampËAØ#pÙ?l¬rootassigneeÀ§cell_idÙ$03c833ca-9e19-11eb-2bc1-6588d1ebdd5c§runtimeÍô§erroredÂÙ$03c83834-9e19-11eb-0374-1bf58139b0e1†¦queuedÂ§runningÂ¦output…¤bodyÙ¶<div class="markdown"><pre><code class="language-julia">@static if Sys.islinux&#40;&#41;
+    linux_specific_thing&#40;a&#41;
+else
+    generic_thing&#40;a&#41;
+end</code></pre>
+</div>°persist_js_stateÂ¤mime©text/html²last_run_timestampËAØ#pÚo*¬rootassigneeÀ§cell_idÙ$03c83834-9e19-11eb-0374-1bf58139b0e1§runtimeÍä§erroredÂÙ$03c83424-9e19-11eb-3da4-a566b83d5f47†¦queuedÂ§runningÂ¦output…¤bodyÙ2<div class="markdown"><p>Simple blocks:</p>
+</div>°persist_js_stateÂ¤mime©text/html²last_run_timestampËAØ#pÙc=¬rootassigneeÀ§cell_idÙ$03c83424-9e19-11eb-3da4-a566b83d5f47§runtimeÍ­§erroredÂÙ$03c83398-9e19-11eb-27f8-d77b92cfda7d†¦queuedÂ§runningÂ¦output…¤bodyÙI<div class="markdown"><h1>Handling Operating System Variation</h1>
+</div>°persist_js_stateÂ¤mime©text/html²last_run_timestampËAØ#pÙ/Ï¬rootassigneeÀ§cell_idÙ$03c83398-9e19-11eb-27f8-d77b92cfda7d§runtimeÍ§erroredÂÙ$03c833f2-9e19-11eb-2f1b-5b5573044ecd†¦queuedÂ§runningÂ¦output…¤bodyÙ<div class="markdown"><pre><code class="language-julia">if Sys.iswindows&#40;&#41;
+    windows_specific_thing&#40;a&#41;
+end</code></pre>
+</div>°persist_js_stateÂ¤mime©text/html²last_run_timestampËAØ#pÙK@¬rootassigneeÀ§cell_idÙ$03c833f2-9e19-11eb-2f1b-5b5573044ecd§runtimeÍ§erroredÂÙ$03c83802-9e19-11eb-08ad-8d45ff731895†¦queuedÂ§runningÂ¦output…¤body‚£msgÙ%syntax: invalid identifier name "..."ªstacktrace‘…¤call¯top-level scope§inlinedÂ¤file¤none¤line¤path¤none°persist_js_stateÂ¤mimeÙ'application/vnd.pluto.stacktrace+object²last_run_timestampËAØ#pÚUŠ¬rootassigneeÀ§cell_idÙ$03c83802-9e19-11eb-08ad-8d45ff731895§runtimeÀ§erroredÃÙ$03c83816-9e19-11eb-3136-8788ca8b09ec†¦queuedÂ§runningÂ¦output…¤bodyÙ3<div class="markdown"><p>Complex blocks:</p>
+</div>°persist_js_stateÂ¤mime©text/html²last_run_timestampËAØ#pÚc‘¬rootassigneeÀ§cell_idÙ$03c83816-9e19-11eb-3136-8788ca8b09ec§runtimeÍˆ§erroredÂÙ$03c83852-9e19-11eb-159e-91beccd6baf9†¦queuedÂ§runningÂ¦output…¤bodyÚ<div class="markdown"><p>When chaining conditionals &#40;including <code>if</code>/<code>elseif</code>/<code>end</code>&#41;, the <code>@static</code> must be repeated for each level &#40;parentheses optional, but recommended for readability&#41;:</p>
+</div>°persist_js_stateÂ¤mime©text/html²last_run_timestampËAØ#pÚ|c¬rootassigneeÀ§cell_idÙ$03c83852-9e19-11eb-159e-91beccd6baf9§runtimeÍì§erroredÂ±cell_dependenciesŠÙ$03c83868-9e19-11eb-21b0-b3ce76748e64„´precedence_heuristic§cell_idÙ$03c83868-9e19-11eb-21b0-b3ce76748e64´downstream_cells_map€²upstream_cells_map‚§@md_str¨getindexÙ$03c83410-9e19-11eb-0e22-eb80ef2f7e5d„´precedence_heuristic§cell_idÙ$03c83410-9e19-11eb-0e22-eb80ef2f7e5d´downstream_cells_map€²upstream_cells_map‚§@md_str¨getindexÙ$03c833ca-9e19-11eb-2bc1-6588d1ebdd5c„´precedence_heuristic§cell_idÙ$03c833ca-9e19-11eb-2bc1-6588d1ebdd5c´downstream_cells_map€²upstream_cells_map‚§@md_str¨getindexÙ$03c83834-9e19-11eb-0374-1bf58139b0e1„´precedence_heuristic§cell_idÙ$03c83834-9e19-11eb-0374-1bf58139b0e1´downstream_cells_map€²upstream_cells_map‚§@md_str¨getindexÙ$03c83424-9e19-11eb-3da4-a566b83d5f47„´precedence_heuristic§cell_idÙ$03c83424-9e19-11eb-3da4-a566b83d5f47´downstream_cells_map€²upstream_cells_map‚§@md_str¨getindexÙ$03c83398-9e19-11eb-27f8-d77b92cfda7d„´precedence_heuristic§cell_idÙ$03c83398-9e19-11eb-27f8-d77b92cfda7d´downstream_cells_map€²upstream_cells_map‚§@md_str¨getindexÙ$03c833f2-9e19-11eb-2f1b-5b5573044ecd„´precedence_heuristic§cell_idÙ$03c833f2-9e19-11eb-2f1b-5b5573044ecd´downstream_cells_map€²upstream_cells_map‚§@md_str¨getindexÙ$03c83802-9e19-11eb-08ad-8d45ff731895„´precedence_heuristic§cell_idÙ$03c83802-9e19-11eb-08ad-8d45ff731895´downstream_cells_map€²upstream_cells_map€Ù$03c83816-9e19-11eb-3136-8788ca8b09ec„´precedence_heuristic§cell_idÙ$03c83816-9e19-11eb-3136-8788ca8b09ec´downstream_cells_map€²upstream_cells_map‚§@md_str¨getindexÙ$03c83852-9e19-11eb-159e-91beccd6baf9„´precedence_heuristic§cell_idÙ$03c83852-9e19-11eb-159e-91beccd6baf9´downstream_cells_map€²upstream_cells_map‚§@md_str¨getindex´cell_execution_orderšÙ$03c83398-9e19-11eb-27f8-d77b92cfda7dÙ$03c833ca-9e19-11eb-2bc1-6588d1ebdd5cÙ$03c833f2-9e19-11eb-2f1b-5b5573044ecdÙ$03c83410-9e19-11eb-0e22-eb80ef2f7e5dÙ$03c83424-9e19-11eb-3da4-a566b83d5f47Ù$03c83802-9e19-11eb-08ad-8d45ff731895Ù$03c83816-9e19-11eb-3136-8788ca8b09ecÙ$03c83834-9e19-11eb-0374-1bf58139b0e1Ù$03c83852-9e19-11eb-159e-91beccd6baf9Ù$03c83868-9e19-11eb-21b0-b3ce76748e64©shortpathÙ&handling-operating-system-variation.jl®process_status¥ready¤pathÙk/home/runner/work/julia-docs-with-pluto/julia-docs-with-pluto/manual/handling-operating-system-variation.jlªcell_orderšÙ$03c83398-9e19-11eb-27f8-d77b92cfda7dÙ$03c833ca-9e19-11eb-2bc1-6588d1ebdd5cÙ$03c833f2-9e19-11eb-2f1b-5b5573044ecdÙ$03c83410-9e19-11eb-0e22-eb80ef2f7e5dÙ$03c83424-9e19-11eb-3da4-a566b83d5f47Ù$03c83802-9e19-11eb-08ad-8d45ff731895Ù$03c83816-9e19-11eb-3136-8788ca8b09ecÙ$03c83834-9e19-11eb-0374-1bf58139b0e1Ù$03c83852-9e19-11eb-159e-91beccd6baf9Ù$03c83868-9e19-11eb-21b0-b3ce76748e64«cell_inputsŠÙ$03c83868-9e19-11eb-21b0-b3ce76748e64ƒ§cell_idÙ$03c83868-9e19-11eb-21b0-b3ce76748e64¤codeÙWmd"""
+```julia
+@static Sys.iswindows() ? :a : (@static Sys.isapple() ? :b : :c)
+```
+"""«code_foldedÃÙ$03c83410-9e19-11eb-0e22-eb80ef2f7e5dƒ§cell_idÙ$03c83410-9e19-11eb-0e22-eb80ef2f7e5d¤codeÚmd"""
+Note that `islinux`, `isapple`, and `isfreebsd` are mutually exclusive subsets of `isunix`. Additionally, there is a macro `@static` which makes it possible to use these functions to conditionally hide invalid code, as demonstrated in the following examples.
+"""«code_foldedÃÙ$03c833ca-9e19-11eb-2bc1-6588d1ebdd5cƒ§cell_idÙ$03c833ca-9e19-11eb-2bc1-6588d1ebdd5c¤codeÚmd"""
+When writing cross-platform applications or libraries, it is often necessary to allow for differences between operating systems. The variable `Sys.KERNEL` can be used to handle such cases. There are several functions in the `Sys` module intended to make this easier, such as `isunix`, `islinux`, `isapple`, `isbsd`, `isfreebsd`, and `iswindows`. These may be used as follows:
+"""«code_foldedÃÙ$03c83834-9e19-11eb-0374-1bf58139b0e1ƒ§cell_idÙ$03c83834-9e19-11eb-0374-1bf58139b0e1¤codeÙimd"""
+```julia
+@static if Sys.islinux()
+    linux_specific_thing(a)
+else
+    generic_thing(a)
+end
+```
+"""«code_foldedÃÙ$03c83424-9e19-11eb-3da4-a566b83d5f47ƒ§cell_idÙ$03c83424-9e19-11eb-3da4-a566b83d5f47¤code¸md"""
+Simple blocks:
+"""«code_foldedÃÙ$03c83398-9e19-11eb-27f8-d77b92cfda7dƒ§cell_idÙ$03c83398-9e19-11eb-27f8-d77b92cfda7d¤codeÙ/md"""
+# Handling Operating System Variation
+"""«code_foldedÃÙ$03c833f2-9e19-11eb-2f1b-5b5573044ecdƒ§cell_idÙ$03c833f2-9e19-11eb-2f1b-5b5573044ecd¤codeÙKmd"""
+```julia
+if Sys.iswindows()
+    windows_specific_thing(a)
+end
+```
+"""«code_foldedÃÙ$03c83802-9e19-11eb-08ad-8d45ff731895ƒ§cell_idÙ$03c83802-9e19-11eb-08ad-8d45ff731895¤codeÙ7ccall((@static Sys.iswindows() ? :_fopen : :fopen), ...«code_foldedÂÙ$03c83816-9e19-11eb-3136-8788ca8b09ecƒ§cell_idÙ$03c83816-9e19-11eb-3136-8788ca8b09ec¤code¹md"""
+Complex blocks:
+"""«code_foldedÃÙ$03c83852-9e19-11eb-159e-91beccd6baf9ƒ§cell_idÙ$03c83852-9e19-11eb-159e-91beccd6baf9¤codeÙ¬md"""
+When chaining conditionals (including `if`/`elseif`/`end`), the `@static` must be repeated for each level (parentheses optional, but recommended for readability):
+"""«code_foldedÃ«notebook_idÙ$1ed16d4a-9e1d-11eb-285c-111d9d736589«in_temp_dirÂ
