@@ -35,12 +35,14 @@ jobs:
                   Pkg.activate(mktempdir());
                   Pkg.add([
                     Pkg.PackageSpec(url="https://github.com/JuliaPluto/PlutoSliderServer.jl", rev="00d18e8"),
+                    Pkg.PackageSpec(name="Pluto", version=v"0.14.2"),
                   ]);
 
                   import PlutoSliderServer;
 
                   PlutoSliderServer.github_action(;
                     Export_cache_dir="pluto_state_cache",
+                    Export_binder_url="https://mybinder.org/v2/gh/fonsp/pluto-on-binder/v0.14.2-fix2",
                   );'
 
 
