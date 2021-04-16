@@ -1,20 +1,20 @@
 ### A Pluto.jl notebook ###
-# v0.14.2
+# v0.14.1
 
 using Markdown
 using InteractiveUtils
 
-# ╔═╡ 03bbc798-9e19-11eb-36f7-6580e0106367
+# ╔═╡ da7391e2-11f2-4644-8c6b-cd2390cd0a6a
 md"""
 # [Command-line Options](@id command-line-options)
 """
 
-# ╔═╡ 03bbc7b6-9e19-11eb-0274-2daf8377d21a
+# ╔═╡ 006e85d3-72b9-4469-a98b-22e2b7b11fae
 md"""
 The following is a complete list of command-line switches available when launching julia:
 """
 
-# ╔═╡ 03bbccd4-9e19-11eb-33ca-ed86b8c9af4c
+# ╔═╡ 4593adf9-d787-45d0-b1e6-155b4604f638
 md"""
 | Switch                                 | Description                                                                                                                                                      |
 |:-------------------------------------- |:---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -52,14 +52,14 @@ md"""
 | `--track-allocation`                   | equivalent to `--track-allocation=user`                                                                                                                          |
 """
 
-# ╔═╡ 03bbcdc2-9e19-11eb-23bf-c514dd730aaf
+# ╔═╡ 7a0d613d-3ecb-4702-abaa-665483e92a78
 md"""
-!!! compat "Julia 1.1"
+!!! compat \"Julia 1.1\"
     In Julia 1.0, the default `--project=@.` option did not search up from the root directory of a Git repository for the `Project.toml` file. From Julia 1.1 forward, it does.
 """
 
 # ╔═╡ Cell order:
-# ╟─03bbc798-9e19-11eb-36f7-6580e0106367
-# ╟─03bbc7b6-9e19-11eb-0274-2daf8377d21a
-# ╟─03bbccd4-9e19-11eb-33ca-ed86b8c9af4c
-# ╟─03bbcdc2-9e19-11eb-23bf-c514dd730aaf
+# ╟─da7391e2-11f2-4644-8c6b-cd2390cd0a6a
+# ╟─006e85d3-72b9-4469-a98b-22e2b7b11fae
+# ╟─4593adf9-d787-45d0-b1e6-155b4604f638
+# ╟─7a0d613d-3ecb-4702-abaa-665483e92a78

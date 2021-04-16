@@ -1,0 +1,143 @@
+‹¥bonds€¬cell_results„Ù$1384624c-22c7-4103-aab1-e0a87f0cacb3†¦queuedÂ§runningÂ¦output…¤bodyÙ3<div class="markdown"><h1>Unicode Input</h1>
+</div>°persist_js_stateÂ¤mime©text/html²last_run_timestampËAØ8iËs`¬rootassigneeÀ§cell_idÙ$1384624c-22c7-4103-aab1-e0a87f0cacb3§runtimeÍy§erroredÂÙ$d7999e88-5540-4909-871b-3bd6096649a9†¦queuedÂ§runningÂ¦output…¤bodyÚË<div class="markdown"><div class="admonition warning"><p class="admonition-title">Warning</p><p>This table may appear to contain missing characters in the second column, or even show characters that are inconsistent with the characters as they are rendered in the Julia REPL. In these cases, users are strongly advised to check their choice of fonts in their browser and REPL environment, as there are known issues with glyphs in many fonts.</p>
+</div>
+</div>°persist_js_stateÂ¤mime©text/html²last_run_timestampËAØ8iÍĞ»¬rootassigneeÀ§cell_idÙ$d7999e88-5540-4909-871b-3bd6096649a9§runtimeÍ<§erroredÂÙ$e226d35e-6e67-489e-8510-e3738bb6282f†¦queuedÂ§runningÂ¦output…¤bodyÚ¹<div class="markdown"><p>The following table lists Unicode characters that can be entered via tab completion of LaTeX-like abbreviations in the Julia REPL &#40;and in various other editing environments&#41;.  You can also get information on how to type a symbol by entering it in the REPL help, i.e. by typing <code>?</code> and then entering the symbol in the REPL &#40;e.g., by copy-paste from somewhere you saw the symbol&#41;.</p>
+</div>°persist_js_stateÂ¤mime©text/html²last_run_timestampËAØ8iËª¬rootassigneeÀ§cell_idÙ$e226d35e-6e67-489e-8510-e3738bb6282f§runtimeÍ8§erroredÂÙ$19fd21a0-810b-469e-b9b3-a593e11e1ea5†¦queuedÂ§runningÂ¦output…¤bodyÚp<div class="markdown"><pre><code class="language-@eval">#
+# Generate a table containing all LaTeX and Emoji tab completions available in the REPL.
+#
+import REPL, Markdown
+const NBSP &#61; &#39;\u00A0&#39;
+
+function tab_completions&#40;symbols...&#41;
+    completions &#61; Dict&#123;String, Vector&#123;String&#125;&#125;&#40;&#41;
+    for each in symbols, &#40;k, v&#41; in each
+        completions&#91;v&#93; &#61; push&#33;&#40;get&#33;&#40;completions, v, String&#91;&#93;&#41;, k&#41;
+    end
+    return completions
+end
+
+function unicode_data&#40;&#41;
+    file &#61; normpath&#40;@__DIR__, &quot;..&quot;, &quot;..&quot;, &quot;..&quot;, &quot;..&quot;, &quot;..&quot;, &quot;doc&quot;, &quot;UnicodeData.txt&quot;&#41;
+    names &#61; Dict&#123;UInt32, String&#125;&#40;&#41;
+    open&#40;file&#41; do unidata
+        for line in readlines&#40;unidata&#41;
+            id, name, desc &#61; split&#40;line, &quot;;&quot;&#41;&#91;&#91;1, 2, 11&#93;&#93;
+            codepoint &#61; parse&#40;UInt32, &quot;0x&#36;id&quot;&#41;
+            names&#91;codepoint&#93; &#61; titlecase&#40;lowercase&#40;
+                name &#61;&#61; &quot;&quot; ? desc : desc &#61;&#61; &quot;&quot; ? name : &quot;&#36;name / &#36;desc&quot;&#41;&#41;
+        end
+    end
+    return names
+end
+
+# Surround combining characters with no-break spaces &#40;i.e &#39;\u00A0&#39;&#41;. Follows the same format
+# for how unicode is displayed on the unicode.org website:
+# http://unicode.org/cldr/utility/character.jsp?a&#61;0300
+function fix_combining_chars&#40;char&#41;
+    cat &#61; Base.Unicode.category_code&#40;char&#41;
+    return cat &#61;&#61; 6 || cat &#61;&#61; 8 ? &quot;&#36;NBSP&#36;char&#36;NBSP&quot; : &quot;&#36;char&quot;
+end
+
+
+function table_entries&#40;completions, unicode_dict&#41;
+    entries &#61; &#91;&#91;
+        &quot;Code point&#40;s&#41;&quot;, &quot;Character&#40;s&#41;&quot;,
+        &quot;Tab completion sequence&#40;s&#41;&quot;, &quot;Unicode name&#40;s&#41;&quot;
+    &#93;&#93;
+    for &#40;chars, inputs&#41; in sort&#33;&#40;collect&#40;completions&#41;, by &#61; first&#41;
+        code_points, unicode_names, characters &#61; String&#91;&#93;, String&#91;&#93;, String&#91;&#93;
+        for char in chars
+            push&#33;&#40;code_points, &quot;U&#43;&#36;&#40;uppercase&#40;string&#40;UInt32&#40;char&#41;, base &#61; 16, pad &#61; 5&#41;&#41;&#41;&quot;&#41;
+            push&#33;&#40;unicode_names, get&#40;unicode_dict, UInt32&#40;char&#41;, &quot;&#40;No Unicode name&#41;&quot;&#41;&#41;
+            push&#33;&#40;characters, isempty&#40;characters&#41; ? fix_combining_chars&#40;char&#41; : &quot;&#36;char&quot;&#41;
+        end
+        push&#33;&#40;entries, &#91;
+            join&#40;code_points, &quot; &#43; &quot;&#41;, join&#40;characters&#41;,
+            join&#40;inputs, &quot;, &quot;&#41;, join&#40;unicode_names, &quot; &#43; &quot;&#41;
+        &#93;&#41;
+    end
+    return Markdown.Table&#40;entries, &#91;:l, :l, :l, :l&#93;&#41;
+end
+
+table_entries&#40;
+    tab_completions&#40;
+        REPL.REPLCompletions.latex_symbols,
+        REPL.REPLCompletions.emoji_symbols
+    &#41;,
+    unicode_data&#40;&#41;
+&#41;</code></pre>
+</div>°persist_js_stateÂ¤mime©text/html²last_run_timestampËAØ8iÍã¬rootassigneeÀ§cell_idÙ$19fd21a0-810b-469e-b9b3-a593e11e1ea5§runtimeÍ8§erroredÂ±cell_dependencies„Ù$1384624c-22c7-4103-aab1-e0a87f0cacb3„´precedence_heuristic§cell_idÙ$1384624c-22c7-4103-aab1-e0a87f0cacb3´downstream_cells_map€²upstream_cells_map‚§@md_str¨getindexÙ$d7999e88-5540-4909-871b-3bd6096649a9„´precedence_heuristic§cell_idÙ$d7999e88-5540-4909-871b-3bd6096649a9´downstream_cells_map€²upstream_cells_map‚§@md_str¨getindexÙ$e226d35e-6e67-489e-8510-e3738bb6282f„´precedence_heuristic§cell_idÙ$e226d35e-6e67-489e-8510-e3738bb6282f´downstream_cells_map€²upstream_cells_map‚§@md_str¨getindexÙ$19fd21a0-810b-469e-b9b3-a593e11e1ea5„´precedence_heuristic§cell_idÙ$19fd21a0-810b-469e-b9b3-a593e11e1ea5´downstream_cells_map€²upstream_cells_map‚§@md_str¨getindex´cell_execution_order”Ù$1384624c-22c7-4103-aab1-e0a87f0cacb3Ù$e226d35e-6e67-489e-8510-e3738bb6282fÙ$d7999e88-5540-4909-871b-3bd6096649a9Ù$19fd21a0-810b-469e-b9b3-a593e11e1ea5©shortpath°unicode-input.jl®process_status¥ready¤pathÙU/home/runner/work/julia-docs-with-pluto/julia-docs-with-pluto/manual/unicode-input.jlªcell_order”Ù$1384624c-22c7-4103-aab1-e0a87f0cacb3Ù$e226d35e-6e67-489e-8510-e3738bb6282fÙ$d7999e88-5540-4909-871b-3bd6096649a9Ù$19fd21a0-810b-469e-b9b3-a593e11e1ea5«cell_inputs„Ù$1384624c-22c7-4103-aab1-e0a87f0cacb3ƒ§cell_idÙ$1384624c-22c7-4103-aab1-e0a87f0cacb3¤code¹md"""
+# Unicode Input
+"""«code_foldedÃÙ$d7999e88-5540-4909-871b-3bd6096649a9ƒ§cell_idÙ$d7999e88-5540-4909-871b-3bd6096649a9¤codeÚsmd"""
+!!! warning
+    This table may appear to contain missing characters in the second column, or even show characters that are inconsistent with the characters as they are rendered in the Julia REPL. In these cases, users are strongly advised to check their choice of fonts in their browser and REPL environment, as there are known issues with glyphs in many fonts.
+"""«code_foldedÃÙ$e226d35e-6e67-489e-8510-e3738bb6282fƒ§cell_idÙ$e226d35e-6e67-489e-8510-e3738bb6282f¤codeÚ„md"""
+The following table lists Unicode characters that can be entered via tab completion of LaTeX-like abbreviations in the Julia REPL (and in various other editing environments).  You can also get information on how to type a symbol by entering it in the REPL help, i.e. by typing `?` and then entering the symbol in the REPL (e.g., by copy-paste from somewhere you saw the symbol).
+"""«code_foldedÃÙ$19fd21a0-810b-469e-b9b3-a593e11e1ea5ƒ§cell_idÙ$19fd21a0-810b-469e-b9b3-a593e11e1ea5¤codeÚÕmd"""
+```@eval
+#
+# Generate a table containing all LaTeX and Emoji tab completions available in the REPL.
+#
+import REPL, Markdown
+const NBSP = '\u00A0'
+
+function tab_completions(symbols...)
+    completions = Dict{String, Vector{String}}()
+    for each in symbols, (k, v) in each
+        completions[v] = push!(get!(completions, v, String[]), k)
+    end
+    return completions
+end
+
+function unicode_data()
+    file = normpath(@__DIR__, \"..\", \"..\", \"..\", \"..\", \"..\", \"doc\", \"UnicodeData.txt\")
+    names = Dict{UInt32, String}()
+    open(file) do unidata
+        for line in readlines(unidata)
+            id, name, desc = split(line, \";\")[[1, 2, 11]]
+            codepoint = parse(UInt32, \"0x$id\")
+            names[codepoint] = titlecase(lowercase(
+                name == \"\" ? desc : desc == \"\" ? name : \"$name / $desc\"))
+        end
+    end
+    return names
+end
+
+# Surround combining characters with no-break spaces (i.e '\u00A0'). Follows the same format
+# for how unicode is displayed on the unicode.org website:
+# http://unicode.org/cldr/utility/character.jsp?a=0300
+function fix_combining_chars(char)
+    cat = Base.Unicode.category_code(char)
+    return cat == 6 || cat == 8 ? \"$NBSP$char$NBSP\" : \"$char\"
+end
+
+
+function table_entries(completions, unicode_dict)
+    entries = [[
+        \"Code point(s)\", \"Character(s)\",
+        \"Tab completion sequence(s)\", \"Unicode name(s)\"
+    ]]
+    for (chars, inputs) in sort!(collect(completions), by = first)
+        code_points, unicode_names, characters = String[], String[], String[]
+        for char in chars
+            push!(code_points, \"U+$(uppercase(string(UInt32(char), base = 16, pad = 5)))\")
+            push!(unicode_names, get(unicode_dict, UInt32(char), \"(No Unicode name)\"))
+            push!(characters, isempty(characters) ? fix_combining_chars(char) : \"$char\")
+        end
+        push!(entries, [
+            join(code_points, \" + \"), join(characters),
+            join(inputs, \", \"), join(unicode_names, \" + \")
+        ])
+    end
+    return Markdown.Table(entries, [:l, :l, :l, :l])
+end
+
+table_entries(
+    tab_completions(
+        REPL.REPLCompletions.latex_symbols,
+        REPL.REPLCompletions.emoji_symbols
+    ),
+    unicode_data()
+)
+```
+"""«code_foldedÃ«notebook_idÙ$1f5dbece-9e4f-11eb-2889-d30930d5eda6«in_temp_dirÂ

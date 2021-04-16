@@ -1,0 +1,34 @@
+‹¥bonds€¬cell_resultsƒÙ$82047111-db86-4ae9-9235-e182cd903848†¦queuedÂ§runningÂ¦output…¤bodyÙp<div class="markdown"><p>Julia supports these four categories of concurrent and parallel programming:</p>
+</div>°persist_js_stateÂ¤mime©text/html²last_run_timestampËAØ8‘µù/¬rootassigneeÀ§cell_idÙ$82047111-db86-4ae9-9235-e182cd903848§runtimeÍô§erroredÂÙ$71765e80-b367-4ff5-93a3-22e778de3563†¦queuedÂ§runningÂ¦output…¤bodyÚ	<div class="markdown"><ol>
+<li><p><strong>Asynchronous &quot;tasks&quot;, or coroutines</strong>:</p>
+<p>Julia Tasks allow suspending and resuming computations  for I/O, event handling, producer-consumer processes, and similar patterns.  Tasks can synchronize through operations like <a href="@ref"><code>wait</code></a> and <a href="@ref"><code>fetch</code></a>, and  communicate via <a href="@ref"><code>Channel</code></a>s. While strictly not parallel computing by themselves,  Julia lets you schedule <code>Task</code>s on several threads.</p>
+</li>
+<li><p><strong>Multi-threading</strong>:</p>
+<p>Julia&#39;s <a href="@ref man-multithreading">multi-threading</a> provides the ability to schedule Tasks  simultaneously on more than one thread or CPU core, sharing memory. This is usually the easiest way  to get parallelism on one&#39;s PC or on a single large multi-core server. Julia&#39;s multi-threading  is composable. When one multi-threaded function calls another multi-threaded function, Julia  will schedule all the threads globally on available resources, without oversubscribing.</p>
+</li>
+<li><p><strong>Distributed computing</strong>:</p>
+<p>Distributed computing runs multiple Julia processes with separate memory spaces. These can be on the same  computer or multiple computers. The <code>Distributed</code> standard library provides the capability for remote execution  of a Julia function. With this basic building block, it is possible to build many different kinds of  distributed computing abstractions. Packages like <a href="https://github.com/JuliaParallel/DistributedArrays.jl"><code>DistributedArrays.jl</code></a>  are an example of such an abstraction. On the other hand, packages like <a href="https://github.com/JuliaParallel/MPI.jl"><code>MPI.jl</code></a> and  <a href="https://github.com/JuliaParallel/Elemental.jl"><code>Elemental.jl</code></a> provide access to the existing MPI ecosystem of libraries.</p>
+</li>
+<li><p><strong>GPU computing</strong>:</p>
+<p>The Julia GPU compiler provides the ability to run Julia code natively on GPUs. There  is a rich ecosystem of Julia packages that target GPUs. The <a href="https://juliagpu.org">JuliaGPU.org</a>  website provides a list of capabilities, supported GPUs, related packages and documentation.</p>
+</li>
+</ol>
+</div>°persist_js_stateÂ¤mime©text/html²last_run_timestampËAØ8‘¶¬rootassigneeÀ§cell_idÙ$71765e80-b367-4ff5-93a3-22e778de3563§runtimeÍw%§erroredÂÙ$284b62a5-983a-46cb-bccc-5f47a41d8367†¦queuedÂ§runningÂ¦output…¤bodyÙ8<div class="markdown"><h1>Parallel Computing</h1>
+</div>°persist_js_stateÂ¤mime©text/html²last_run_timestampËAØ8‘µÙ@¬rootassigneeÀ§cell_idÙ$284b62a5-983a-46cb-bccc-5f47a41d8367§runtimeÍ l§erroredÂ±cell_dependenciesƒÙ$82047111-db86-4ae9-9235-e182cd903848„´precedence_heuristic§cell_idÙ$82047111-db86-4ae9-9235-e182cd903848´downstream_cells_map€²upstream_cells_map‚§@md_str¨getindexÙ$71765e80-b367-4ff5-93a3-22e778de3563„´precedence_heuristic§cell_idÙ$71765e80-b367-4ff5-93a3-22e778de3563´downstream_cells_map€²upstream_cells_map‚§@md_str¨getindexÙ$284b62a5-983a-46cb-bccc-5f47a41d8367„´precedence_heuristic§cell_idÙ$284b62a5-983a-46cb-bccc-5f47a41d8367´downstream_cells_map€²upstream_cells_map‚§@md_str¨getindex´cell_execution_order“Ù$284b62a5-983a-46cb-bccc-5f47a41d8367Ù$82047111-db86-4ae9-9235-e182cd903848Ù$71765e80-b367-4ff5-93a3-22e778de3563©shortpathµparallel-computing.jl®process_status¥ready¤pathÙZ/home/runner/work/julia-docs-with-pluto/julia-docs-with-pluto/manual/parallel-computing.jlªcell_order“Ù$284b62a5-983a-46cb-bccc-5f47a41d8367Ù$82047111-db86-4ae9-9235-e182cd903848Ù$71765e80-b367-4ff5-93a3-22e778de3563«cell_inputsƒÙ$82047111-db86-4ae9-9235-e182cd903848ƒ§cell_idÙ$82047111-db86-4ae9-9235-e182cd903848¤codeÙVmd"""
+Julia supports these four categories of concurrent and parallel programming:
+"""«code_foldedÃÙ$71765e80-b367-4ff5-93a3-22e778de3563ƒ§cell_idÙ$71765e80-b367-4ff5-93a3-22e778de3563¤codeÚ®md"""
+1. **Asynchronous \"tasks\", or coroutines**:
+
+    Julia Tasks allow suspending and resuming computations  for I/O, event handling, producer-consumer processes, and similar patterns.  Tasks can synchronize through operations like [`wait`](@ref) and [`fetch`](@ref), and  communicate via [`Channel`](@ref)s. While strictly not parallel computing by themselves,  Julia lets you schedule `Task`s on several threads.
+2. **Multi-threading**:
+
+    Julia's [multi-threading](@ref man-multithreading) provides the ability to schedule Tasks  simultaneously on more than one thread or CPU core, sharing memory. This is usually the easiest way  to get parallelism on one's PC or on a single large multi-core server. Julia's multi-threading  is composable. When one multi-threaded function calls another multi-threaded function, Julia  will schedule all the threads globally on available resources, without oversubscribing.
+3. **Distributed computing**:
+
+    Distributed computing runs multiple Julia processes with separate memory spaces. These can be on the same  computer or multiple computers. The `Distributed` standard library provides the capability for remote execution  of a Julia function. With this basic building block, it is possible to build many different kinds of  distributed computing abstractions. Packages like [`DistributedArrays.jl`](https://github.com/JuliaParallel/DistributedArrays.jl)  are an example of such an abstraction. On the other hand, packages like [`MPI.jl`](https://github.com/JuliaParallel/MPI.jl) and  [`Elemental.jl`](https://github.com/JuliaParallel/Elemental.jl) provide access to the existing MPI ecosystem of libraries.
+4. **GPU computing**:
+
+    The Julia GPU compiler provides the ability to run Julia code natively on GPUs. There  is a rich ecosystem of Julia packages that target GPUs. The [JuliaGPU.org](https://juliagpu.org)  website provides a list of capabilities, supported GPUs, related packages and documentation.
+"""«code_foldedÃÙ$284b62a5-983a-46cb-bccc-5f47a41d8367ƒ§cell_idÙ$284b62a5-983a-46cb-bccc-5f47a41d8367¤code¾md"""
+# Parallel Computing
+"""«code_foldedÃ«notebook_idÙ$7e8cc1c6-9e4f-11eb-22be-bf535b2795b4«in_temp_dirÂ

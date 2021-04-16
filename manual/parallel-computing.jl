@@ -1,22 +1,22 @@
 ### A Pluto.jl notebook ###
-# v0.14.2
+# v0.14.1
 
 using Markdown
 using InteractiveUtils
 
-# ╔═╡ 03d29e00-9e19-11eb-0f32-e7b667b17f7e
+# ╔═╡ 284b62a5-983a-46cb-bccc-5f47a41d8367
 md"""
 # Parallel Computing
 """
 
-# ╔═╡ 03d29e28-9e19-11eb-0090-e5b08a296eec
+# ╔═╡ 82047111-db86-4ae9-9235-e182cd903848
 md"""
 Julia supports these four categories of concurrent and parallel programming:
 """
 
-# ╔═╡ 03d29ffe-9e19-11eb-0022-01d3cd444283
+# ╔═╡ 71765e80-b367-4ff5-93a3-22e778de3563
 md"""
-1. **Asynchronous "tasks", or coroutines**:
+1. **Asynchronous \"tasks\", or coroutines**:
 
     Julia Tasks allow suspending and resuming computations  for I/O, event handling, producer-consumer processes, and similar patterns.  Tasks can synchronize through operations like [`wait`](@ref) and [`fetch`](@ref), and  communicate via [`Channel`](@ref)s. While strictly not parallel computing by themselves,  Julia lets you schedule `Task`s on several threads.
 2. **Multi-threading**:
@@ -31,6 +31,6 @@ md"""
 """
 
 # ╔═╡ Cell order:
-# ╟─03d29e00-9e19-11eb-0f32-e7b667b17f7e
-# ╟─03d29e28-9e19-11eb-0090-e5b08a296eec
-# ╟─03d29ffe-9e19-11eb-0022-01d3cd444283
+# ╟─284b62a5-983a-46cb-bccc-5f47a41d8367
+# ╟─82047111-db86-4ae9-9235-e182cd903848
+# ╟─71765e80-b367-4ff5-93a3-22e778de3563

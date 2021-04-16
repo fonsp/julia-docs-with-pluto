@@ -1,25 +1,25 @@
 ### A Pluto.jl notebook ###
-# v0.14.2
+# v0.14.1
 
 using Markdown
 using InteractiveUtils
 
-# ╔═╡ 03d26cdc-9e19-11eb-1091-57ca58824810
+# ╔═╡ 8a0e4de8-0de8-4782-bc0e-1dbb70ed1286
 md"""
 # Noteworthy Differences from other Languages
 """
 
-# ╔═╡ 03d26d04-9e19-11eb-19e4-035c612bc0ba
+# ╔═╡ 8b185e9b-99d4-4e6f-b795-501e5f97476d
 md"""
 ## Noteworthy differences from MATLAB
 """
 
-# ╔═╡ 03d26d18-9e19-11eb-0147-d5aae7634937
+# ╔═╡ c272bfff-9c75-4492-928a-83079569566b
 md"""
 Although MATLAB users may find Julia's syntax familiar, Julia is not a MATLAB clone. There are major syntactic and functional differences. The following are some noteworthy differences that may trip up Julia users accustomed to MATLAB:
 """
 
-# ╔═╡ 03d2748e-9e19-11eb-389f-2de50e3a87e9
+# ╔═╡ afde7c27-a786-4579-91f8-99649f4a0c64
 md"""
   * Julia arrays are indexed with square brackets, `A[i,j]`.
   * Julia arrays are not copied when assigned to another variable. After `A = B`, changing elements of `B` will modify `A` as well.
@@ -31,8 +31,8 @@ md"""
   * Julia has true one-dimensional arrays. Column vectors are of size `N`, not `Nx1`. For example, [`rand(N)`](@ref) makes a 1-dimensional array.
   * In Julia, `[x,y,z]` will always construct a 3-element array containing `x`, `y` and `z`.
 
-      * To concatenate in the first ("vertical") dimension use either [`vcat(x,y,z)`](@ref) or separate with semicolons (`[x; y; z]`).
-      * To concatenate in the second ("horizontal") dimension use either [`hcat(x,y,z)`](@ref) or separate with spaces (`[x y z]`).
+      * To concatenate in the first (\"vertical\") dimension use either [`vcat(x,y,z)`](@ref) or separate with semicolons (`[x; y; z]`).
+      * To concatenate in the second (\"horizontal\") dimension use either [`hcat(x,y,z)`](@ref) or separate with spaces (`[x y z]`).
       * To construct block matrices (concatenating in the first two dimensions), use either [`hvcat`](@ref) or combine spaces and semicolons (`[a b; c d]`).
   * In Julia, `a:b` and `a:b:c` construct `AbstractRange` objects. To construct a full vector like in MATLAB, use [`collect(a:b)`](@ref). Generally, there is no need to call `collect` though. An `AbstractRange` object will act like a normal array in most cases but is more efficient because it lazily computes its values. This pattern of creating specialized objects instead of full arrays is used frequently, and is also seen in functions such as [`range`](@ref), or with iterators such as `enumerate`, and `zip`. The special objects can mostly be used as if they were normal arrays.
   * Functions in Julia return values from their last expression or the `return` keyword instead of listing the names of variables to return in the function definition (see [The return Keyword](@ref) for details).
@@ -49,26 +49,26 @@ md"""
   * Julia's `struct`s do not support dynamically adding fields at runtime, unlike MATLAB's `class`es. Instead, use a [`Dict`](@ref). Dict in Julia isn't ordered.
   * In Julia each module has its own global scope/namespace, whereas in MATLAB there is just one global scope.
   * In MATLAB, an idiomatic way to remove unwanted values is to use logical indexing, like in the expression `x(x>3)` or in the statement `x(x>3) = []` to modify `x` in-place. In contrast, Julia provides the higher order functions [`filter`](@ref) and [`filter!`](@ref), allowing users to write `filter(z->z>3, x)` and `filter!(z->z>3, x)` as alternatives to the corresponding transliterations `x[x.>3]` and `x = x[x.>3]`. Using [`filter!`](@ref) reduces the use of temporary arrays.
-  * The analogue of extracting (or "dereferencing") all elements of a cell array, e.g. in `vertcat(A{:})` in MATLAB, is written using the splat operator in Julia, e.g. as `vcat(A...)`.
-  * In Julia, the `adjoint` function performs conjugate transposition; in MATLAB, `adjoint` provides the "adjugate" or classical adjoint, which is the transpose of the matrix of cofactors.
+  * The analogue of extracting (or \"dereferencing\") all elements of a cell array, e.g. in `vertcat(A{:})` in MATLAB, is written using the splat operator in Julia, e.g. as `vcat(A...)`.
+  * In Julia, the `adjoint` function performs conjugate transposition; in MATLAB, `adjoint` provides the \"adjugate\" or classical adjoint, which is the transpose of the matrix of cofactors.
   * In Julia, a^b^c is evaluated a^(b^c) while in MATLAB it's (a^b)^c.
 """
 
-# ╔═╡ 03d274b4-9e19-11eb-2458-83a2b4c303af
+# ╔═╡ 8d8216d1-16e2-4de7-a406-5f135d723200
 md"""
 ## Noteworthy differences from R
 """
 
-# ╔═╡ 03d274c0-9e19-11eb-36db-a1db9bb4e04e
+# ╔═╡ 6eb112a4-9109-4593-b323-3bc74491c4d0
 md"""
 One of Julia's goals is to provide an effective language for data analysis and statistical programming. For users coming to Julia from R, these are some noteworthy differences:
 """
 
-# ╔═╡ 03d27e02-9e19-11eb-0b6c-8377a304df14
+# ╔═╡ 8134801a-240f-48bd-974b-c1731baaebce
 md"""
   * Julia's single quotes enclose characters, not strings.
   * Julia can create substrings by indexing into strings. In R, strings must be converted into character vectors before creating substrings.
-  * In Julia, like Python but unlike R, strings can be created with triple quotes `""" ... """`. This syntax is convenient for constructing strings that contain line breaks.
+  * In Julia, like Python but unlike R, strings can be created with triple quotes `\"\"\" ... \"\"\"`. This syntax is convenient for constructing strings that contain line breaks.
   * In Julia, varargs are specified using the splat operator `...`, which always follows the name of a specific variable, unlike R, for which `...` can occur in isolation.
   * In Julia, modulus is `mod(a, b)`, not `a %% b`. `%` in Julia is the remainder operator.
   * In Julia, not all data structures support logical indexing. Furthermore, logical indexing in Julia is supported only with vectors of length equal to the object being indexed. For example:
@@ -115,17 +115,17 @@ md"""
   * In R, an idiomatic way to remove unwanted values is to use logical indexing, like in the expression `x[x>3]` or in the statement `x = x[x>3]` to modify `x` in-place. In contrast, Julia provides the higher order functions [`filter`](@ref) and [`filter!`](@ref), allowing users to write `filter(z->z>3, x)` and `filter!(z->z>3, x)` as alternatives to the corresponding transliterations `x[x.>3]` and `x = x[x.>3]`. Using [`filter!`](@ref) reduces the use of temporary arrays.
 """
 
-# ╔═╡ 03d27e16-9e19-11eb-228e-2715012312fe
+# ╔═╡ b63d4102-b6b6-4db3-98fa-4c600401e5af
 md"""
 ## Noteworthy differences from Python
 """
 
-# ╔═╡ 03d28582-9e19-11eb-39e9-65d218b35633
+# ╔═╡ 676fcfb3-099b-4c6c-bdd4-1db18448191f
 md"""
   * Julia's `for`, `if`, `while`, etc. blocks are terminated by the `end` keyword. Indentation level is not significant as it is in Python. Unlike Python, Julia has no `pass` keyword.
-  * Strings are denoted by double quotation marks (`"text"`) in Julia (with three double quotation marks for multi-line strings), whereas in Python they can be denoted either by single (`'text'`) or double quotation marks (`"text"`). Single quotation marks are used for characters in Julia (`'c'`).
+  * Strings are denoted by double quotation marks (`\"text\"`) in Julia (with three double quotation marks for multi-line strings), whereas in Python they can be denoted either by single (`'text'`) or double quotation marks (`\"text\"`). Single quotation marks are used for characters in Julia (`'c'`).
   * String concatenation is done with `*` in Julia, not `+` like in Python. Analogously, string repetition is done with `^`, not `*`. Implicit string concatenation of string literals like in Python (e.g. `'ab' 'cd' == 'abcd'`) is not done in Julia.
-  * Python Lists—flexible but slow—correspond to the Julia `Vector{Any}` type or more generally `Vector{T}` where `T` is some non-concrete element type. "Fast" arrays like Numpy arrays that store elements in-place (i.e., `dtype` is `np.float64`, `[('f1', np.uint64), ('f2', np.int32)]`, etc.) can be represented by `Array{T}` where `T` is a concrete, immutable element type. This includes built-in types like `Float64`, `Int32`, `Int64` but also more complex types like `Tuple{UInt64,Float64}` and many user-defined types as well.
+  * Python Lists—flexible but slow—correspond to the Julia `Vector{Any}` type or more generally `Vector{T}` where `T` is some non-concrete element type. \"Fast\" arrays like Numpy arrays that store elements in-place (i.e., `dtype` is `np.float64`, `[('f1', np.uint64), ('f2', np.int32)]`, etc.) can be represented by `Array{T}` where `T` is a concrete, immutable element type. This includes built-in types like `Float64`, `Int32`, `Int64` but also more complex types like `Tuple{UInt64,Float64}` and many user-defined types as well.
   * In Julia, indexing of arrays, strings, etc. is 1-based not 0-based.
   * Julia's slice indexing includes the last element, unlike in Python. `a[2:3]` in Julia is `a[1:3]` in Python.
   * Julia does not support negative indices. In particular, the last element of a list or array is indexed with `end` in Julia, not `-1` as in Python.
@@ -152,18 +152,18 @@ md"""
   * The ternary operator `x > 0 ? 1 : -1` in Julia corresponds to conditional expression in Python `1 if x > 0 else -1`.
   * In Julia the `@` symbol refers to a macro, whereas in Python it refers to a decorator.
   * Exception handling in Julia is done using `try` — `catch` — `finally`, instead of `try` — `except` — `finally`. In contrast to Python, it is not recommended to use exception handling as part of the normal workflow in Julia due to performance reasons.
-  * In Julia loops are fast, there is no need to write "vectorized" code for performance reasons.
+  * In Julia loops are fast, there is no need to write \"vectorized\" code for performance reasons.
   * Be careful with non-constant global variables in Julia, especially in tight loops. Since you can write close-to-metal code in Julia (unlike Python), the effect of globals can be drastic (see [Performance Tips](@ref man-performance-tips)).
-  * In Python, the majority of values can be used in logical contexts (e.g. `if "a":` means the following block is executed, and `if "":` means it is not). In Julia, you need explicit conversion to `Bool` (e.g. `if "a"` throws an exception). If you want to test for a non-empty string in Julia, you would explicitly write `if !isempty("")`.
+  * In Python, the majority of values can be used in logical contexts (e.g. `if \"a\":` means the following block is executed, and `if \"\":` means it is not). In Julia, you need explicit conversion to `Bool` (e.g. `if \"a\"` throws an exception). If you want to test for a non-empty string in Julia, you would explicitly write `if !isempty(\"\")`.
   * In Julia, a new local scope is introduced by most code blocks, including loops and `try` — `catch` — `finally`. Note that comprehensions (list, generator, etc.) introduce a new local scope both in Python and Julia, whereas `if` blocks do not introduce a new local scope in both languages.
 """
 
-# ╔═╡ 03d28596-9e19-11eb-2d35-ff3ca6d85152
+# ╔═╡ 39752609-4180-4e65-99cb-1d38795c753f
 md"""
 ## Noteworthy differences from C/C++
 """
 
-# ╔═╡ 03d28bea-9e19-11eb-252c-8f7fbf472c31
+# ╔═╡ 58f7e6c2-5e6a-4631-8ae2-2e59c2489ebd
 md"""
   * Julia arrays are indexed with square brackets, and can have more than one dimension `A[i,j]`. This syntax is not just syntactic sugar for a reference to a pointer or address as in C/C++. See [the manual entry about array construction](@ref man-multi-dim-arrays).
   * In Julia, indexing of arrays, strings, etc. is 1-based not 0-based.
@@ -174,7 +174,7 @@ md"""
   * In Julia, literal numbers without a decimal point (such as `42`) create signed integers, of type `Int`, but literals too large to fit in the machine word size will automatically be promoted to a larger size type, such as `Int64` (if `Int` is `Int32`), `Int128`, or the arbitrarily large `BigInt` type. There are no numeric literal suffixes, such as `L`, `LL`, `U`, `UL`, `ULL` to indicate unsigned and/or signed vs. unsigned. Decimal literals are always signed, and hexadecimal literals (which start with `0x` like C/C++), are unsigned, unless when they encode more than 128 bits, in which case they are of type `BigInt`. Hexadecimal literals also, unlike C/C++/Java and unlike decimal literals in Julia, have a type based on the *length* of the literal, including leading 0s. For example, `0x0` and `0x00` have type [`UInt8`](@ref), `0x000` and `0x0000` have type [`UInt16`](@ref), then literals with 5 to 8 hex digits have type `UInt32`, 9 to 16 hex digits type `UInt64`, 17 to 32 hex digits type `UInt128`, and more that 32 hex digits type `BigInt`. This needs to be taken into account when defining hexadecimal masks, for example `~0xf == 0xf0` is very different from `~0x000f == 0xfff0`. 64 bit `Float64` and 32 bit [`Float32`](@ref) bit literals are expressed as `1.0` and `1.0f0` respectively. Floating point literals are rounded (and not promoted to the `BigFloat` type) if they can not be exactly represented.  Floating point literals are closer in behavior to C/C++. Octal (prefixed with `0o`) and binary (prefixed with `0b`) literals are also treated as unsigned (or `BigInt` for more than 128 bits).
   * In Julia, the division operator [`/`](@ref) returns a floating point number when both operands are of integer type.  To perform integer division, use [`div`](@ref) or [`÷`](@ref div).
   * Indexing an `Array` with floating point types is generally an error in Julia. The Julia equivalent of the C expression `a[i / 2]` is `a[i ÷ 2 + 1]`, where `i` is of integer type.
-  * String literals can be delimited with either `"`  or `"""`, `"""` delimited literals can contain `"` characters without quoting it like `"\""`. String literals can have values of other variables or expressions interpolated into them, indicated by `$variablename` or `$(expression)`, which evaluates the variable name or the expression in the context of the function.
+  * String literals can be delimited with either `\"`  or `\"\"\"`, `\"\"\"` delimited literals can contain `\"` characters without quoting it like `\"\\"\"`. String literals can have values of other variables or expressions interpolated into them, indicated by `$variablename` or `$(expression)`, which evaluates the variable name or the expression in the context of the function.
   * `//` indicates a [`Rational`](@ref) number, and not a single-line comment (which is `#` in Julia)
   * `#=` indicates the start of a multiline comment, and `=#` ends it.
   * Functions in Julia return values from their last expression(s) or the `return` keyword.  Multiple values can be returned from functions and assigned as tuples, e.g. `(a, b) = myfunction()` or `a, b = myfunction()`, instead of having to pass pointers to values as one would have to do in C/C++ (i.e. `a = myfunction(&b)`.
@@ -190,15 +190,15 @@ md"""
   * Julia macros operate on parsed expressions, rather than the text of the program, which allows them to perform sophisticated transformations of Julia code. Macro names start with the `@` character, and have both a function-like syntax, `@mymacro(arg1, arg2, arg3)`, and a statement-like syntax, `@mymacro arg1 arg2 arg3`. The forms are interchangeable; the function-like form is particularly useful if the macro appears within another expression, and is often clearest. The statement-like form is often used to annotate blocks, as in the distributed `for` construct: `@distributed for i in 1:n; #= body =#; end`. Where the end of the macro construct may be unclear, use the function-like form.
   * Julia has an enumeration type, expressed using the macro `@enum(name, value1, value2, ...)` For example: `@enum(Fruit, banana=1, apple, pear)`
   * By convention, functions that modify their arguments have a `!` at the end of the name, for example `push!`.
-  * In C++, by default, you have static dispatch, i.e. you need to annotate a function as virtual, in order to have dynamic dispatch. On the other hand, in Julia every method is "virtual" (although it's more general than that since methods are dispatched on every argument type, not only `this`, using the most-specific-declaration rule).
+  * In C++, by default, you have static dispatch, i.e. you need to annotate a function as virtual, in order to have dynamic dispatch. On the other hand, in Julia every method is \"virtual\" (although it's more general than that since methods are dispatched on every argument type, not only `this`, using the most-specific-declaration rule).
 """
 
-# ╔═╡ 03d28c06-9e19-11eb-13f1-9f0f11a78773
+# ╔═╡ 52a6850f-af76-4b8f-8c9d-baebc44228bf
 md"""
 ## Noteworthy differences from Common Lisp
 """
 
-# ╔═╡ 03d28e38-9e19-11eb-12e5-99c6146230fe
+# ╔═╡ 0bfd196f-c329-4a03-b6cf-ed5e39ce55f9
 md"""
   * Julia uses 1-based indexing for arrays by default, and it can also handle arbitrary [index offsets](@ref man-custom-indices).
   * Functions and variables share the same namespace (“Lisp-1”).
@@ -213,16 +213,16 @@ md"""
 """
 
 # ╔═╡ Cell order:
-# ╟─03d26cdc-9e19-11eb-1091-57ca58824810
-# ╟─03d26d04-9e19-11eb-19e4-035c612bc0ba
-# ╟─03d26d18-9e19-11eb-0147-d5aae7634937
-# ╟─03d2748e-9e19-11eb-389f-2de50e3a87e9
-# ╟─03d274b4-9e19-11eb-2458-83a2b4c303af
-# ╟─03d274c0-9e19-11eb-36db-a1db9bb4e04e
-# ╟─03d27e02-9e19-11eb-0b6c-8377a304df14
-# ╟─03d27e16-9e19-11eb-228e-2715012312fe
-# ╟─03d28582-9e19-11eb-39e9-65d218b35633
-# ╟─03d28596-9e19-11eb-2d35-ff3ca6d85152
-# ╟─03d28bea-9e19-11eb-252c-8f7fbf472c31
-# ╟─03d28c06-9e19-11eb-13f1-9f0f11a78773
-# ╟─03d28e38-9e19-11eb-12e5-99c6146230fe
+# ╟─8a0e4de8-0de8-4782-bc0e-1dbb70ed1286
+# ╟─8b185e9b-99d4-4e6f-b795-501e5f97476d
+# ╟─c272bfff-9c75-4492-928a-83079569566b
+# ╟─afde7c27-a786-4579-91f8-99649f4a0c64
+# ╟─8d8216d1-16e2-4de7-a406-5f135d723200
+# ╟─6eb112a4-9109-4593-b323-3bc74491c4d0
+# ╟─8134801a-240f-48bd-974b-c1731baaebce
+# ╟─b63d4102-b6b6-4db3-98fa-4c600401e5af
+# ╟─676fcfb3-099b-4c6c-bdd4-1db18448191f
+# ╟─39752609-4180-4e65-99cb-1d38795c753f
+# ╟─58f7e6c2-5e6a-4631-8ae2-2e59c2489ebd
+# ╟─52a6850f-af76-4b8f-8c9d-baebc44228bf
+# ╟─0bfd196f-c329-4a03-b6cf-ed5e39ce55f9
