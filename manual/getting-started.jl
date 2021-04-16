@@ -25,15 +25,13 @@ The easiest way to learn and experiment with Julia is by starting an interactive
 """
 
 # ╔═╡ 64b9ad77-ab65-460b-997b-2f4daebbc3f4
-md"""
-```@eval
+let
 io = IOBuffer()
 Base.banner(io)
 banner = String(take!(io))
 import Markdown
-Markdown.parse(\"```\n\$ julia\n\n$(banner)\njulia> 1 + 2\n3\n\njulia> ans\n3\n```\")
-```
-"""
+Markdown.parse("```\n\$ julia\n\n$(banner)\njulia> 1 + 2\n3\n\njulia> ans\n3\n```")
+end
 
 # ╔═╡ 10fa60c6-1dc2-4fec-9788-bcbf58cab4fa
 md"""
