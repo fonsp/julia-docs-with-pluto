@@ -1,40 +1,40 @@
 ### A Pluto.jl notebook ###
-# v0.14.2
+# v0.14.1
 
 using Markdown
 using InteractiveUtils
 
-# ╔═╡ 03b7899e-9e19-11eb-3873-5940a199e477
+# ╔═╡ 4ecd645b-87fc-4ea8-baef-b036c59a3ad7
 md"""
 # [Multi-dimensional Arrays](@id man-multi-dim-arrays)
 """
 
-# ╔═╡ 03b78a70-9e19-11eb-2eb0-49a69a43d096
+# ╔═╡ 106d052f-9b3b-4f5f-b1ac-18c459de4dc8
 md"""
 Julia, like most technical computing languages, provides a first-class array implementation. Most technical computing languages pay a lot of attention to their array implementation at the expense of other containers. Julia does not treat arrays in any special way. The array library is implemented almost completely in Julia itself, and derives its performance from the compiler, just like any other code written in Julia. As such, it's also possible to define custom array types by inheriting from [`AbstractArray`](@ref). See the [manual section on the AbstractArray interface](@ref man-interface-array) for more details on implementing a custom array type.
 """
 
-# ╔═╡ 03b78aac-9e19-11eb-0dfd-e539fb5f45f4
+# ╔═╡ e5fc64ee-5225-4b23-8539-17eb066c85a5
 md"""
 An array is a collection of objects stored in a multi-dimensional grid. In the most general case, an array may contain objects of type [`Any`](@ref). For most computational purposes, arrays should contain objects of a more specific type, such as [`Float64`](@ref) or [`Int32`](@ref).
 """
 
-# ╔═╡ 03b78ac2-9e19-11eb-30de-41506bb68584
+# ╔═╡ dccef62e-f8a9-4c94-8aa4-50b548586f25
 md"""
 In general, unlike many other technical computing languages, Julia does not expect programs to be written in a vectorized style for performance. Julia's compiler uses type inference and generates optimized code for scalar array indexing, allowing programs to be written in a style that is convenient and readable, without sacrificing performance, and using less memory at times.
 """
 
-# ╔═╡ 03b78b1a-9e19-11eb-1a29-6534f01605c3
+# ╔═╡ b401d76b-d207-4542-bdb8-6d9890594907
 md"""
 In Julia, all arguments to functions are [passed by sharing](https://en.wikipedia.org/wiki/Evaluation_strategy#Call_by_sharing) (i.e. by pointers). Some technical computing languages pass arrays by value, and while this prevents accidental modification by callees of a value in the caller, it makes avoiding unwanted copying of arrays difficult. By convention, a function name ending with a `!` indicates that it will mutate or destroy the value of one or more of its arguments (compare, for example, [`sort`](@ref) and [`sort!`](@ref)). Callees must make explicit copies to ensure that they don't modify inputs that they don't intend to change. Many non- mutating functions are implemented by calling a function of the same name with an added `!` at the end on an explicit copy of the input, and returning that copy.
 """
 
-# ╔═╡ 03b78b60-9e19-11eb-249f-8554bd6fc43d
+# ╔═╡ 58421ce7-b18e-4e89-bb1e-501d9b9f6273
 md"""
 ## Basic Functions
 """
 
-# ╔═╡ 03b78f16-9e19-11eb-1fac-2bf7305db958
+# ╔═╡ 488b30ab-7802-43eb-8772-e6bc4af618e2
 md"""
 | Function               | Description                                                                      |
 |:---------------------- |:-------------------------------------------------------------------------------- |
@@ -50,17 +50,17 @@ md"""
 | [`strides(A)`](@ref)   | a tuple of the strides in each dimension                                         |
 """
 
-# ╔═╡ 03b78f2c-9e19-11eb-3a51-69d250a0b974
+# ╔═╡ 53dd35d0-bfb0-4fd8-81f1-823036851aad
 md"""
 ## Construction and Initialization
 """
 
-# ╔═╡ 03b78f66-9e19-11eb-1f98-979c64fa5537
+# ╔═╡ 0b055621-0a2c-4500-a9a3-7cd0fc0a3cd0
 md"""
 Many functions for constructing and initializing arrays are provided. In the following list of such functions, calls with a `dims...` argument can either take a single tuple of dimension sizes or a series of dimension sizes passed as a variable number of arguments. Most of these functions also accept a first input `T`, which is the element type of the array. If the type `T` is omitted it will default to [`Float64`](@ref).
 """
 
-# ╔═╡ 03b792f4-9e19-11eb-0c21-997a1ddd2244
+# ╔═╡ d0d74efc-fae1-46f5-9d62-e1217e7ea7c4
 md"""
 | Function                                    | Description                                                                                                                                                                                                                                  |
 |:------------------------------------------- |:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -82,106 +82,106 @@ md"""
 | [`fill(x, dims...)`](@ref)                  | an `Array` filled with the value `x`                                                                                                                                                                                                         |
 """
 
-# ╔═╡ 03b79420-9e19-11eb-0df0-3b19b7704355
+# ╔═╡ 80ce151e-a948-4192-9ce0-2b1de9001110
 md"""
 [^1]: *iid*, independently and identically distributed.
 """
 
-# ╔═╡ 03b7943e-9e19-11eb-3552-bb1a170af3d9
+# ╔═╡ 3d6b0432-f39d-41bc-8e25-148bf901e704
 md"""
 To see the various ways we can pass dimensions to these functions, consider the following examples:
 """
 
-# ╔═╡ 03b79d9e-9e19-11eb-07a8-37c0e578a521
+# ╔═╡ 4924e5a9-e741-45a8-a476-75d58dc70eff
 zeros(Int8, 2, 3)
 
-# ╔═╡ 03b79da8-9e19-11eb-2fe9-5b7ab1de3983
+# ╔═╡ 4f77fe6e-0106-4e8c-af1d-01f5d68390af
 zeros(Int8, (2, 3))
 
-# ╔═╡ 03b79da8-9e19-11eb-38fe-836f432f5793
+# ╔═╡ 66f17114-3bc9-4dc8-8593-7a9183344ded
 zeros((2, 3))
 
-# ╔═╡ 03b79e20-9e19-11eb-0826-1f4698a4a50b
+# ╔═╡ 17f535be-4952-4b13-9b46-71a444780aa8
 md"""
 Here, `(2, 3)` is a [`Tuple`](@ref) and the first argument — the element type — is optional, defaulting to `Float64`.
 """
 
-# ╔═╡ 03b79e40-9e19-11eb-33ca-598f5a9044f4
+# ╔═╡ 8a6c0149-d0b2-48d5-b6e9-de46d16a8eac
 md"""
 ## [Array literals](@id man-array-literals)
 """
 
-# ╔═╡ 03b79eb6-9e19-11eb-1a8f-f92d78fa8063
+# ╔═╡ 81dc1290-42bf-4cc7-a4f6-3538b8491375
 md"""
 Arrays can also be directly constructed with square braces; the syntax `[A, B, C, ...]` creates a one dimensional array (i.e., a vector) containing the comma-separated arguments as its elements. The element type ([`eltype`](@ref)) of the resulting array is automatically determined by the types of the arguments inside the braces. If all the arguments are the same type, then that is its `eltype`. If they all have a common [promotion type](@ref conversion-and-promotion) then they get converted to that type using [`convert`](@ref) and that type is the array's `eltype`. Otherwise, a heterogeneous array that can hold anything — a `Vector{Any}` — is constructed; this includes the literal `[]` where no arguments are given.
 """
 
-# ╔═╡ 03b7a596-9e19-11eb-2df7-496e802a66e5
+# ╔═╡ d331d9ae-87dc-4774-a5ee-1c4e49f94df4
 [1,2,3] # An array of `Int`s
 
-# ╔═╡ 03b7a5a0-9e19-11eb-35a6-ed58391d5d8c
+# ╔═╡ cbfc0994-f3f4-456c-878d-3d6f9d353c0d
 promote(1, 2.3, 4//5) # This combination of Int, Float64 and Rational promotes to Float64
 
-# ╔═╡ 03b7a5a8-9e19-11eb-1fbb-f71c18d96d8f
+# ╔═╡ 214c4313-c411-45a8-9192-79c3d7fd7cae
 [1, 2.3, 4//5] # Thus that's the element type of this Array
 
-# ╔═╡ 03b7a5a8-9e19-11eb-31ad-f936d785e157
+# ╔═╡ 4bf010b2-78ac-48fa-b4f7-4e1f5a01e46e
 []
 
-# ╔═╡ 03b7a5f0-9e19-11eb-318c-65285c67da41
+# ╔═╡ 3db4f742-0758-450d-8627-3d9313f3619c
 md"""
 ### [Concatenation](@id man-array-concatenation)
 """
 
-# ╔═╡ 03b7a622-9e19-11eb-0166-2921d3086b87
+# ╔═╡ 318cc6c0-7ade-49c5-b961-76946635a253
 md"""
 If the arguments inside the square brackets are separated by semicolons (`;`) or newlines instead of commas, then their contents are *vertically concatenated* together instead of the arguments being used as elements themselves.
 """
 
-# ╔═╡ 03b7ad54-9e19-11eb-2e82-fd75769df6cb
+# ╔═╡ 5b1b5964-6df7-417a-9229-6195aca908d1
 [1:2, 4:5] # Has a comma, so no concatenation occurs. The ranges are themselves the elements
 
-# ╔═╡ 03b7ad5c-9e19-11eb-2cfe-33b7de885696
+# ╔═╡ 56b46978-76aa-4c31-b40a-500ff9f28e94
 [1:2; 4:5]
 
-# ╔═╡ 03b7ad66-9e19-11eb-1d08-55054f7b5cac
+# ╔═╡ 3ff7a6b5-0a76-4701-99b2-2954c45d931a
 [1:2
-        4:5
-        6]
+  4:5
+  6]
 
-# ╔═╡ 03b7ad98-9e19-11eb-01ae-95b6df8b2bfb
+# ╔═╡ 179dbbf7-1d5e-4903-a2be-6011e4855a71
 md"""
 Similarly, if the arguments are separated by tabs or spaces, then their contents are *horizontally concatenated* together.
 """
 
-# ╔═╡ 03b7b4bc-9e19-11eb-0c69-e563e8ce9329
+# ╔═╡ 9d1da54b-5d6f-4c2b-bcff-7848ed7dc5c5
 [1:2  4:5  7:8]
 
-# ╔═╡ 03b7b4c8-9e19-11eb-25c8-eb6ad3f85c33
+# ╔═╡ 139adac1-8cf1-4755-b0ca-a6c342681951
 [[1,2]  [4,5]  [7,8]]
 
-# ╔═╡ 03b7b4c8-9e19-11eb-0c98-9dd7a119640b
+# ╔═╡ bc1855fe-8ada-48d5-b66f-3178c87c2a73
 [1 2 3] # Numbers can also be horizontally concatenated
 
-# ╔═╡ 03b7b4fa-9e19-11eb-29ed-d357b64cbe61
+# ╔═╡ bbabd66a-8619-4d06-ac3c-92ba3717242a
 md"""
 Using semicolons (or newlines) and spaces (or tabs) can be combined to concatenate both horizontally and vertically at the same time.
 """
 
-# ╔═╡ 03b7baae-9e19-11eb-3644-fd00e1f45e25
+# ╔═╡ 9c61f57b-79ef-470b-81e0-808079ee1b28
 [1 2
-        3 4]
+  3 4]
 
-# ╔═╡ 03b7bac2-9e19-11eb-0774-1fcbefa728cd
+# ╔═╡ 4f69452a-c6ac-469e-8150-7148e9cb0113
 [zeros(Int, 2, 2) [1; 2]
-        [3 4]            5]
+  [3 4]            5]
 
-# ╔═╡ 03b7bb00-9e19-11eb-1060-156c1a0fb586
+# ╔═╡ ce212505-529c-4415-9542-59c851b0e4c8
 md"""
 More generally, concatenation can be accomplished through the [`cat`](@ref) function. These syntaxes are shorthands for function calls that themselves are convenience functions:
 """
 
-# ╔═╡ 03b7bc5c-9e19-11eb-0f2d-497d5b1ba179
+# ╔═╡ 227edcfd-6d5e-4b1e-aa26-a831d49042f0
 md"""
 | Syntax            | Function        | Description                                        |
 |:----------------- |:--------------- |:-------------------------------------------------- |
@@ -191,286 +191,310 @@ md"""
 | `[A B; C D; ...]` | [`hvcat`](@ref) | simultaneous vertical and horizontal concatenation |
 """
 
-# ╔═╡ 03b7bc7a-9e19-11eb-0c2c-e9fa29a33f5b
+# ╔═╡ df8ceab5-12a7-4e1e-8375-fd8e0b84b970
 md"""
 ### Typed array literals
 """
 
-# ╔═╡ 03b7bcb6-9e19-11eb-1aa5-5fd56c351e35
+# ╔═╡ a4fed56d-055a-4154-9572-912a790677cf
 md"""
 An array with a specific element type can be constructed using the syntax `T[A, B, C, ...]`. This will construct a 1-d array with element type `T`, initialized to contain elements `A`, `B`, `C`, etc. For example, `Any[x, y, z]` constructs a heterogeneous array that can contain any values.
 """
 
-# ╔═╡ 03b7bcde-9e19-11eb-05d7-39fbe91db11c
+# ╔═╡ 71c0a0ba-736c-40f6-af8c-0777b1f602b3
 md"""
 Concatenation syntax can similarly be prefixed with a type to specify the element type of the result.
 """
 
-# ╔═╡ 03b7c210-9e19-11eb-0fcd-b369423a03bf
+# ╔═╡ ca9f5f95-6171-4e4f-849c-7f284be33de1
 [[1 2] [3 4]]
 
-# ╔═╡ 03b7c21a-9e19-11eb-2d9b-fd2257c24b72
+# ╔═╡ 831c5493-280f-447d-ac46-42391b7bc836
 Int8[[1 2] [3 4]]
 
-# ╔═╡ 03b7c242-9e19-11eb-062c-e5b9ebd370fc
+# ╔═╡ 00034a75-cb6f-48a7-ac77-c64e43fc3b79
 md"""
 ## [Comprehensions](@id man-comprehensions)
 """
 
-# ╔═╡ 03b7c260-9e19-11eb-33a7-21c2a2aa0697
+# ╔═╡ 70cceb0a-ef3d-4048-93a5-7b0820aa3ebb
 md"""
 Comprehensions provide a general and powerful way to construct arrays. Comprehension syntax is similar to set construction notation in mathematics:
 """
 
-# ╔═╡ 03b7c42c-9e19-11eb-171d-8dd9ef515859
-A = [ F(x,y,...
+# ╔═╡ c63896d9-16a5-4104-bc80-5eec3d6b49b1
+md"""
+```
+A = [ F(x,y,...) for x=rx, y=ry, ... ]
+```
+"""
 
-# ╔═╡ 03b7c474-9e19-11eb-21c3-f373fc64b4a4
+# ╔═╡ 13f19993-1b3c-48e5-8db5-ebb8a0cd7be9
 md"""
 The meaning of this form is that `F(x,y,...)` is evaluated with the variables `x`, `y`, etc. taking on each value in their given list of values. Values can be specified as any iterable object, but will commonly be ranges like `1:n` or `2:(n-1)`, or explicit arrays of values like `[1.2, 3.4, 5.7]`. The result is an N-d dense array with dimensions that are the concatenation of the dimensions of the variable ranges `rx`, `ry`, etc. and each `F(x,y,...)` evaluation returns a scalar.
 """
 
-# ╔═╡ 03b7c47c-9e19-11eb-0476-1380a895417e
+# ╔═╡ 21547949-e034-47df-9c57-752037cd3278
 md"""
 The following example computes a weighted average of the current element and its left and right neighbor along a 1-d grid. :
 """
 
-# ╔═╡ 03b7ce90-9e19-11eb-0a2b-8137ef8a1789
+# ╔═╡ 0c77a2b9-3f06-473e-af96-41046bfc9027
 x = rand(8)
 
-# ╔═╡ 03b7cea4-9e19-11eb-1e7c-4b8c5a498dc2
+# ╔═╡ f665a7d3-f9df-4a1f-97ab-86d7cee262e4
 [ 0.25*x[i-1] + 0.5*x[i] + 0.25*x[i+1] for i=2:length(x)-1 ]
 
-# ╔═╡ 03b7cf30-9e19-11eb-29f9-4536de362c19
+# ╔═╡ 13533cfd-9a10-4613-988f-2897609b3511
 md"""
 The resulting array type depends on the types of the computed elements just like [array literals](@ref man-array-literals) do. In order to control the type explicitly, a type can be prepended to the comprehension. For example, we could have requested the result in single precision by writing:
 """
 
-# ╔═╡ 03b7cfda-9e19-11eb-3c08-cbe4242f01a0
+# ╔═╡ e458f64c-6f6f-4b9a-89b7-ca7cb5684fd6
 md"""
 ```julia
 Float32[ 0.25*x[i-1] + 0.5*x[i] + 0.25*x[i+1] for i=2:length(x)-1 ]
 ```
 """
 
-# ╔═╡ 03b7d014-9e19-11eb-229e-039fd38da137
+# ╔═╡ 7f56d799-63f1-4dc3-a763-f7b3b4539f00
 md"""
 ## Generator Expressions
 """
 
-# ╔═╡ 03b7d034-9e19-11eb-1635-eb54eb64f284
+# ╔═╡ abe26a54-74a9-4e8b-983a-8829f40d3478
 md"""
 Comprehensions can also be written without the enclosing square brackets, producing an object known as a generator. This object can be iterated to produce values on demand, instead of allocating an array and storing them in advance (see [Iteration](@ref)). For example, the following expression sums a series without allocating memory:
 """
 
-# ╔═╡ 03b7d4f8-9e19-11eb-3c87-810caba980ed
+# ╔═╡ 58841c1b-a14d-433d-aa5c-57f1fdfdaa1a
 sum(1/n^2 for n=1:1000)
 
-# ╔═╡ 03b7d516-9e19-11eb-3964-b78783549368
+# ╔═╡ 00ac906f-57ca-4916-ad80-8fa324ae2ada
 md"""
 When writing a generator expression with multiple dimensions inside an argument list, parentheses are needed to separate the generator from subsequent arguments:
 """
 
-# ╔═╡ 03b7da66-9e19-11eb-39da-195b527491e9
+# ╔═╡ e11e9258-9e52-4bc7-872f-503717a842c3
 map(tuple, 1/(i+j) for i=1:2, j=1:2, [1:4;])
 
-# ╔═╡ 03b7dab6-9e19-11eb-0f65-e303e4f2320d
+# ╔═╡ cf03452a-38bf-46b0-9646-37433fc85b79
 md"""
 All comma-separated expressions after `for` are interpreted as ranges. Adding parentheses lets us add a third argument to [`map`](@ref):
 """
 
-# ╔═╡ 03b7e5a6-9e19-11eb-3b16-47e4f32570e6
+# ╔═╡ 59ed9488-f857-4d81-963c-6735658825f2
 map(tuple, (1/(i+j) for i=1:2, j=1:2), [1 3; 2 4])
 
-# ╔═╡ 03b7e5fe-9e19-11eb-0dd8-5b4a108f0d2d
+# ╔═╡ 2054cbd4-6961-4fdd-9c33-2625017841a8
 md"""
-Generators are implemented via inner functions. Just like inner functions used elsewhere in the language, variables from the enclosing scope can be "captured" in the inner function.  For example, `sum(p[i] - q[i] for i=1:n)` captures the three variables `p`, `q` and `n` from the enclosing scope. Captured variables can present performance challenges; see [performance tips](@ref man-performance-captured).
+Generators are implemented via inner functions. Just like inner functions used elsewhere in the language, variables from the enclosing scope can be \"captured\" in the inner function.  For example, `sum(p[i] - q[i] for i=1:n)` captures the three variables `p`, `q` and `n` from the enclosing scope. Captured variables can present performance challenges; see [performance tips](@ref man-performance-captured).
 """
 
-# ╔═╡ 03b7e61e-9e19-11eb-0930-7f15840e19f0
+# ╔═╡ 8e65f8d3-2e01-4f16-944f-8e727597c009
 md"""
 Ranges in generators and comprehensions can depend on previous ranges by writing multiple `for` keywords:
 """
 
-# ╔═╡ 03b7ed62-9e19-11eb-3d8c-bd46978e6038
+# ╔═╡ f4addce8-73da-4805-be72-3d38ca2ab843
 [(i,j) for i=1:3 for j=1:i]
 
-# ╔═╡ 03b7ed9e-9e19-11eb-08bd-23e1bbf47cf5
+# ╔═╡ 099b7b37-91a5-4221-9280-86c4079bbca3
 md"""
 In such cases, the result is always 1-d.
 """
 
-# ╔═╡ 03b7edf8-9e19-11eb-27bd-1f2d72c7523a
+# ╔═╡ 2a50f80e-03f7-44cd-b110-452a87a21f15
 md"""
 Generated values can be filtered using the `if` keyword:
 """
 
-# ╔═╡ 03b7f2f8-9e19-11eb-3166-b9795a77418a
+# ╔═╡ b37e20b3-c2ef-4958-8d6a-77d667ae14c2
 [(i,j) for i=1:3 for j=1:i if i+j == 4]
 
-# ╔═╡ 03b7f32a-9e19-11eb-0941-a33ac108edf8
+# ╔═╡ ba74767e-33b0-41a7-a960-1ca17c95b6a4
 md"""
 ## [Indexing](@id man-array-indexing)
 """
 
-# ╔═╡ 03b7f35c-9e19-11eb-1129-c5046be48dbb
+# ╔═╡ bf2cca86-8556-4bdd-a349-c7838b73a04a
 md"""
 The general syntax for indexing into an n-dimensional array `A` is:
 """
 
-# ╔═╡ 03b7f67a-9e19-11eb-02ee-ff95cb81578b
-X = A[I_1, I_2, ...
+# ╔═╡ eeca6b8b-6b1a-43ba-a069-1980596a1a6b
+md"""
+```
+X = A[I_1, I_2, ..., I_n]
+```
+"""
 
-# ╔═╡ 03b7f6cc-9e19-11eb-3bda-5f1e35e01911
+# ╔═╡ 2a95917a-ef73-43f1-a598-166c44102616
 md"""
 where each `I_k` may be a scalar integer, an array of integers, or any other [supported index](@ref man-supported-index-types). This includes [`Colon`](@ref) (`:`) to select all indices within the entire dimension, ranges of the form `a:c` or `a:b:c` to select contiguous or strided subsections, and arrays of booleans to select elements at their `true` indices.
 """
 
-# ╔═╡ 03b7f6ec-9e19-11eb-20ca-47baf524386d
+# ╔═╡ 8db7b148-e958-45fc-a978-285dc71064f0
 md"""
 If all the indices are scalars, then the result `X` is a single element from the array `A`. Otherwise, `X` is an array with the same number of dimensions as the sum of the dimensionalities of all the indices.
 """
 
-# ╔═╡ 03b7f726-9e19-11eb-3f9d-cd70d6317822
+# ╔═╡ 05de6973-b6b8-4803-b055-ea7588533bae
 md"""
 If all indices `I_k` are vectors, for example, then the shape of `X` would be `(length(I_1), length(I_2), ..., length(I_n))`, with location `i_1, i_2, ..., i_n` of `X` containing the value `A[I_1[i_1], I_2[i_2], ..., I_n[i_n]]`.
 """
 
-# ╔═╡ 03b7f73a-9e19-11eb-289f-2dc24df2b32c
+# ╔═╡ 975e0843-37c4-43a1-afe8-fc9ffcc0766c
 md"""
 Example:
 """
 
-# ╔═╡ 03b805a4-9e19-11eb-0774-bd1cb0f5e57d
+# ╔═╡ 1f7ed869-7bc2-4258-8f80-a96b2dceeff2
 A = reshape(collect(1:16), (2, 2, 2, 2))
 
-# ╔═╡ 03b805ae-9e19-11eb-2142-f97cd8474981
+# ╔═╡ 1ec9d31a-64c4-4058-9c9d-d0302ee20588
 A[1, 2, 1, 1] # all scalar indices
 
-# ╔═╡ 03b805c2-9e19-11eb-04ed-bd06c1d67285
+# ╔═╡ d4f9a040-381c-4efa-928d-869005556c49
 A[[1, 2], [1], [1, 2], [1]] # all vector indices
 
-# ╔═╡ 03b805cc-9e19-11eb-1c26-536ab65f9799
+# ╔═╡ b0251cc5-8c76-4e97-a792-52212dc3a946
 A[[1, 2], [1], [1, 2], 1] # a mix of index types
 
-# ╔═╡ 03b80600-9e19-11eb-26b3-410425d20eec
+# ╔═╡ e67fcb97-2228-4e7c-a6fa-73a1b21b7d9c
 md"""
 Note how the size of the resulting array is different in the last two cases.
 """
 
-# ╔═╡ 03b80644-9e19-11eb-26e5-179cd3adf20e
+# ╔═╡ 92d0e29d-5052-4be0-bc0b-0026ef0050e9
 md"""
 If `I_1` is changed to a two-dimensional matrix, then `X` becomes an `n+1`-dimensional array of shape `(size(I_1, 1), size(I_1, 2), length(I_2), ..., length(I_n))`. The matrix adds a dimension.
 """
 
-# ╔═╡ 03b80658-9e19-11eb-2d9c-a3ba6cf652d4
+# ╔═╡ 5802e226-39b5-4c3d-a1fb-3aa99ee0512f
 md"""
 Example:
 """
 
-# ╔═╡ 03b81080-9e19-11eb-0dc9-5539cfe49250
+# ╔═╡ f77d5ac9-79f8-453c-8594-6d387895f74f
 A = reshape(collect(1:16), (2, 2, 2, 2));
 
-# ╔═╡ 03b81080-9e19-11eb-2033-a9af622ce675
+# ╔═╡ bd86dd4b-7920-4738-b22b-969af2afe7ab
 A[[1 2; 1 2]]
 
-# ╔═╡ 03b8108a-9e19-11eb-1cdf-8f0ede6fbd36
+# ╔═╡ 6ed4874d-22be-4436-9db5-e12c90b58c1e
 A[[1 2; 1 2], 1, 2, 1]
 
-# ╔═╡ 03b810d0-9e19-11eb-1b5b-83a5d9af3c16
+# ╔═╡ 5dfa633f-94df-4673-abd5-1eb574f137fc
 md"""
 The location `i_1, i_2, i_3, ..., i_{n+1}` contains the value at `A[I_1[i_1, i_2], I_2[i_3], ..., I_n[i_{n+1}]]`. All dimensions indexed with scalars are dropped. For example, if `J` is an array of indices, then the result of `A[2, J, 3]` is an array with size `size(J)`. Its `j`th element is populated by `A[2, J[j], 3]`.
 """
 
-# ╔═╡ 03b810f8-9e19-11eb-073f-1bd3bbb9de49
+# ╔═╡ c105eda8-77ad-4db7-9690-699c356dd492
 md"""
 As a special part of this syntax, the `end` keyword may be used to represent the last index of each dimension within the indexing brackets, as determined by the size of the innermost array being indexed. Indexing syntax without the `end` keyword is equivalent to a call to [`getindex`](@ref):
 """
 
-# ╔═╡ 03b81260-9e19-11eb-34e1-5d18876d0dac
-X = getindex(A, I_1, I_2, ...
+# ╔═╡ 98b279a8-771d-4802-85d8-e1e3d1ab7de1
+md"""
+```
+X = getindex(A, I_1, I_2, ..., I_n)
+```
+"""
 
-# ╔═╡ 03b8127e-9e19-11eb-11a9-91acafbf24cb
+# ╔═╡ 39bab95f-0edc-4201-9822-6d309d8bd631
 md"""
 Example:
 """
 
-# ╔═╡ 03b819ea-9e19-11eb-3df8-5b0391e28063
+# ╔═╡ 3794f845-14c9-489d-948f-a44ae76be934
 x = reshape(1:16, 4, 4)
 
-# ╔═╡ 03b819ea-9e19-11eb-04d3-1d0605820565
+# ╔═╡ f4eae434-0aa6-41c2-9a67-bb0903cf9299
 x[2:3, 2:end-1]
 
-# ╔═╡ 03b819f4-9e19-11eb-28e8-4fed261aa2bc
+# ╔═╡ 666cc4bf-8f44-4e5c-bfef-0951b7eebd9d
 x[1, [2 3; 4 1]]
 
-# ╔═╡ 03b81a1c-9e19-11eb-1bdc-2bad0deb4a48
+# ╔═╡ d5bf317b-2a52-4b51-afce-c80bc2e1ab13
 md"""
 ## [Indexed Assignment](@id man-indexed-assignment)
 """
 
-# ╔═╡ 03b81a3a-9e19-11eb-2410-c5758be6385c
+# ╔═╡ d23e497b-9e6a-4ab1-b8f9-9ef71ec0bced
 md"""
 The general syntax for assigning values in an n-dimensional array `A` is:
 """
 
-# ╔═╡ 03b81b20-9e19-11eb-3ca0-49817aff5f7d
-A[I_1, I_2, ...
+# ╔═╡ e7a8cb0a-a151-4155-97b3-9a4815577214
+md"""
+```
+A[I_1, I_2, ..., I_n] = X
+```
+"""
 
-# ╔═╡ 03b81b5c-9e19-11eb-3974-b5c98ed9a5c6
+# ╔═╡ 76764ca5-2c60-4afd-989f-ad95f077efe1
 md"""
 where each `I_k` may be a scalar integer, an array of integers, or any other [supported index](@ref man-supported-index-types). This includes [`Colon`](@ref) (`:`) to select all indices within the entire dimension, ranges of the form `a:c` or `a:b:c` to select contiguous or strided subsections, and arrays of booleans to select elements at their `true` indices.
 """
 
-# ╔═╡ 03b81b98-9e19-11eb-386c-937370a66509
+# ╔═╡ 10316feb-f82f-4999-ac88-d8095f122e92
 md"""
 If all indices `I_k` are integers, then the value in location `I_1, I_2, ..., I_n` of `A` is overwritten with the value of `X`, [`convert`](@ref)ing to the [`eltype`](@ref) of `A` if necessary.
 """
 
-# ╔═╡ 03b81bca-9e19-11eb-2937-71e818622059
+# ╔═╡ 81f3b529-1e2a-4917-93d8-c76c729ddc22
 md"""
 If any index `I_k` selects more than one location, then the right hand side `X` must be an array with the same shape as the result of indexing `A[I_1, I_2, ..., I_n]` or a vector with the same number of elements. The value in location `I_1[i_1], I_2[i_2], ..., I_n[i_n]` of `A` is overwritten with the value `X[I_1, I_2, ..., I_n]`, converting if necessary. The element-wise assignment operator `.=` may be used to [broadcast](@ref Broadcasting) `X` across the selected locations:
 """
 
-# ╔═╡ 03b81c92-9e19-11eb-051d-79b59160e618
-A[I_1, I_2, ...
+# ╔═╡ 71df007e-1618-4ac8-a3df-c375fc017649
+md"""
+```
+A[I_1, I_2, ..., I_n] .= X
+```
+"""
 
-# ╔═╡ 03b81cce-9e19-11eb-2f62-5d99e0816d1b
+# ╔═╡ e24f6041-1f76-4527-8e60-57623c1cb97c
 md"""
 Just as in [Indexing](@ref man-array-indexing), the `end` keyword may be used to represent the last index of each dimension within the indexing brackets, as determined by the size of the array being assigned into. Indexed assignment syntax without the `end` keyword is equivalent to a call to [`setindex!`](@ref):
 """
 
-# ╔═╡ 03b81daa-9e19-11eb-13c6-e302c7c03240
-setindex!(A, X, I_1, I_2, ...
+# ╔═╡ d9c6c20e-4529-4b0d-811e-2bef197c6cd5
+md"""
+```
+setindex!(A, X, I_1, I_2, ..., I_n)
+```
+"""
 
-# ╔═╡ 03b81dbe-9e19-11eb-0e24-2fa9b9536ed0
+# ╔═╡ 1884b924-4691-4aa8-8221-320f2d25423b
 md"""
 Example:
 """
 
-# ╔═╡ 03b826ec-9e19-11eb-1aae-e728877640e8
+# ╔═╡ 8b1478af-bde0-4033-80d9-3a2f3dc85d94
 x = collect(reshape(1:9, 3, 3))
 
-# ╔═╡ 03b826f8-9e19-11eb-23d0-afdf246db73b
+# ╔═╡ 4be93139-d942-47f9-82d4-dde69c684839
 x[3, 3] = -9;
 
-# ╔═╡ 03b82700-9e19-11eb-3c32-ff08a02ae9bf
+# ╔═╡ f6390d52-5f86-4a24-b808-3ca22b7d274b
 x[1:2, 1:2] = [-1 -4; -2 -5];
 
-# ╔═╡ 03b82700-9e19-11eb-0327-53c91ef4df0c
+# ╔═╡ 480a459f-a278-4bdc-b378-a1d2a74f0952
 x
 
-# ╔═╡ 03b8272a-9e19-11eb-09d5-87ddf5654acc
+# ╔═╡ 3833df37-0cea-4067-8812-b7a5d2973419
 md"""
 ## [Supported index types](@id man-supported-index-types)
 """
 
-# ╔═╡ 03b82746-9e19-11eb-0b34-e70f6a10fd5d
+# ╔═╡ a08a845c-cff1-4e85-8eae-75c430faf6a2
 md"""
 In the expression `A[I_1, I_2, ..., I_n]`, each `I_k` may be a scalar index, an array of scalar indices, or an object that represents an array of scalar indices and can be converted to such by [`to_indices`](@ref):
 """
 
-# ╔═╡ 03b82a48-9e19-11eb-34a0-f96e7274f9b7
+# ╔═╡ 171d2ee9-5afb-407e-a87c-86b11958ec65
 md"""
 1. A scalar index. By default this includes:
 
@@ -489,216 +513,216 @@ md"""
       * Arrays of booleans, which select elements at their `true` indices (see below for more details)
 """
 
-# ╔═╡ 03b82a52-9e19-11eb-2348-45f3927f5ee7
+# ╔═╡ e51ada19-e238-4a47-8ef7-7e711136fb30
 md"""
 Some examples:
 """
 
-# ╔═╡ 03b83718-9e19-11eb-080b-e3f7340ff031
+# ╔═╡ 5671280c-7992-4051-9260-aa592bca4009
 A = reshape(collect(1:2:18), (3, 3))
 
-# ╔═╡ 03b83736-9e19-11eb-0493-c5f6bc2a3032
+# ╔═╡ ddb41d1a-0151-46a6-b9a0-ba4f53730b6e
 A[4]
 
-# ╔═╡ 03b83736-9e19-11eb-30e0-2ffb8f647646
+# ╔═╡ 33d40760-88b7-44f5-834c-b92fe4f0a065
 A[[2, 5, 8]]
 
-# ╔═╡ 03b83736-9e19-11eb-06eb-25d07b3e54df
+# ╔═╡ 93e88157-f110-424d-9630-efe8263903e0
 A[[1 4; 3 8]]
 
-# ╔═╡ 03b83740-9e19-11eb-22c0-ff34c87398b1
+# ╔═╡ ae1688bf-0923-465c-a03a-8d48566eae70
 A[[]]
 
-# ╔═╡ 03b83740-9e19-11eb-1aba-8fffe45f079a
+# ╔═╡ fa53e253-b643-459e-83f1-ca6d73de5d2e
 A[1:2:5]
 
-# ╔═╡ 03b8374a-9e19-11eb-16d7-1bba270221de
+# ╔═╡ 58396e07-32f4-4097-987a-c034cea13b09
 A[2, :]
 
-# ╔═╡ 03b83754-9e19-11eb-2ac5-b59f7719514d
+# ╔═╡ c4da6925-92c5-4dc9-b802-3cc51c24ebb5
 A[:, 3]
 
-# ╔═╡ 03b8377c-9e19-11eb-0723-11d96d4719eb
+# ╔═╡ 2962d73b-e02a-428c-8981-0750f73fd0bc
 md"""
 ### Cartesian indices
 """
 
-# ╔═╡ 03b8379a-9e19-11eb-2871-a5edd14e62d7
+# ╔═╡ 0986fc00-3046-4537-ba5e-ac8bb2c7f8c0
 md"""
 The special `CartesianIndex{N}` object represents a scalar index that behaves like an `N`-tuple of integers spanning multiple dimensions.  For example:
 """
 
-# ╔═╡ 03b83e0c-9e19-11eb-1b3d-0dc6908bb4bd
+# ╔═╡ 4b3a90d6-30ac-4d01-9000-e6f4560c1765
 A = reshape(1:32, 4, 4, 2);
 
-# ╔═╡ 03b83e16-9e19-11eb-1663-b315690ba11a
+# ╔═╡ 63a793ae-86ca-4a2a-887a-cd38a0ad905b
 A[3, 2, 1]
 
-# ╔═╡ 03b83e16-9e19-11eb-3f1a-e74e3c891565
+# ╔═╡ 918e42b7-88ac-4a43-a6c8-2216b7160423
 A[CartesianIndex(3, 2, 1)] == A[3, 2, 1] == 7
 
-# ╔═╡ 03b83e4a-9e19-11eb-03c9-2d66f081c0b8
+# ╔═╡ be49dcb9-c22b-46a3-a63e-7d2712a53080
 md"""
 Considered alone, this may seem relatively trivial; `CartesianIndex` simply gathers multiple integers together into one object that represents a single multidimensional index. When combined with other indexing forms and iterators that yield `CartesianIndex`es, however, this can produce very elegant and efficient code. See [Iteration](@ref) below, and for some more advanced examples, see [this blog post on multidimensional algorithms and iteration](https://julialang.org/blog/2016/02/iteration).
 """
 
-# ╔═╡ 03b83e70-9e19-11eb-3540-2b1425725c17
+# ╔═╡ f229c284-1d59-4c29-b183-445ece5a368c
 md"""
-Arrays of `CartesianIndex{N}` are also supported. They represent a collection of scalar indices that each span `N` dimensions, enabling a form of indexing that is sometimes referred to as pointwise indexing. For example, it enables accessing the diagonal elements from the first "page" of `A` from above:
+Arrays of `CartesianIndex{N}` are also supported. They represent a collection of scalar indices that each span `N` dimensions, enabling a form of indexing that is sometimes referred to as pointwise indexing. For example, it enables accessing the diagonal elements from the first \"page\" of `A` from above:
 """
 
-# ╔═╡ 03b84460-9e19-11eb-0e5c-478094e90bb4
+# ╔═╡ ba8a9f8b-074f-43c0-8063-546f3e45f37a
 page = A[:,:,1]
 
-# ╔═╡ 03b8446a-9e19-11eb-091d-71b07e0ded46
+# ╔═╡ 09b949b8-02ce-41fe-aace-69329dd9e0a4
 page[[CartesianIndex(1,1),
-             CartesianIndex(2,2),
-             CartesianIndex(3,3),
-             CartesianIndex(4,4)]]
+       CartesianIndex(2,2),
+       CartesianIndex(3,3),
+       CartesianIndex(4,4)]]
 
-# ╔═╡ 03b84488-9e19-11eb-1bd9-21f419e2ef79
+# ╔═╡ d4a5336e-2eef-4a53-9c35-435921a8f007
 md"""
 This can be expressed much more simply with [dot broadcasting](@ref man-vectorized) and by combining it with a normal integer index (instead of extracting the first `page` from `A` as a separate step). It can even be combined with a `:` to extract both diagonals from the two pages at the same time:
 """
 
-# ╔═╡ 03b849e2-9e19-11eb-2e41-c1a4f31f988a
+# ╔═╡ 9798a995-76ba-4e5d-9050-65e827623754
 A[CartesianIndex.(axes(A, 1), axes(A, 2)), 1]
 
-# ╔═╡ 03b849e2-9e19-11eb-1e46-1389d8c4991b
+# ╔═╡ e5434597-2f44-4636-8d93-4a0cc8435663
 A[CartesianIndex.(axes(A, 1), axes(A, 2)), :]
 
-# ╔═╡ 03b84aa0-9e19-11eb-066c-298173377438
+# ╔═╡ f90d16d2-d5f8-4fc7-83f6-60fc6f795ecd
 md"""
 !!! warning
     `CartesianIndex` and arrays of `CartesianIndex` are not compatible with the `end` keyword to represent the last index of a dimension. Do not use `end` in indexing expressions that may contain either `CartesianIndex` or arrays thereof.
 """
 
-# ╔═╡ 03b84ac0-9e19-11eb-1bf0-19853e21d0cb
+# ╔═╡ 26da36a5-04b8-4820-81b3-e729e3bdf860
 md"""
 ### Logical indexing
 """
 
-# ╔═╡ 03b84b0e-9e19-11eb-1ef5-9795ed8736ad
+# ╔═╡ 00ed481a-cf6c-47ae-b7cd-db33f4a31c98
 md"""
 Often referred to as logical indexing or indexing with a logical mask, indexing by a boolean array selects elements at the indices where its values are `true`. Indexing by a boolean vector `B` is effectively the same as indexing by the vector of integers that is returned by [`findall(B)`](@ref). Similarly, indexing by a `N`-dimensional boolean array is effectively the same as indexing by the vector of `CartesianIndex{N}`s where its values are `true`. A logical index must be a vector of the same length as the dimension it indexes into, or it must be the only index provided and match the size and dimensionality of the array it indexes into. It is generally more efficient to use boolean arrays as indices directly instead of first calling [`findall`](@ref).
 """
 
-# ╔═╡ 03b85196-9e19-11eb-300b-8f40c40e626d
+# ╔═╡ 9f37875c-463f-440f-b7a0-c3f52cc70498
 x = reshape(1:16, 4, 4)
 
-# ╔═╡ 03b85196-9e19-11eb-3b6f-4fa1c5ce9457
+# ╔═╡ 1c4d9240-8a90-410e-afb5-e785740eb09f
 x[[false, true, true, false], :]
 
-# ╔═╡ 03b8519e-9e19-11eb-3861-17450351f11e
+# ╔═╡ b5ef7ef2-9ae7-4c72-9aee-703078d45612
 mask = map(ispow2, x)
 
-# ╔═╡ 03b851a8-9e19-11eb-3a60-8561a1e073fb
+# ╔═╡ c16cfbfa-96e0-44a9-adbc-f1789b64cb68
 x[mask]
 
-# ╔═╡ 03b851bc-9e19-11eb-3514-cb35f077f3e5
+# ╔═╡ d21f9244-700d-4828-8547-bb3283e34dc5
 md"""
 ### Number of indices
 """
 
-# ╔═╡ 03b851fa-9e19-11eb-00b7-a799a45fda7c
+# ╔═╡ 079ea006-8f6a-4938-8e86-8fe1ae4336e4
 md"""
 #### Cartesian indexing
 """
 
-# ╔═╡ 03b85228-9e19-11eb-1b8d-ffafb65797b9
+# ╔═╡ 80a60781-f150-480b-8ee2-80e12abea3a3
 md"""
-The ordinary way to index into an `N`-dimensional array is to use exactly `N` indices; each index selects the position(s) in its particular dimension. For example, in the three-dimensional array `A = rand(4, 3, 2)`, `A[2, 3, 1]` will select the number in the second row of the third column in the first "page" of the array. This is often referred to as *cartesian indexing*.
+The ordinary way to index into an `N`-dimensional array is to use exactly `N` indices; each index selects the position(s) in its particular dimension. For example, in the three-dimensional array `A = rand(4, 3, 2)`, `A[2, 3, 1]` will select the number in the second row of the third column in the first \"page\" of the array. This is often referred to as *cartesian indexing*.
 """
 
-# ╔═╡ 03b85248-9e19-11eb-3357-6d3e959c2d50
+# ╔═╡ efa59260-bc89-42e7-b1da-dc5445f4327e
 md"""
 #### Linear indexing
 """
 
-# ╔═╡ 03b85270-9e19-11eb-232f-87c8482c4c4b
+# ╔═╡ 6a0200b6-bd1d-4df8-aaac-baeda2e6cf0f
 md"""
 When exactly one index `i` is provided, that index no longer represents a location in a particular dimension of the array. Instead, it selects the `i`th element using the column-major iteration order that linearly spans the entire array. This is known as *linear indexing*. It essentially treats the array as though it had been reshaped into a one-dimensional vector with [`vec`](@ref).
 """
 
-# ╔═╡ 03b857ac-9e19-11eb-0204-e79254f838f3
+# ╔═╡ 621012fc-a7ef-46ac-bfc4-0b3319a4b9f4
 A = [2 6; 4 7; 3 1]
 
-# ╔═╡ 03b857b6-9e19-11eb-31cb-5df3201c0ba3
+# ╔═╡ 4b1e70be-98e6-46a3-b132-84ffe9ff95be
 A[5]
 
-# ╔═╡ 03b857c8-9e19-11eb-2860-219abe38b984
+# ╔═╡ 2f97c058-ffc1-4cc8-a93b-6cc81121ff16
 vec(A)[5]
 
-# ╔═╡ 03b85806-9e19-11eb-3c32-514c65402e09
+# ╔═╡ 416c878c-e2ce-49b3-b485-e2e965724fcb
 md"""
 A linear index into the array `A` can be converted to a `CartesianIndex` for cartesian indexing with `CartesianIndices(A)[i]` (see [`CartesianIndices`](@ref)), and a set of `N` cartesian indices can be converted to a linear index with `LinearIndices(A)[i_1, i_2, ..., i_N]` (see [`LinearIndices`](@ref)).
 """
 
-# ╔═╡ 03b85a18-9e19-11eb-24b4-4756f1469c3d
+# ╔═╡ 398c0eaa-f7fb-4204-8489-c2c6fcf66a23
 CartesianIndices(A)[5]
 
-# ╔═╡ 03b85a18-9e19-11eb-090b-e385c8388918
+# ╔═╡ c37ef0c9-8697-417c-812b-ed7fa66cb5c8
 LinearIndices(A)[2, 2]
 
-# ╔═╡ 03b85a66-9e19-11eb-2d96-53ccd3cb8f34
+# ╔═╡ 876037ed-914f-43b7-80f4-f6662afc846f
 md"""
 It's important to note that there's a very large assymmetry in the performance of these conversions. Converting a linear index to a set of cartesian indices requires dividing and taking the remainder, whereas going the other way is just multiplies and adds. In modern processors, integer division can be 10-50 times slower than multiplication. While some arrays — like [`Array`](@ref) itself — are implemented using a linear chunk of memory and directly use a linear index in their implementations, other arrays — like [`Diagonal`](@ref) — need the full set of cartesian indices to do their lookup (see [`IndexStyle`](@ref) to introspect which is which). As such, when iterating over an entire array, it's much better to iterate over [`eachindex(A)`](@ref) instead of `1:length(A)`. Not only will the former be much faster in cases where `A` is `IndexCartesian`, but it will also support OffsetArrays, too.
 """
 
-# ╔═╡ 03b85a7c-9e19-11eb-18ca-751307178b02
+# ╔═╡ 414b5ba6-88ac-4059-9355-519bfb31b457
 md"""
 #### Omitted and extra indices
 """
 
-# ╔═╡ 03b85a90-9e19-11eb-1971-2b9d15bf916d
+# ╔═╡ 06dfea23-248c-4caf-b918-50dcb6a7a008
 md"""
 In addition to linear indexing, an `N`-dimensional array may be indexed with fewer or more than `N` indices in certain situations.
 """
 
-# ╔═╡ 03b85aae-9e19-11eb-2f18-7534a3f61611
+# ╔═╡ 77e1d1a7-b7d7-4306-8ee6-ce3311b662f2
 md"""
 Indices may be omitted if the trailing dimensions that are not indexed into are all length one. In other words, trailing indices can be omitted only if there is only one possible value that those omitted indices could be for an in-bounds indexing expression. For example, a four-dimensional array with size `(3, 4, 2, 1)` may be indexed with only three indices as the dimension that gets skipped (the fourth dimension) has length one. Note that linear indexing takes precedence over this rule.
 """
 
-# ╔═╡ 03b860aa-9e19-11eb-22fc-aba4ecb8227d
+# ╔═╡ efc5503b-a18e-42ac-b03f-7f0057d6853a
 A = reshape(1:24, 3, 4, 2, 1)
 
-# ╔═╡ 03b860aa-9e19-11eb-1ecb-7f378ceb99f2
+# ╔═╡ a5e30da5-96f2-4119-9568-bd78dd1c9b41
 A[1, 3, 2] # Omits the fourth dimension (length 1)
 
-# ╔═╡ 03b860aa-9e19-11eb-135c-a551f145ccd1
+# ╔═╡ e79672d8-8e23-47b1-bf91-4cc9cbed1379
 A[1, 3] # Attempts to omit dimensions 3 & 4 (lengths 2 and 1)
 
-# ╔═╡ 03b860b2-9e19-11eb-23d2-07938c3e1431
+# ╔═╡ 9ec08e35-e7f9-40d9-be27-2ef6de0cc3a0
 A[19] # Linear indexing
 
-# ╔═╡ 03b860e4-9e19-11eb-3d48-b58974045ce2
+# ╔═╡ 5d7eba4d-663e-423e-9e38-7e421216b90f
 md"""
 When omitting *all* indices with `A[]`, this semantic provides a simple idiom to retrieve the only element in an array and simultaneously ensure that there was only one element.
 """
 
-# ╔═╡ 03b86102-9e19-11eb-265e-c51116abb103
+# ╔═╡ cb46c602-3204-420c-b36a-6e190b7ce709
 md"""
 Similarly, more than `N` indices may be provided if all the indices beyond the dimensionality of the array are `1` (or more generally are the first and only element of `axes(A, d)` where `d` is that particular dimension number). This allows vectors to be indexed like one-column matrices, for example:
 """
 
-# ╔═╡ 03b86328-9e19-11eb-0748-098886df08db
+# ╔═╡ d22fc7af-421b-4c47-8e82-881d14e6e0e8
 A = [8,6,7]
 
-# ╔═╡ 03b875de-9e19-11eb-0c85-e5e1673fcf0d
+# ╔═╡ 22a03864-f2c5-4ab3-9b27-a8847dbca26b
 A[2,1]
 
-# ╔═╡ 03b87638-9e19-11eb-0237-d31d1b7ff49d
+# ╔═╡ 6625ed75-4d82-4dd6-b198-937184b69270
 md"""
 ## Iteration
 """
 
-# ╔═╡ 03b8764c-9e19-11eb-3dae-7b27e7feb30e
+# ╔═╡ 04511c11-e5e6-437d-bef6-cce9dcb11ca1
 md"""
 The recommended ways to iterate over a whole array are
 """
 
-# ╔═╡ 03b87694-9e19-11eb-3b48-0fc5e93a4467
+# ╔═╡ 70ae4b62-581d-46a2-beca-6bdcf65fa91b
 md"""
 ```julia
 for a in A
@@ -711,440 +735,440 @@ end
 ```
 """
 
-# ╔═╡ 03b876ba-9e19-11eb-2be4-ab4c88b9118c
+# ╔═╡ 43f2ef81-5877-4bf0-ad6e-348969e788bf
 md"""
 The first construct is used when you need the value, but not index, of each element. In the second construct, `i` will be an `Int` if `A` is an array type with fast linear indexing; otherwise, it will be a `CartesianIndex`:
 """
 
-# ╔═╡ 03b87e2e-9e19-11eb-3a20-4b48c254e5d0
+# ╔═╡ 9ae092a5-2653-48ff-83a5-cac37b1b34d5
 A = rand(4,3);
 
-# ╔═╡ 03b87e2e-9e19-11eb-327c-fd451c8b427b
+# ╔═╡ d4d05517-5eee-4d9b-85f6-ae790f124e92
 B = view(A, 1:3, 2:3);
 
-# ╔═╡ 03b87e3a-9e19-11eb-0081-05e07babfcf4
+# ╔═╡ 34929f5a-e162-4f47-b905-a6a483c6e56e
 for i in eachindex(B)
-           @show i
-       end
+     @show i
+ end
 
-# ╔═╡ 03b87e6c-9e19-11eb-1c60-13960b3c7a60
+# ╔═╡ 00fb3441-74e7-49bb-b1d9-03cd64ae5cbc
 md"""
 In contrast with `for i = 1:length(A)`, iterating with [`eachindex`](@ref) provides an efficient way to iterate over any array type.
 """
 
-# ╔═╡ 03b87e80-9e19-11eb-2d69-c94231dfd0a3
+# ╔═╡ 4ccdeab7-b56c-4eb5-ade6-67ef8fd77aa1
 md"""
 ## Array traits
 """
 
-# ╔═╡ 03b87e9e-9e19-11eb-042c-0789f7200cf6
+# ╔═╡ bbf9fa3e-a81a-44f0-a733-c4326ea20b22
 md"""
 If you write a custom [`AbstractArray`](@ref) type, you can specify that it has fast linear indexing using
 """
 
-# ╔═╡ 03b87ebc-9e19-11eb-3000-6f4f39e88f2d
+# ╔═╡ 7072be0a-2aa2-499d-8d91-ad4037fe0cc6
 md"""
 ```julia
 Base.IndexStyle(::Type{<:MyArray}) = IndexLinear()
 ```
 """
 
-# ╔═╡ 03b87eda-9e19-11eb-2013-1917e4b5d217
+# ╔═╡ 978de581-cf16-4e6e-8fa6-3c4066963c34
 md"""
 This setting will cause `eachindex` iteration over a `MyArray` to use integers. If you don't specify this trait, the default value `IndexCartesian()` is used.
 """
 
-# ╔═╡ 03b87eee-9e19-11eb-08b1-99f8578dd5f1
+# ╔═╡ 3ed102b5-4c52-46b9-9786-7e8d378d7f12
 md"""
 ## [Array and Vectorized Operators and Functions](@id man-array-and-vectorized-operators-and-functions)
 """
 
-# ╔═╡ 03b87f16-9e19-11eb-1413-8f423e4fa961
+# ╔═╡ ff652d09-8481-4605-9494-61fe63b77694
 md"""
 The following operators are supported for arrays:
 """
 
-# ╔═╡ 03b87fe8-9e19-11eb-1641-730b65c0037c
+# ╔═╡ b4d36738-0196-4245-aa02-cf3af6436dc0
 md"""
 1. Unary arithmetic – `-`, `+`
 2. Binary arithmetic – `-`, `+`, `*`, `/`, `\`, `^`
 3. Comparison – `==`, `!=`, `≈` ([`isapprox`](@ref)), `≉`
 """
 
-# ╔═╡ 03b88024-9e19-11eb-12c8-6dd5d48da637
+# ╔═╡ a23f43fc-68d7-45ce-aabb-61281a7479e7
 md"""
-To enable convenient vectorization of mathematical and other operations, Julia [provides the dot syntax](@ref man-vectorized) `f.(args...)`, e.g. `sin.(x)` or `min.(x,y)`, for elementwise operations over arrays or mixtures of arrays and scalars (a [Broadcasting](@ref) operation); these have the additional advantage of "fusing" into a single loop when combined with other dot calls, e.g. `sin.(cos.(x))`.
+To enable convenient vectorization of mathematical and other operations, Julia [provides the dot syntax](@ref man-vectorized) `f.(args...)`, e.g. `sin.(x)` or `min.(x,y)`, for elementwise operations over arrays or mixtures of arrays and scalars (a [Broadcasting](@ref) operation); these have the additional advantage of \"fusing\" into a single loop when combined with other dot calls, e.g. `sin.(cos.(x))`.
 """
 
-# ╔═╡ 03b88056-9e19-11eb-24da-4774a291a4e1
+# ╔═╡ 27f08f01-7953-47e8-a28f-d40a3fa5bee4
 md"""
 Also, *every* binary operator supports a [dot version](@ref man-dot-operators) that can be applied to arrays (and combinations of arrays and scalars) in such [fused broadcasting operations](@ref man-vectorized), e.g. `z .== sin.(x .* y)`.
 """
 
-# ╔═╡ 03b8807e-9e19-11eb-1193-db9ed058e814
+# ╔═╡ d7101c57-06cc-45c8-8fb9-e6ef433156f8
 md"""
 Note that comparisons such as `==` operate on whole arrays, giving a single boolean answer. Use dot operators like `.==` for elementwise comparisons. (For comparison operations like `<`, *only* the elementwise `.<` version is applicable to arrays.)
 """
 
-# ╔═╡ 03b880b0-9e19-11eb-2d1a-df62e73b5de6
+# ╔═╡ e20144c7-bb74-423f-a16b-9972c6820d2e
 md"""
 Also notice the difference between `max.(a,b)`, which [`broadcast`](@ref)s [`max`](@ref) elementwise over `a` and `b`, and [`maximum(a)`](@ref), which finds the largest value within `a`. The same relationship holds for `min.(a,b)` and `minimum(a)`.
 """
 
-# ╔═╡ 03b880c4-9e19-11eb-3014-f50af7e06638
+# ╔═╡ c7cbf48b-3438-4d1a-b3ed-a9831d30c2d1
 md"""
 ## Broadcasting
 """
 
-# ╔═╡ 03b880d8-9e19-11eb-202f-fb0f67f3a2dc
+# ╔═╡ 7fee9c03-fd77-4c3d-b3f4-b84fbab3ffea
 md"""
 It is sometimes useful to perform element-by-element binary operations on arrays of different sizes, such as adding a vector to each column of a matrix. An inefficient way to do this would be to replicate the vector to the size of the matrix:
 """
 
-# ╔═╡ 03b8851a-9e19-11eb-2f62-df96a898e95a
+# ╔═╡ f2efdd8b-bc96-4a0d-9092-30218ef5c08a
 a = rand(2,1); A = rand(2,3);
 
-# ╔═╡ 03b8851a-9e19-11eb-093e-a501726ab8c1
+# ╔═╡ 5f41d6ae-649c-4ec4-8efc-35ab10e404c5
 repeat(a,1,3)+A
 
-# ╔═╡ 03b8854c-9e19-11eb-2127-b3b78d17a715
+# ╔═╡ 5b12baed-278b-4e9b-a349-13ba2c1743ff
 md"""
 This is wasteful when dimensions get large, so Julia provides [`broadcast`](@ref), which expands singleton dimensions in array arguments to match the corresponding dimension in the other array without using extra memory, and applies the given function elementwise:
 """
 
-# ╔═╡ 03b888bc-9e19-11eb-198f-2572d9e0cbfa
+# ╔═╡ 0183c94f-3ee0-404a-9485-b6e423f239a6
 broadcast(+, a, A)
 
-# ╔═╡ 03b888c6-9e19-11eb-1904-1946eaf6e70c
+# ╔═╡ c7e7f458-8187-4e1f-9905-4769e2639c72
 b = rand(1,2)
 
-# ╔═╡ 03b888c6-9e19-11eb-3e90-e368aa1f9f8f
+# ╔═╡ 9ee64687-31a9-46e7-aa98-af1b626481ae
 broadcast(+, a, b)
 
-# ╔═╡ 03b88920-9e19-11eb-1f3c-adb859a8c895
+# ╔═╡ 36aee38a-88fd-4133-a970-83ce12834c94
 md"""
-[Dotted operators](@ref man-dot-operators) such as `.+` and `.*` are equivalent to `broadcast` calls (except that they fuse, as [described above](@ref man-array-and-vectorized-operators-and-functions)). There is also a [`broadcast!`](@ref) function to specify an explicit destination (which can also be accessed in a fusing fashion by `.=` assignment). In fact, `f.(args...)` is equivalent to `broadcast(f, args...)`, providing a convenient syntax to broadcast any function ([dot syntax](@ref man-vectorized)). Nested "dot calls" `f.(...)` (including calls to `.+` etcetera) [automatically fuse](@ref man-dot-operators) into a single `broadcast` call.
+[Dotted operators](@ref man-dot-operators) such as `.+` and `.*` are equivalent to `broadcast` calls (except that they fuse, as [described above](@ref man-array-and-vectorized-operators-and-functions)). There is also a [`broadcast!`](@ref) function to specify an explicit destination (which can also be accessed in a fusing fashion by `.=` assignment). In fact, `f.(args...)` is equivalent to `broadcast(f, args...)`, providing a convenient syntax to broadcast any function ([dot syntax](@ref man-vectorized)). Nested \"dot calls\" `f.(...)` (including calls to `.+` etcetera) [automatically fuse](@ref man-dot-operators) into a single `broadcast` call.
 """
 
-# ╔═╡ 03b88966-9e19-11eb-02fd-6bed3ffed2d1
+# ╔═╡ cdffb2f0-22a7-4fe4-afe3-91616415a18d
 md"""
 Additionally, [`broadcast`](@ref) is not limited to arrays (see the function documentation); it also handles scalars, tuples and other collections.  By default, only some argument types are considered scalars, including (but not limited to) `Number`s, `String`s, `Symbol`s, `Type`s, `Function`s and some common singletons like `missing` and `nothing`. All other arguments are iterated over or indexed into elementwise.
 """
 
-# ╔═╡ 03b891b8-9e19-11eb-32d1-431651d4b045
+# ╔═╡ 60509ecb-acf2-4449-9ca5-356eac8ba355
 convert.(Float32, [1, 2])
 
-# ╔═╡ 03b891c2-9e19-11eb-3d4a-a3456fabe4d8
+# ╔═╡ d1f65443-b9a6-459d-8ee5-b0593a64cc2b
 ceil.(UInt8, [1.2 3.4; 5.6 6.7])
 
-# ╔═╡ 03b891c2-9e19-11eb-2bd0-07bc352ecd9c
+# ╔═╡ 4533a5a9-0c3e-4c4e-9826-f38a3d9b5078
 string.(1:3, ". ", ["First", "Second", "Third"])
 
-# ╔═╡ 03b891f4-9e19-11eb-283d-4bb429420cd0
+# ╔═╡ 8bc1eb6c-17ec-49f5-bd72-a589223c47f9
 md"""
-Sometimes, you want a container (like an array) that would normally participate in broadcast to be "protected" from broadcast's behavior of iterating over all of its elements. By placing it inside another container (like a single element [`Tuple`](@ref)) broadcast will treat it as a single value.
+Sometimes, you want a container (like an array) that would normally participate in broadcast to be \"protected\" from broadcast's behavior of iterating over all of its elements. By placing it inside another container (like a single element [`Tuple`](@ref)) broadcast will treat it as a single value.
 """
 
-# ╔═╡ 03b89938-9e19-11eb-28f4-2f04e93207b9
+# ╔═╡ a86710ed-37ee-4875-8702-5ff041407079
 ([1, 2, 3], [4, 5, 6]) .+ ([1, 2, 3],)
 
-# ╔═╡ 03b89938-9e19-11eb-1bd2-df5580757d2e
+# ╔═╡ 7c8641c4-f621-49f7-b675-a6ca77c98b94
 ([1, 2, 3], [4, 5, 6]) .+ tuple([1, 2, 3])
 
-# ╔═╡ 03b8994c-9e19-11eb-28ee-a1db95a1569e
+# ╔═╡ 03f3906e-30d1-444a-813f-0f69c5f5ba59
 md"""
 ## Implementation
 """
 
-# ╔═╡ 03b89986-9e19-11eb-1046-b184bcfa7281
+# ╔═╡ c231c202-4e9f-43dc-8584-a91790c381a2
 md"""
 The base array type in Julia is the abstract type [`AbstractArray{T,N}`](@ref). It is parameterized by the number of dimensions `N` and the element type `T`. [`AbstractVector`](@ref) and [`AbstractMatrix`](@ref) are aliases for the 1-d and 2-d cases. Operations on `AbstractArray` objects are defined using higher level operators and functions, in a way that is independent of the underlying storage. These operations generally work correctly as a fallback for any specific array implementation.
 """
 
-# ╔═╡ 03b89a14-9e19-11eb-1ce7-358b7a1570f1
+# ╔═╡ e7b07ea6-c2fa-42cb-90c3-d994522526fb
 md"""
 The `AbstractArray` type includes anything vaguely array-like, and implementations of it might be quite different from conventional arrays. For example, elements might be computed on request rather than stored. However, any concrete `AbstractArray{T,N}` type should generally implement at least [`size(A)`](@ref) (returning an `Int` tuple), [`getindex(A,i)`](@ref) and [`getindex(A,i1,...,iN)`](@ref getindex); mutable arrays should also implement [`setindex!`](@ref). It is recommended that these operations have nearly constant time complexity, as otherwise some array functions may be unexpectedly slow. Concrete types should also typically provide a [`similar(A,T=eltype(A),dims=size(A))`](@ref) method, which is used to allocate a similar array for [`copy`](@ref) and other out-of-place operations. No matter how an `AbstractArray{T,N}` is represented internally, `T` is the type of object returned by *integer* indexing (`A[1, ..., 1]`, when `A` is not empty) and `N` should be the length of the tuple returned by [`size`](@ref). For more details on defining custom `AbstractArray` implementations, see the [array interface guide in the interfaces chapter](@ref man-interface-array).
 """
 
-# ╔═╡ 03b89a50-9e19-11eb-19f5-c37a663b7039
+# ╔═╡ 9cb601c2-d7a0-4d84-8814-ae35cf3f5a14
 md"""
 `DenseArray` is an abstract subtype of `AbstractArray` intended to include all arrays where elements are stored contiguously in column-major order (see [additional notes in Performance Tips](@ref man-performance-column-major)). The [`Array`](@ref) type is a specific instance of `DenseArray`;  [`Vector`](@ref) and [`Matrix`](@ref) are aliases for the 1-d and 2-d cases. Very few operations are implemented specifically for `Array` beyond those that are required for all `AbstractArray`s; much of the array library is implemented in a generic manner that allows all custom arrays to behave similarly.
 """
 
-# ╔═╡ 03b89aa0-9e19-11eb-1915-7ff7e95240eb
+# ╔═╡ d4bf8e96-5d48-498c-8ab5-262550a4437c
 md"""
 `SubArray` is a specialization of `AbstractArray` that performs indexing by sharing memory with the original array rather than by copying it. A `SubArray` is created with the [`view`](@ref) function, which is called the same way as [`getindex`](@ref) (with an array and a series of index arguments). The result of [`view`](@ref) looks the same as the result of [`getindex`](@ref), except the data is left in place. [`view`](@ref) stores the input index vectors in a `SubArray` object, which can later be used to index the original array indirectly.  By putting the [`@views`](@ref) macro in front of an expression or block of code, any `array[...]` slice in that expression will be converted to create a `SubArray` view instead.
 """
 
-# ╔═╡ 03b89abc-9e19-11eb-1801-379bd9c3a99e
+# ╔═╡ 072ab283-bc66-49c6-be21-43325744d5e2
 md"""
-[`BitArray`](@ref)s are space-efficient "packed" boolean arrays, which store one bit per boolean value. They can be used similarly to `Array{Bool}` arrays (which store one byte per boolean value), and can be converted to/from the latter via `Array(bitarray)` and `BitArray(array)`, respectively.
+[`BitArray`](@ref)s are space-efficient \"packed\" boolean arrays, which store one bit per boolean value. They can be used similarly to `Array{Bool}` arrays (which store one byte per boolean value), and can be converted to/from the latter via `Array(bitarray)` and `BitArray(array)`, respectively.
 """
 
-# ╔═╡ 03b89ae6-9e19-11eb-2dcb-dfbda63c010f
+# ╔═╡ 6fbb10c4-c1be-4cfb-8a23-288fa22a8a6b
 md"""
-An array is "strided" if it is stored in memory with well-defined spacings (strides) between its elements. A strided array with a supported element type may be passed to an external (non-Julia) library like BLAS or LAPACK by simply passing its [`pointer`](@ref) and the stride for each dimension. The [`stride(A, d)`](@ref) is the distance between elements along dimension `d`. For example, the builtin `Array` returned by `rand(5,7,2)` has its elements arranged contiguously in column major order. This means that the stride of the first dimension — the spacing between elements in the same column — is `1`:
+An array is \"strided\" if it is stored in memory with well-defined spacings (strides) between its elements. A strided array with a supported element type may be passed to an external (non-Julia) library like BLAS or LAPACK by simply passing its [`pointer`](@ref) and the stride for each dimension. The [`stride(A, d)`](@ref) is the distance between elements along dimension `d`. For example, the builtin `Array` returned by `rand(5,7,2)` has its elements arranged contiguously in column major order. This means that the stride of the first dimension — the spacing between elements in the same column — is `1`:
 """
 
-# ╔═╡ 03b8bb8e-9e19-11eb-3a6b-ff07a424f338
+# ╔═╡ 932f2dc8-55a5-4af5-960b-f1eed88f9711
 A = rand(5,7,2);
 
-# ╔═╡ 03b8bbb4-9e19-11eb-1b8f-572bc270a667
+# ╔═╡ 0fa56dac-5a37-4427-a6a8-0ae6e7bac3f6
 stride(A,1)
 
-# ╔═╡ 03b8bbe6-9e19-11eb-3fe4-c30d1ad27dce
+# ╔═╡ b61569c9-a834-4530-860a-d1380921468d
 md"""
-The stride of the second dimension is the spacing between elements in the same row, skipping as many elements as there are in a single column (`5`). Similarly, jumping between the two "pages" (in the third dimension) requires skipping `5*7 == 35` elements.  The [`strides`](@ref) of this array is the tuple of these three numbers together:
+The stride of the second dimension is the spacing between elements in the same row, skipping as many elements as there are in a single column (`5`). Similarly, jumping between the two \"pages\" (in the third dimension) requires skipping `5*7 == 35` elements.  The [`strides`](@ref) of this array is the tuple of these three numbers together:
 """
 
-# ╔═╡ 03b8bcbc-9e19-11eb-32c9-adeaeeb8d342
+# ╔═╡ 6c0a2bcb-b7cf-42e2-b383-b8297c24b92e
 strides(A)
 
-# ╔═╡ 03b8bd0a-9e19-11eb-1be0-ebd23d0ebe67
+# ╔═╡ 26462f29-c185-4029-95cd-c1f27a171251
 md"""
 In this particular case, the number of elements skipped *in memory* matches the number of *linear indices* skipped. This is only the case for contiguous arrays like `Array` (and other `DenseArray` subtypes) and is not true in general. Views with range indices are a good example of *non-contiguous* strided arrays; consider `V = @view A[1:3:4, 2:2:6, 2:-1:1]`. This view `V` refers to the same memory as `A` but is skipping and re-arranging some of its elements. The stride of the first dimension of `V` is `3` because we're only selecting every third row from our original array:
 """
 
-# ╔═╡ 03b8c336-9e19-11eb-2fb0-776cfd668830
+# ╔═╡ 74b59836-a843-49b0-8745-a1370ccd55a6
 V = @view A[1:3:4, 2:2:6, 2:-1:1];
 
-# ╔═╡ 03b8c336-9e19-11eb-3019-d7128632a4a5
+# ╔═╡ d8c2f78c-5efc-4e26-809c-306b5b4f3a15
 stride(V, 1)
 
-# ╔═╡ 03b8c354-9e19-11eb-1924-c198c01918a9
+# ╔═╡ b38f4c2c-22ba-48ab-9439-6cf7743ca035
 md"""
 This view is similarly selecting every other column from our original `A` — and thus it needs to skip the equivalent of two five-element columns when moving between indices in the second dimension:
 """
 
-# ╔═╡ 03b8c43a-9e19-11eb-303b-7598a2b34a7e
+# ╔═╡ 3a863dd5-a616-4482-bb04-bf17b1013513
 stride(V, 2)
 
-# ╔═╡ 03b8c462-9e19-11eb-0e0b-51547a000414
+# ╔═╡ db842f3e-c371-4c93-8b97-cdf975b57006
 md"""
-The third dimension is interesting because its order is reversed! Thus to get from the first "page" to the second one it must go *backwards* in memory, and so its stride in this dimension is negative!
+The third dimension is interesting because its order is reversed! Thus to get from the first \"page\" to the second one it must go *backwards* in memory, and so its stride in this dimension is negative!
 """
 
-# ╔═╡ 03b8c534-9e19-11eb-0a48-0b6b5b3c9cca
+# ╔═╡ 58bfd964-ffd5-4ab7-b0be-8a02b17a5fcf
 stride(V, 3)
 
-# ╔═╡ 03b8c598-9e19-11eb-2751-6946158b7acd
+# ╔═╡ 14e49f20-bd0f-47c2-add4-1a281c12874c
 md"""
 This means that the `pointer` for `V` is actually pointing into the middle of `A`'s memory block, and it refers to elements both backwards and forwards in memory. See the [interface guide for strided arrays](@ref man-interface-strided-arrays) for more details on defining your own strided arrays. [`StridedVector`](@ref) and [`StridedMatrix`](@ref) are convenient aliases for many of the builtin array types that are considered strided arrays, allowing them to dispatch to select specialized implementations that call highly tuned and optimized BLAS and LAPACK functions using just the pointer and strides.
 """
 
-# ╔═╡ 03b8c5c0-9e19-11eb-3cec-4f4a6a9b7833
+# ╔═╡ 17a3bb01-86fc-4e41-a46d-2c902091cc8c
 md"""
 It is worth emphasizing that strides are about offsets in memory rather than indexing. If you are looking to convert between linear (single-index) indexing and cartesian (multi-index) indexing, see [`LinearIndices`](@ref) and [`CartesianIndices`](@ref).
 """
 
 # ╔═╡ Cell order:
-# ╟─03b7899e-9e19-11eb-3873-5940a199e477
-# ╟─03b78a70-9e19-11eb-2eb0-49a69a43d096
-# ╟─03b78aac-9e19-11eb-0dfd-e539fb5f45f4
-# ╟─03b78ac2-9e19-11eb-30de-41506bb68584
-# ╟─03b78b1a-9e19-11eb-1a29-6534f01605c3
-# ╟─03b78b60-9e19-11eb-249f-8554bd6fc43d
-# ╟─03b78f16-9e19-11eb-1fac-2bf7305db958
-# ╟─03b78f2c-9e19-11eb-3a51-69d250a0b974
-# ╟─03b78f66-9e19-11eb-1f98-979c64fa5537
-# ╟─03b792f4-9e19-11eb-0c21-997a1ddd2244
-# ╟─03b79420-9e19-11eb-0df0-3b19b7704355
-# ╟─03b7943e-9e19-11eb-3552-bb1a170af3d9
-# ╠═03b79d9e-9e19-11eb-07a8-37c0e578a521
-# ╠═03b79da8-9e19-11eb-2fe9-5b7ab1de3983
-# ╠═03b79da8-9e19-11eb-38fe-836f432f5793
-# ╟─03b79e20-9e19-11eb-0826-1f4698a4a50b
-# ╟─03b79e40-9e19-11eb-33ca-598f5a9044f4
-# ╟─03b79eb6-9e19-11eb-1a8f-f92d78fa8063
-# ╠═03b7a596-9e19-11eb-2df7-496e802a66e5
-# ╠═03b7a5a0-9e19-11eb-35a6-ed58391d5d8c
-# ╠═03b7a5a8-9e19-11eb-1fbb-f71c18d96d8f
-# ╠═03b7a5a8-9e19-11eb-31ad-f936d785e157
-# ╟─03b7a5f0-9e19-11eb-318c-65285c67da41
-# ╟─03b7a622-9e19-11eb-0166-2921d3086b87
-# ╠═03b7ad54-9e19-11eb-2e82-fd75769df6cb
-# ╠═03b7ad5c-9e19-11eb-2cfe-33b7de885696
-# ╠═03b7ad66-9e19-11eb-1d08-55054f7b5cac
-# ╟─03b7ad98-9e19-11eb-01ae-95b6df8b2bfb
-# ╠═03b7b4bc-9e19-11eb-0c69-e563e8ce9329
-# ╠═03b7b4c8-9e19-11eb-25c8-eb6ad3f85c33
-# ╠═03b7b4c8-9e19-11eb-0c98-9dd7a119640b
-# ╟─03b7b4fa-9e19-11eb-29ed-d357b64cbe61
-# ╠═03b7baae-9e19-11eb-3644-fd00e1f45e25
-# ╠═03b7bac2-9e19-11eb-0774-1fcbefa728cd
-# ╟─03b7bb00-9e19-11eb-1060-156c1a0fb586
-# ╟─03b7bc5c-9e19-11eb-0f2d-497d5b1ba179
-# ╟─03b7bc7a-9e19-11eb-0c2c-e9fa29a33f5b
-# ╟─03b7bcb6-9e19-11eb-1aa5-5fd56c351e35
-# ╟─03b7bcde-9e19-11eb-05d7-39fbe91db11c
-# ╠═03b7c210-9e19-11eb-0fcd-b369423a03bf
-# ╠═03b7c21a-9e19-11eb-2d9b-fd2257c24b72
-# ╟─03b7c242-9e19-11eb-062c-e5b9ebd370fc
-# ╟─03b7c260-9e19-11eb-33a7-21c2a2aa0697
-# ╠═03b7c42c-9e19-11eb-171d-8dd9ef515859
-# ╟─03b7c474-9e19-11eb-21c3-f373fc64b4a4
-# ╟─03b7c47c-9e19-11eb-0476-1380a895417e
-# ╠═03b7ce90-9e19-11eb-0a2b-8137ef8a1789
-# ╠═03b7cea4-9e19-11eb-1e7c-4b8c5a498dc2
-# ╟─03b7cf30-9e19-11eb-29f9-4536de362c19
-# ╟─03b7cfda-9e19-11eb-3c08-cbe4242f01a0
-# ╟─03b7d014-9e19-11eb-229e-039fd38da137
-# ╟─03b7d034-9e19-11eb-1635-eb54eb64f284
-# ╠═03b7d4f8-9e19-11eb-3c87-810caba980ed
-# ╟─03b7d516-9e19-11eb-3964-b78783549368
-# ╠═03b7da66-9e19-11eb-39da-195b527491e9
-# ╟─03b7dab6-9e19-11eb-0f65-e303e4f2320d
-# ╠═03b7e5a6-9e19-11eb-3b16-47e4f32570e6
-# ╟─03b7e5fe-9e19-11eb-0dd8-5b4a108f0d2d
-# ╟─03b7e61e-9e19-11eb-0930-7f15840e19f0
-# ╠═03b7ed62-9e19-11eb-3d8c-bd46978e6038
-# ╟─03b7ed9e-9e19-11eb-08bd-23e1bbf47cf5
-# ╟─03b7edf8-9e19-11eb-27bd-1f2d72c7523a
-# ╠═03b7f2f8-9e19-11eb-3166-b9795a77418a
-# ╟─03b7f32a-9e19-11eb-0941-a33ac108edf8
-# ╟─03b7f35c-9e19-11eb-1129-c5046be48dbb
-# ╠═03b7f67a-9e19-11eb-02ee-ff95cb81578b
-# ╟─03b7f6cc-9e19-11eb-3bda-5f1e35e01911
-# ╟─03b7f6ec-9e19-11eb-20ca-47baf524386d
-# ╟─03b7f726-9e19-11eb-3f9d-cd70d6317822
-# ╟─03b7f73a-9e19-11eb-289f-2dc24df2b32c
-# ╠═03b805a4-9e19-11eb-0774-bd1cb0f5e57d
-# ╠═03b805ae-9e19-11eb-2142-f97cd8474981
-# ╠═03b805c2-9e19-11eb-04ed-bd06c1d67285
-# ╠═03b805cc-9e19-11eb-1c26-536ab65f9799
-# ╟─03b80600-9e19-11eb-26b3-410425d20eec
-# ╟─03b80644-9e19-11eb-26e5-179cd3adf20e
-# ╟─03b80658-9e19-11eb-2d9c-a3ba6cf652d4
-# ╠═03b81080-9e19-11eb-0dc9-5539cfe49250
-# ╠═03b81080-9e19-11eb-2033-a9af622ce675
-# ╠═03b8108a-9e19-11eb-1cdf-8f0ede6fbd36
-# ╟─03b810d0-9e19-11eb-1b5b-83a5d9af3c16
-# ╟─03b810f8-9e19-11eb-073f-1bd3bbb9de49
-# ╠═03b81260-9e19-11eb-34e1-5d18876d0dac
-# ╟─03b8127e-9e19-11eb-11a9-91acafbf24cb
-# ╠═03b819ea-9e19-11eb-3df8-5b0391e28063
-# ╠═03b819ea-9e19-11eb-04d3-1d0605820565
-# ╠═03b819f4-9e19-11eb-28e8-4fed261aa2bc
-# ╟─03b81a1c-9e19-11eb-1bdc-2bad0deb4a48
-# ╟─03b81a3a-9e19-11eb-2410-c5758be6385c
-# ╠═03b81b20-9e19-11eb-3ca0-49817aff5f7d
-# ╟─03b81b5c-9e19-11eb-3974-b5c98ed9a5c6
-# ╟─03b81b98-9e19-11eb-386c-937370a66509
-# ╟─03b81bca-9e19-11eb-2937-71e818622059
-# ╠═03b81c92-9e19-11eb-051d-79b59160e618
-# ╟─03b81cce-9e19-11eb-2f62-5d99e0816d1b
-# ╠═03b81daa-9e19-11eb-13c6-e302c7c03240
-# ╟─03b81dbe-9e19-11eb-0e24-2fa9b9536ed0
-# ╠═03b826ec-9e19-11eb-1aae-e728877640e8
-# ╠═03b826f8-9e19-11eb-23d0-afdf246db73b
-# ╠═03b82700-9e19-11eb-3c32-ff08a02ae9bf
-# ╠═03b82700-9e19-11eb-0327-53c91ef4df0c
-# ╟─03b8272a-9e19-11eb-09d5-87ddf5654acc
-# ╟─03b82746-9e19-11eb-0b34-e70f6a10fd5d
-# ╟─03b82a48-9e19-11eb-34a0-f96e7274f9b7
-# ╟─03b82a52-9e19-11eb-2348-45f3927f5ee7
-# ╠═03b83718-9e19-11eb-080b-e3f7340ff031
-# ╠═03b83736-9e19-11eb-0493-c5f6bc2a3032
-# ╠═03b83736-9e19-11eb-30e0-2ffb8f647646
-# ╠═03b83736-9e19-11eb-06eb-25d07b3e54df
-# ╠═03b83740-9e19-11eb-22c0-ff34c87398b1
-# ╠═03b83740-9e19-11eb-1aba-8fffe45f079a
-# ╠═03b8374a-9e19-11eb-16d7-1bba270221de
-# ╠═03b83754-9e19-11eb-2ac5-b59f7719514d
-# ╟─03b8377c-9e19-11eb-0723-11d96d4719eb
-# ╟─03b8379a-9e19-11eb-2871-a5edd14e62d7
-# ╠═03b83e0c-9e19-11eb-1b3d-0dc6908bb4bd
-# ╠═03b83e16-9e19-11eb-1663-b315690ba11a
-# ╠═03b83e16-9e19-11eb-3f1a-e74e3c891565
-# ╟─03b83e4a-9e19-11eb-03c9-2d66f081c0b8
-# ╟─03b83e70-9e19-11eb-3540-2b1425725c17
-# ╠═03b84460-9e19-11eb-0e5c-478094e90bb4
-# ╠═03b8446a-9e19-11eb-091d-71b07e0ded46
-# ╟─03b84488-9e19-11eb-1bd9-21f419e2ef79
-# ╠═03b849e2-9e19-11eb-2e41-c1a4f31f988a
-# ╠═03b849e2-9e19-11eb-1e46-1389d8c4991b
-# ╟─03b84aa0-9e19-11eb-066c-298173377438
-# ╟─03b84ac0-9e19-11eb-1bf0-19853e21d0cb
-# ╟─03b84b0e-9e19-11eb-1ef5-9795ed8736ad
-# ╠═03b85196-9e19-11eb-300b-8f40c40e626d
-# ╠═03b85196-9e19-11eb-3b6f-4fa1c5ce9457
-# ╠═03b8519e-9e19-11eb-3861-17450351f11e
-# ╠═03b851a8-9e19-11eb-3a60-8561a1e073fb
-# ╟─03b851bc-9e19-11eb-3514-cb35f077f3e5
-# ╟─03b851fa-9e19-11eb-00b7-a799a45fda7c
-# ╟─03b85228-9e19-11eb-1b8d-ffafb65797b9
-# ╟─03b85248-9e19-11eb-3357-6d3e959c2d50
-# ╟─03b85270-9e19-11eb-232f-87c8482c4c4b
-# ╠═03b857ac-9e19-11eb-0204-e79254f838f3
-# ╠═03b857b6-9e19-11eb-31cb-5df3201c0ba3
-# ╠═03b857c8-9e19-11eb-2860-219abe38b984
-# ╟─03b85806-9e19-11eb-3c32-514c65402e09
-# ╠═03b85a18-9e19-11eb-24b4-4756f1469c3d
-# ╠═03b85a18-9e19-11eb-090b-e385c8388918
-# ╟─03b85a66-9e19-11eb-2d96-53ccd3cb8f34
-# ╟─03b85a7c-9e19-11eb-18ca-751307178b02
-# ╟─03b85a90-9e19-11eb-1971-2b9d15bf916d
-# ╟─03b85aae-9e19-11eb-2f18-7534a3f61611
-# ╠═03b860aa-9e19-11eb-22fc-aba4ecb8227d
-# ╠═03b860aa-9e19-11eb-1ecb-7f378ceb99f2
-# ╠═03b860aa-9e19-11eb-135c-a551f145ccd1
-# ╠═03b860b2-9e19-11eb-23d2-07938c3e1431
-# ╟─03b860e4-9e19-11eb-3d48-b58974045ce2
-# ╟─03b86102-9e19-11eb-265e-c51116abb103
-# ╠═03b86328-9e19-11eb-0748-098886df08db
-# ╠═03b875de-9e19-11eb-0c85-e5e1673fcf0d
-# ╟─03b87638-9e19-11eb-0237-d31d1b7ff49d
-# ╟─03b8764c-9e19-11eb-3dae-7b27e7feb30e
-# ╟─03b87694-9e19-11eb-3b48-0fc5e93a4467
-# ╟─03b876ba-9e19-11eb-2be4-ab4c88b9118c
-# ╠═03b87e2e-9e19-11eb-3a20-4b48c254e5d0
-# ╠═03b87e2e-9e19-11eb-327c-fd451c8b427b
-# ╠═03b87e3a-9e19-11eb-0081-05e07babfcf4
-# ╟─03b87e6c-9e19-11eb-1c60-13960b3c7a60
-# ╟─03b87e80-9e19-11eb-2d69-c94231dfd0a3
-# ╟─03b87e9e-9e19-11eb-042c-0789f7200cf6
-# ╟─03b87ebc-9e19-11eb-3000-6f4f39e88f2d
-# ╟─03b87eda-9e19-11eb-2013-1917e4b5d217
-# ╟─03b87eee-9e19-11eb-08b1-99f8578dd5f1
-# ╟─03b87f16-9e19-11eb-1413-8f423e4fa961
-# ╟─03b87fe8-9e19-11eb-1641-730b65c0037c
-# ╟─03b88024-9e19-11eb-12c8-6dd5d48da637
-# ╟─03b88056-9e19-11eb-24da-4774a291a4e1
-# ╟─03b8807e-9e19-11eb-1193-db9ed058e814
-# ╟─03b880b0-9e19-11eb-2d1a-df62e73b5de6
-# ╟─03b880c4-9e19-11eb-3014-f50af7e06638
-# ╟─03b880d8-9e19-11eb-202f-fb0f67f3a2dc
-# ╠═03b8851a-9e19-11eb-2f62-df96a898e95a
-# ╠═03b8851a-9e19-11eb-093e-a501726ab8c1
-# ╟─03b8854c-9e19-11eb-2127-b3b78d17a715
-# ╠═03b888bc-9e19-11eb-198f-2572d9e0cbfa
-# ╠═03b888c6-9e19-11eb-1904-1946eaf6e70c
-# ╠═03b888c6-9e19-11eb-3e90-e368aa1f9f8f
-# ╟─03b88920-9e19-11eb-1f3c-adb859a8c895
-# ╟─03b88966-9e19-11eb-02fd-6bed3ffed2d1
-# ╠═03b891b8-9e19-11eb-32d1-431651d4b045
-# ╠═03b891c2-9e19-11eb-3d4a-a3456fabe4d8
-# ╠═03b891c2-9e19-11eb-2bd0-07bc352ecd9c
-# ╟─03b891f4-9e19-11eb-283d-4bb429420cd0
-# ╠═03b89938-9e19-11eb-28f4-2f04e93207b9
-# ╠═03b89938-9e19-11eb-1bd2-df5580757d2e
-# ╟─03b8994c-9e19-11eb-28ee-a1db95a1569e
-# ╟─03b89986-9e19-11eb-1046-b184bcfa7281
-# ╟─03b89a14-9e19-11eb-1ce7-358b7a1570f1
-# ╟─03b89a50-9e19-11eb-19f5-c37a663b7039
-# ╟─03b89aa0-9e19-11eb-1915-7ff7e95240eb
-# ╟─03b89abc-9e19-11eb-1801-379bd9c3a99e
-# ╟─03b89ae6-9e19-11eb-2dcb-dfbda63c010f
-# ╠═03b8bb8e-9e19-11eb-3a6b-ff07a424f338
-# ╠═03b8bbb4-9e19-11eb-1b8f-572bc270a667
-# ╟─03b8bbe6-9e19-11eb-3fe4-c30d1ad27dce
-# ╠═03b8bcbc-9e19-11eb-32c9-adeaeeb8d342
-# ╟─03b8bd0a-9e19-11eb-1be0-ebd23d0ebe67
-# ╠═03b8c336-9e19-11eb-2fb0-776cfd668830
-# ╠═03b8c336-9e19-11eb-3019-d7128632a4a5
-# ╟─03b8c354-9e19-11eb-1924-c198c01918a9
-# ╠═03b8c43a-9e19-11eb-303b-7598a2b34a7e
-# ╟─03b8c462-9e19-11eb-0e0b-51547a000414
-# ╠═03b8c534-9e19-11eb-0a48-0b6b5b3c9cca
-# ╟─03b8c598-9e19-11eb-2751-6946158b7acd
-# ╟─03b8c5c0-9e19-11eb-3cec-4f4a6a9b7833
+# ╟─4ecd645b-87fc-4ea8-baef-b036c59a3ad7
+# ╟─106d052f-9b3b-4f5f-b1ac-18c459de4dc8
+# ╟─e5fc64ee-5225-4b23-8539-17eb066c85a5
+# ╟─dccef62e-f8a9-4c94-8aa4-50b548586f25
+# ╟─b401d76b-d207-4542-bdb8-6d9890594907
+# ╟─58421ce7-b18e-4e89-bb1e-501d9b9f6273
+# ╟─488b30ab-7802-43eb-8772-e6bc4af618e2
+# ╟─53dd35d0-bfb0-4fd8-81f1-823036851aad
+# ╟─0b055621-0a2c-4500-a9a3-7cd0fc0a3cd0
+# ╟─d0d74efc-fae1-46f5-9d62-e1217e7ea7c4
+# ╟─80ce151e-a948-4192-9ce0-2b1de9001110
+# ╟─3d6b0432-f39d-41bc-8e25-148bf901e704
+# ╠═4924e5a9-e741-45a8-a476-75d58dc70eff
+# ╠═4f77fe6e-0106-4e8c-af1d-01f5d68390af
+# ╠═66f17114-3bc9-4dc8-8593-7a9183344ded
+# ╟─17f535be-4952-4b13-9b46-71a444780aa8
+# ╟─8a6c0149-d0b2-48d5-b6e9-de46d16a8eac
+# ╟─81dc1290-42bf-4cc7-a4f6-3538b8491375
+# ╠═d331d9ae-87dc-4774-a5ee-1c4e49f94df4
+# ╠═cbfc0994-f3f4-456c-878d-3d6f9d353c0d
+# ╠═214c4313-c411-45a8-9192-79c3d7fd7cae
+# ╠═4bf010b2-78ac-48fa-b4f7-4e1f5a01e46e
+# ╟─3db4f742-0758-450d-8627-3d9313f3619c
+# ╟─318cc6c0-7ade-49c5-b961-76946635a253
+# ╠═5b1b5964-6df7-417a-9229-6195aca908d1
+# ╠═56b46978-76aa-4c31-b40a-500ff9f28e94
+# ╠═3ff7a6b5-0a76-4701-99b2-2954c45d931a
+# ╟─179dbbf7-1d5e-4903-a2be-6011e4855a71
+# ╠═9d1da54b-5d6f-4c2b-bcff-7848ed7dc5c5
+# ╠═139adac1-8cf1-4755-b0ca-a6c342681951
+# ╠═bc1855fe-8ada-48d5-b66f-3178c87c2a73
+# ╟─bbabd66a-8619-4d06-ac3c-92ba3717242a
+# ╠═9c61f57b-79ef-470b-81e0-808079ee1b28
+# ╠═4f69452a-c6ac-469e-8150-7148e9cb0113
+# ╟─ce212505-529c-4415-9542-59c851b0e4c8
+# ╟─227edcfd-6d5e-4b1e-aa26-a831d49042f0
+# ╟─df8ceab5-12a7-4e1e-8375-fd8e0b84b970
+# ╟─a4fed56d-055a-4154-9572-912a790677cf
+# ╟─71c0a0ba-736c-40f6-af8c-0777b1f602b3
+# ╠═ca9f5f95-6171-4e4f-849c-7f284be33de1
+# ╠═831c5493-280f-447d-ac46-42391b7bc836
+# ╟─00034a75-cb6f-48a7-ac77-c64e43fc3b79
+# ╟─70cceb0a-ef3d-4048-93a5-7b0820aa3ebb
+# ╟─c63896d9-16a5-4104-bc80-5eec3d6b49b1
+# ╟─13f19993-1b3c-48e5-8db5-ebb8a0cd7be9
+# ╟─21547949-e034-47df-9c57-752037cd3278
+# ╠═0c77a2b9-3f06-473e-af96-41046bfc9027
+# ╠═f665a7d3-f9df-4a1f-97ab-86d7cee262e4
+# ╟─13533cfd-9a10-4613-988f-2897609b3511
+# ╟─e458f64c-6f6f-4b9a-89b7-ca7cb5684fd6
+# ╟─7f56d799-63f1-4dc3-a763-f7b3b4539f00
+# ╟─abe26a54-74a9-4e8b-983a-8829f40d3478
+# ╠═58841c1b-a14d-433d-aa5c-57f1fdfdaa1a
+# ╟─00ac906f-57ca-4916-ad80-8fa324ae2ada
+# ╠═e11e9258-9e52-4bc7-872f-503717a842c3
+# ╟─cf03452a-38bf-46b0-9646-37433fc85b79
+# ╠═59ed9488-f857-4d81-963c-6735658825f2
+# ╟─2054cbd4-6961-4fdd-9c33-2625017841a8
+# ╟─8e65f8d3-2e01-4f16-944f-8e727597c009
+# ╠═f4addce8-73da-4805-be72-3d38ca2ab843
+# ╟─099b7b37-91a5-4221-9280-86c4079bbca3
+# ╟─2a50f80e-03f7-44cd-b110-452a87a21f15
+# ╠═b37e20b3-c2ef-4958-8d6a-77d667ae14c2
+# ╟─ba74767e-33b0-41a7-a960-1ca17c95b6a4
+# ╟─bf2cca86-8556-4bdd-a349-c7838b73a04a
+# ╟─eeca6b8b-6b1a-43ba-a069-1980596a1a6b
+# ╟─2a95917a-ef73-43f1-a598-166c44102616
+# ╟─8db7b148-e958-45fc-a978-285dc71064f0
+# ╟─05de6973-b6b8-4803-b055-ea7588533bae
+# ╟─975e0843-37c4-43a1-afe8-fc9ffcc0766c
+# ╠═1f7ed869-7bc2-4258-8f80-a96b2dceeff2
+# ╠═1ec9d31a-64c4-4058-9c9d-d0302ee20588
+# ╠═d4f9a040-381c-4efa-928d-869005556c49
+# ╠═b0251cc5-8c76-4e97-a792-52212dc3a946
+# ╟─e67fcb97-2228-4e7c-a6fa-73a1b21b7d9c
+# ╟─92d0e29d-5052-4be0-bc0b-0026ef0050e9
+# ╟─5802e226-39b5-4c3d-a1fb-3aa99ee0512f
+# ╠═f77d5ac9-79f8-453c-8594-6d387895f74f
+# ╠═bd86dd4b-7920-4738-b22b-969af2afe7ab
+# ╠═6ed4874d-22be-4436-9db5-e12c90b58c1e
+# ╟─5dfa633f-94df-4673-abd5-1eb574f137fc
+# ╟─c105eda8-77ad-4db7-9690-699c356dd492
+# ╟─98b279a8-771d-4802-85d8-e1e3d1ab7de1
+# ╟─39bab95f-0edc-4201-9822-6d309d8bd631
+# ╠═3794f845-14c9-489d-948f-a44ae76be934
+# ╠═f4eae434-0aa6-41c2-9a67-bb0903cf9299
+# ╠═666cc4bf-8f44-4e5c-bfef-0951b7eebd9d
+# ╟─d5bf317b-2a52-4b51-afce-c80bc2e1ab13
+# ╟─d23e497b-9e6a-4ab1-b8f9-9ef71ec0bced
+# ╟─e7a8cb0a-a151-4155-97b3-9a4815577214
+# ╟─76764ca5-2c60-4afd-989f-ad95f077efe1
+# ╟─10316feb-f82f-4999-ac88-d8095f122e92
+# ╟─81f3b529-1e2a-4917-93d8-c76c729ddc22
+# ╟─71df007e-1618-4ac8-a3df-c375fc017649
+# ╟─e24f6041-1f76-4527-8e60-57623c1cb97c
+# ╟─d9c6c20e-4529-4b0d-811e-2bef197c6cd5
+# ╟─1884b924-4691-4aa8-8221-320f2d25423b
+# ╠═8b1478af-bde0-4033-80d9-3a2f3dc85d94
+# ╠═4be93139-d942-47f9-82d4-dde69c684839
+# ╠═f6390d52-5f86-4a24-b808-3ca22b7d274b
+# ╠═480a459f-a278-4bdc-b378-a1d2a74f0952
+# ╟─3833df37-0cea-4067-8812-b7a5d2973419
+# ╟─a08a845c-cff1-4e85-8eae-75c430faf6a2
+# ╟─171d2ee9-5afb-407e-a87c-86b11958ec65
+# ╟─e51ada19-e238-4a47-8ef7-7e711136fb30
+# ╠═5671280c-7992-4051-9260-aa592bca4009
+# ╠═ddb41d1a-0151-46a6-b9a0-ba4f53730b6e
+# ╠═33d40760-88b7-44f5-834c-b92fe4f0a065
+# ╠═93e88157-f110-424d-9630-efe8263903e0
+# ╠═ae1688bf-0923-465c-a03a-8d48566eae70
+# ╠═fa53e253-b643-459e-83f1-ca6d73de5d2e
+# ╠═58396e07-32f4-4097-987a-c034cea13b09
+# ╠═c4da6925-92c5-4dc9-b802-3cc51c24ebb5
+# ╟─2962d73b-e02a-428c-8981-0750f73fd0bc
+# ╟─0986fc00-3046-4537-ba5e-ac8bb2c7f8c0
+# ╠═4b3a90d6-30ac-4d01-9000-e6f4560c1765
+# ╠═63a793ae-86ca-4a2a-887a-cd38a0ad905b
+# ╠═918e42b7-88ac-4a43-a6c8-2216b7160423
+# ╟─be49dcb9-c22b-46a3-a63e-7d2712a53080
+# ╟─f229c284-1d59-4c29-b183-445ece5a368c
+# ╠═ba8a9f8b-074f-43c0-8063-546f3e45f37a
+# ╠═09b949b8-02ce-41fe-aace-69329dd9e0a4
+# ╟─d4a5336e-2eef-4a53-9c35-435921a8f007
+# ╠═9798a995-76ba-4e5d-9050-65e827623754
+# ╠═e5434597-2f44-4636-8d93-4a0cc8435663
+# ╟─f90d16d2-d5f8-4fc7-83f6-60fc6f795ecd
+# ╟─26da36a5-04b8-4820-81b3-e729e3bdf860
+# ╟─00ed481a-cf6c-47ae-b7cd-db33f4a31c98
+# ╠═9f37875c-463f-440f-b7a0-c3f52cc70498
+# ╠═1c4d9240-8a90-410e-afb5-e785740eb09f
+# ╠═b5ef7ef2-9ae7-4c72-9aee-703078d45612
+# ╠═c16cfbfa-96e0-44a9-adbc-f1789b64cb68
+# ╟─d21f9244-700d-4828-8547-bb3283e34dc5
+# ╟─079ea006-8f6a-4938-8e86-8fe1ae4336e4
+# ╟─80a60781-f150-480b-8ee2-80e12abea3a3
+# ╟─efa59260-bc89-42e7-b1da-dc5445f4327e
+# ╟─6a0200b6-bd1d-4df8-aaac-baeda2e6cf0f
+# ╠═621012fc-a7ef-46ac-bfc4-0b3319a4b9f4
+# ╠═4b1e70be-98e6-46a3-b132-84ffe9ff95be
+# ╠═2f97c058-ffc1-4cc8-a93b-6cc81121ff16
+# ╟─416c878c-e2ce-49b3-b485-e2e965724fcb
+# ╠═398c0eaa-f7fb-4204-8489-c2c6fcf66a23
+# ╠═c37ef0c9-8697-417c-812b-ed7fa66cb5c8
+# ╟─876037ed-914f-43b7-80f4-f6662afc846f
+# ╟─414b5ba6-88ac-4059-9355-519bfb31b457
+# ╟─06dfea23-248c-4caf-b918-50dcb6a7a008
+# ╟─77e1d1a7-b7d7-4306-8ee6-ce3311b662f2
+# ╠═efc5503b-a18e-42ac-b03f-7f0057d6853a
+# ╠═a5e30da5-96f2-4119-9568-bd78dd1c9b41
+# ╠═e79672d8-8e23-47b1-bf91-4cc9cbed1379
+# ╠═9ec08e35-e7f9-40d9-be27-2ef6de0cc3a0
+# ╟─5d7eba4d-663e-423e-9e38-7e421216b90f
+# ╟─cb46c602-3204-420c-b36a-6e190b7ce709
+# ╠═d22fc7af-421b-4c47-8e82-881d14e6e0e8
+# ╠═22a03864-f2c5-4ab3-9b27-a8847dbca26b
+# ╟─6625ed75-4d82-4dd6-b198-937184b69270
+# ╟─04511c11-e5e6-437d-bef6-cce9dcb11ca1
+# ╟─70ae4b62-581d-46a2-beca-6bdcf65fa91b
+# ╟─43f2ef81-5877-4bf0-ad6e-348969e788bf
+# ╠═9ae092a5-2653-48ff-83a5-cac37b1b34d5
+# ╠═d4d05517-5eee-4d9b-85f6-ae790f124e92
+# ╠═34929f5a-e162-4f47-b905-a6a483c6e56e
+# ╟─00fb3441-74e7-49bb-b1d9-03cd64ae5cbc
+# ╟─4ccdeab7-b56c-4eb5-ade6-67ef8fd77aa1
+# ╟─bbf9fa3e-a81a-44f0-a733-c4326ea20b22
+# ╟─7072be0a-2aa2-499d-8d91-ad4037fe0cc6
+# ╟─978de581-cf16-4e6e-8fa6-3c4066963c34
+# ╟─3ed102b5-4c52-46b9-9786-7e8d378d7f12
+# ╟─ff652d09-8481-4605-9494-61fe63b77694
+# ╟─b4d36738-0196-4245-aa02-cf3af6436dc0
+# ╟─a23f43fc-68d7-45ce-aabb-61281a7479e7
+# ╟─27f08f01-7953-47e8-a28f-d40a3fa5bee4
+# ╟─d7101c57-06cc-45c8-8fb9-e6ef433156f8
+# ╟─e20144c7-bb74-423f-a16b-9972c6820d2e
+# ╟─c7cbf48b-3438-4d1a-b3ed-a9831d30c2d1
+# ╟─7fee9c03-fd77-4c3d-b3f4-b84fbab3ffea
+# ╠═f2efdd8b-bc96-4a0d-9092-30218ef5c08a
+# ╠═5f41d6ae-649c-4ec4-8efc-35ab10e404c5
+# ╟─5b12baed-278b-4e9b-a349-13ba2c1743ff
+# ╠═0183c94f-3ee0-404a-9485-b6e423f239a6
+# ╠═c7e7f458-8187-4e1f-9905-4769e2639c72
+# ╠═9ee64687-31a9-46e7-aa98-af1b626481ae
+# ╟─36aee38a-88fd-4133-a970-83ce12834c94
+# ╟─cdffb2f0-22a7-4fe4-afe3-91616415a18d
+# ╠═60509ecb-acf2-4449-9ca5-356eac8ba355
+# ╠═d1f65443-b9a6-459d-8ee5-b0593a64cc2b
+# ╠═4533a5a9-0c3e-4c4e-9826-f38a3d9b5078
+# ╟─8bc1eb6c-17ec-49f5-bd72-a589223c47f9
+# ╠═a86710ed-37ee-4875-8702-5ff041407079
+# ╠═7c8641c4-f621-49f7-b675-a6ca77c98b94
+# ╟─03f3906e-30d1-444a-813f-0f69c5f5ba59
+# ╟─c231c202-4e9f-43dc-8584-a91790c381a2
+# ╟─e7b07ea6-c2fa-42cb-90c3-d994522526fb
+# ╟─9cb601c2-d7a0-4d84-8814-ae35cf3f5a14
+# ╟─d4bf8e96-5d48-498c-8ab5-262550a4437c
+# ╟─072ab283-bc66-49c6-be21-43325744d5e2
+# ╟─6fbb10c4-c1be-4cfb-8a23-288fa22a8a6b
+# ╠═932f2dc8-55a5-4af5-960b-f1eed88f9711
+# ╠═0fa56dac-5a37-4427-a6a8-0ae6e7bac3f6
+# ╟─b61569c9-a834-4530-860a-d1380921468d
+# ╠═6c0a2bcb-b7cf-42e2-b383-b8297c24b92e
+# ╟─26462f29-c185-4029-95cd-c1f27a171251
+# ╠═74b59836-a843-49b0-8745-a1370ccd55a6
+# ╠═d8c2f78c-5efc-4e26-809c-306b5b4f3a15
+# ╟─b38f4c2c-22ba-48ab-9439-6cf7743ca035
+# ╠═3a863dd5-a616-4482-bb04-bf17b1013513
+# ╟─db842f3e-c371-4c93-8b97-cdf975b57006
+# ╠═58bfd964-ffd5-4ab7-b0be-8a02b17a5fcf
+# ╟─14e49f20-bd0f-47c2-add4-1a281c12874c
+# ╟─17a3bb01-86fc-4e41-a46d-2c902091cc8c

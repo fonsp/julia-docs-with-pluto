@@ -24,6 +24,9 @@ begin
     using Pluto, PlutoUI
 end
 
+# ╔═╡ 7f675fd0-92cd-4a53-be5f-1b557a91156a
+using UUIDs
+
 # ╔═╡ 3e064c07-f883-4f40-a1f6-3c254aafae39
 using HypertextLiteral
 
@@ -76,8 +79,8 @@ downloadlink(filename) = "https://raw.githubusercontent.com/JuliaLang/julia/v1.6
 # ╔═╡ 0daccc9a-9cbe-4d5d-a1df-1f5a60249ec8
 contents = read.(download.(downloadlink.(filenames)), [String])
 
-# ╔═╡ 7f675fd0-92cd-4a53-be5f-1b557a91156a
-
+# ╔═╡ 2104ace5-dc7b-4823-b916-022c894873e5
+import Random
 
 # ╔═╡ 04123a8c-4d8f-4fe3-82f6-6a74abbe9ab0
 @bind write_files CheckBox()
@@ -1209,7 +1212,10 @@ parsed_md.content
 string(Markdown.MD(parsed_md.content[1]))
 
 # ╔═╡ abeb0fb0-da23-4776-bc41-048dc3b2ed63
-markdown_cell_code(s::String) = "md\"\"\"\n$(rstrip(s))\n\"\"\""
+markdown_cell_code(s::String) = let
+	sfixed = replace(rstrip(s), "\""=>"\\\"")
+	"""md\"\"\"\n$(sfixed)\n\"\"\""""
+end
 
 # ╔═╡ 2dcf1396-a832-454b-8e9c-9216508ff06c
 markdown_cell_code(x) = markdown_cell_code(string(Markdown.MD(x)))
@@ -1223,17 +1229,18 @@ function split_to_cells(input_code_block::String)
 	
 	codes = map(splits) do code
 		expr, ind = Meta.parse(code, 1; greedy=true, raise=false)
-		code[1:prevind(code, ind)] |> strip
+		c = code[1:prevind(code, ind)] |> strip
+		replace(c, "\n"*repeat(' ', 6)=>"\n")
 	end
 
 	Pluto.Cell.(codes)
 end
 
 # ╔═╡ cc28ff34-63a7-4a85-b8c3-932d0c96d220
-to_pluto_cells(c::Markdown.Code) = if c.language == "julia"
-	[markdown_cell(c)]
-else
+to_pluto_cells(c::Markdown.Code) = if occursin("julia-repl", c.language) || occursin("jldoctest", c.language)
 	split_to_cells(c.code)
+else
+	[markdown_cell(c)]
 end
 
 # ╔═╡ a66098ea-d0c2-48d5-87f7-f3b9fe3b6b93
@@ -1245,26 +1252,8 @@ function doc_to_notebook(contents)
 	Pluto.Notebook(union(to_pluto_cells.(parsed_md.content)...))
 end
 
-# ╔═╡ d3d3039b-fbf7-40f2-9026-7b7ba558e82c
-notebooks = doc_to_notebook.(contents)
-
-# ╔═╡ c4e2bfbb-cf0e-4184-a8ab-be1da6b26848
-if write_files
-	outdir = "./manual/"
-	mkpath(outdir)
-	
-	for (filename, nb) in zip(filenames, notebooks)
-		nb_content = sprint(Pluto.save_notebook, nb)
-		write(joinpath(outdir, filename[1:end-3]*".jl"), nb_content)
-	end
-	outdir
-end
-
-# ╔═╡ 195e8b46-da3c-4565-ab7c-97f0cf288da8
-try
-	run(`open $(outdir)`)
-catch
-end
+# ╔═╡ 3d890504-f3f1-4d1d-a2d5-d912b8540eb3
+doc_to_notebook(input_md)
 
 # ╔═╡ 73b7d188-4011-4700-b25d-9bb0332f8362
 to_pluto_cells.(parsed_md.content)
@@ -1368,18 +1357,50 @@ expected_results
 # ╔═╡ d3c9a23f-4315-4d57-8601-03aa57a7c623
 results(codes)
 
+# ╔═╡ f6229af7-c266-483a-9656-92fdcdc9936e
+function canonalize_cell_ids!(notebook::Pluto.Notebook, seed)
+	rng = Random.MersenneTwister(hash(seed))
+	for c in notebook.cells
+		c.cell_id = uuid4(rng)
+	end
+	notebook
+end
+
+# ╔═╡ d3d3039b-fbf7-40f2-9026-7b7ba558e82c
+notebooks = canonalize_cell_ids!.(doc_to_notebook.(contents), filenames)
+
+# ╔═╡ c4e2bfbb-cf0e-4184-a8ab-be1da6b26848
+if write_files
+	outdir = "./manual/"
+	mkpath(outdir)
+	
+	for (filename, nb) in zip(filenames, notebooks)
+		nb_content = sprint(Pluto.save_notebook, nb)
+		write(joinpath(outdir, filename[1:end-3]*".jl"), nb_content)
+	end
+	outdir
+end
+
+# ╔═╡ 195e8b46-da3c-4565-ab7c-97f0cf288da8
+try
+	run(`open $(outdir)`)
+catch
+end
+
 # ╔═╡ Cell order:
 # ╠═35741713-1aa7-46eb-a980-d76650578b02
 # ╟─9a6974f2-5b25-437f-bf07-cfd36c3388d9
 # ╠═116d799b-1326-41af-a05e-d4cdc188f7dd
 # ╠═0daccc9a-9cbe-4d5d-a1df-1f5a60249ec8
 # ╠═7f675fd0-92cd-4a53-be5f-1b557a91156a
+# ╠═2104ace5-dc7b-4823-b916-022c894873e5
 # ╠═0d0d85fe-f1e0-450a-9b48-5fa4e9d03aa7
 # ╠═d3d3039b-fbf7-40f2-9026-7b7ba558e82c
 # ╠═04123a8c-4d8f-4fe3-82f6-6a74abbe9ab0
 # ╠═c4e2bfbb-cf0e-4184-a8ab-be1da6b26848
 # ╠═195e8b46-da3c-4565-ab7c-97f0cf288da8
 # ╟─687a28fa-ddc0-40f6-8f5d-825d68050701
+# ╠═3d890504-f3f1-4d1d-a2d5-d912b8540eb3
 # ╟─3c4a1ba0-6fb7-4df7-87ed-a8025d5d0d66
 # ╠═d1f70fd9-0de3-4add-a642-5bb2bb3073b5
 # ╠═714e97eb-52e8-4230-b67e-760246d267e3
@@ -1408,3 +1429,4 @@ results(codes)
 # ╠═01628046-e038-4b74-8a67-751fd531bb20
 # ╠═3ebb07e1-a335-4cd6-8820-de2274f36b1a
 # ╠═d3c9a23f-4315-4d57-8601-03aa57a7c623
+# ╠═f6229af7-c266-483a-9656-92fdcdc9936e

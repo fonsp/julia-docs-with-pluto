@@ -1,618 +1,618 @@
 ### A Pluto.jl notebook ###
-# v0.14.2
+# v0.14.1
 
 using Markdown
 using InteractiveUtils
 
-# ╔═╡ 03cc7e80-9e19-11eb-179f-4bf4a585b92d
+# ╔═╡ 4a329a4e-1fe3-431d-98ec-8161764a3ee1
 md"""
 # Metaprogramming
 """
 
-# ╔═╡ 03cc7f20-9e19-11eb-30cd-37f12222466e
+# ╔═╡ fcf7fb90-a229-4a34-af4d-e1da308a1e78
 md"""
-The strongest legacy of Lisp in the Julia language is its metaprogramming support. Like Lisp, Julia represents its own code as a data structure of the language itself. Since code is represented by objects that can be created and manipulated from within the language, it is possible for a program to transform and generate its own code. This allows sophisticated code generation without extra build steps, and also allows true Lisp-style macros operating at the level of [abstract syntax trees](https://en.wikipedia.org/wiki/Abstract_syntax_tree). In contrast, preprocessor "macro" systems, like that of C and C++, perform textual manipulation and substitution before any actual parsing or interpretation occurs. Because all data types and code in Julia are represented by Julia data structures, powerful [reflection](https://en.wikipedia.org/wiki/Reflection_%28computer_programming%29) capabilities are available to explore the internals of a program and its types just like any other data.
+The strongest legacy of Lisp in the Julia language is its metaprogramming support. Like Lisp, Julia represents its own code as a data structure of the language itself. Since code is represented by objects that can be created and manipulated from within the language, it is possible for a program to transform and generate its own code. This allows sophisticated code generation without extra build steps, and also allows true Lisp-style macros operating at the level of [abstract syntax trees](https://en.wikipedia.org/wiki/Abstract_syntax_tree). In contrast, preprocessor \"macro\" systems, like that of C and C++, perform textual manipulation and substitution before any actual parsing or interpretation occurs. Because all data types and code in Julia are represented by Julia data structures, powerful [reflection](https://en.wikipedia.org/wiki/Reflection_%28computer_programming%29) capabilities are available to explore the internals of a program and its types just like any other data.
 """
 
-# ╔═╡ 03cc7f52-9e19-11eb-1dd7-513c3b81eaa4
+# ╔═╡ 7e910758-9b9d-4eb0-a161-f1b7eac39129
 md"""
 ## Program representation
 """
 
-# ╔═╡ 03cc7f66-9e19-11eb-1740-ad59d009c55e
+# ╔═╡ 0167e817-d8d3-4c51-87fe-9bf0619dcff2
 md"""
 Every Julia program starts life as a string:
 """
 
-# ╔═╡ 03cc8290-9e19-11eb-362a-9b0d830d3d49
+# ╔═╡ 36097fc2-d38d-4a6f-9c59-5942f2758803
 prog = "1 + 1"
 
-# ╔═╡ 03cc8308-9e19-11eb-0262-fb641b7b9eb1
+# ╔═╡ 11d110f1-7629-4af9-b3d9-703dcd1b387d
 md"""
 **What happens next?**
 """
 
-# ╔═╡ 03cc833a-9e19-11eb-2b63-e586aa13ce0a
+# ╔═╡ 96b8f192-6774-4dde-87a2-64a81f8dbf1f
 md"""
 The next step is to [parse](https://en.wikipedia.org/wiki/Parsing#Computer_languages) each string into an object called an expression, represented by the Julia type [`Expr`](@ref):
 """
 
-# ╔═╡ 03cc85d8-9e19-11eb-013e-a9313c0e9c28
+# ╔═╡ 8fcfafa3-f229-44c9-a431-2214b02726d0
 ex1 = Meta.parse(prog)
 
-# ╔═╡ 03cc85e4-9e19-11eb-1b3d-af4a02cad3e8
+# ╔═╡ 7859f9f6-1443-46db-9657-9f1615e279d6
 typeof(ex1)
 
-# ╔═╡ 03cc85f6-9e19-11eb-3b26-1b26dc0d2ca1
+# ╔═╡ 15a2df63-e2ff-46df-9369-baad4e4dc748
 md"""
 `Expr` objects contain two parts:
 """
 
-# ╔═╡ 03cc86c8-9e19-11eb-2505-4b7a1b7c87a5
+# ╔═╡ 54613218-df4b-4419-a139-cbfc03600cee
 md"""
   * a [`Symbol`](@ref) identifying the kind of expression. A symbol is an [interned string](https://en.wikipedia.org/wiki/String_interning) identifier (more discussion below).
 """
 
-# ╔═╡ 03cc8786-9e19-11eb-1b3d-f56f5722f522
+# ╔═╡ 36ef56a5-6220-4626-92d5-bee76a2328f7
 ex1.head
 
-# ╔═╡ 03cc87b8-9e19-11eb-1efe-210c0c70032c
+# ╔═╡ 55904141-a6a2-4cb4-b062-73783a1f5cbf
 md"""
   * the expression arguments, which may be symbols, other expressions, or literal values:
 """
 
-# ╔═╡ 03cc8862-9e19-11eb-30fb-b5a96714d4c4
+# ╔═╡ 4e1a9122-0c7f-4f28-93f5-656daf84ecf7
 ex1.args
 
-# ╔═╡ 03cc8882-9e19-11eb-1029-2d678baac0ec
+# ╔═╡ e7318bff-ae20-4ddc-b0d9-2ad950123f1a
 md"""
 Expressions may also be constructed directly in [prefix notation](https://en.wikipedia.org/wiki/Polish_notation):
 """
 
-# ╔═╡ 03cc8b5a-9e19-11eb-29bc-55a2209ccbbe
+# ╔═╡ 33ee25b5-147f-40ec-a245-10752bdf73d5
 ex2 = Expr(:call, :+, 1, 1)
 
-# ╔═╡ 03cc8b6e-9e19-11eb-18bf-176fb3b2b960
+# ╔═╡ 6187fc22-7e83-4b7d-876f-e1b18f597a56
 md"""
 The two expressions constructed above – by parsing and by direct construction – are equivalent:
 """
 
-# ╔═╡ 03cc8c68-9e19-11eb-2142-5b1451dc2cb6
+# ╔═╡ f3db3506-1417-4d5c-9d3c-550ce11b12a2
 ex1 == ex2
 
-# ╔═╡ 03cc8c7c-9e19-11eb-1b83-2d04c94fbead
+# ╔═╡ d5505c6f-8897-467b-aec3-ac106f7d2a81
 md"""
 **The key point here is that Julia code is internally represented as a data structure that is accessible from the language itself.**
 """
 
-# ╔═╡ 03cc8ca4-9e19-11eb-11d0-116ce78bca37
+# ╔═╡ da20398b-0959-4024-be1a-cd336f6fd596
 md"""
 The [`dump`](@ref) function provides indented and annotated display of `Expr` objects:
 """
 
-# ╔═╡ 03cc8d7e-9e19-11eb-334b-cb583b903a7f
+# ╔═╡ 208960e1-6204-4df6-93e3-5586c8111e54
 dump(ex2)
 
-# ╔═╡ 03cc8d94-9e19-11eb-3359-4f4ff083227d
+# ╔═╡ 0f99abc3-4700-4846-8128-572e88c1c426
 md"""
 `Expr` objects may also be nested:
 """
 
-# ╔═╡ 03cc8f58-9e19-11eb-037e-e77ee52b29d3
+# ╔═╡ 1c3802e8-d7e9-4454-9729-dd108c1fdf8f
 ex3 = Meta.parse("(4 + 4) / 2")
 
-# ╔═╡ 03cc8f8a-9e19-11eb-3e40-97cde36a12f8
+# ╔═╡ 620275f6-5e71-4a48-8df8-cc8e6e3d91e9
 md"""
 Another way to view expressions is with `Meta.show_sexpr`, which displays the [S-expression](https://en.wikipedia.org/wiki/S-expression) form of a given `Expr`, which may look very familiar to users of Lisp. Here's an example illustrating the display on a nested `Expr`:
 """
 
-# ╔═╡ 03cc9078-9e19-11eb-1dd6-653d66742c97
+# ╔═╡ fefeb34f-3d1e-4b18-bb37-26f7a08de741
 Meta.show_sexpr(ex3)
 
-# ╔═╡ 03cc90aa-9e19-11eb-0b50-11402012df26
+# ╔═╡ 5a251167-1ca2-4311-800c-8a65fd8bce27
 md"""
 ### Symbols
 """
 
-# ╔═╡ 03cc90dc-9e19-11eb-222d-6d6786a046c4
+# ╔═╡ c3875772-7266-475c-82f0-f574df3e00f9
 md"""
 The `:` character has two syntactic purposes in Julia. The first form creates a [`Symbol`](@ref), an [interned string](https://en.wikipedia.org/wiki/String_interning) used as one building-block of expressions:
 """
 
-# ╔═╡ 03cc9280-9e19-11eb-0a8c-a5ec8724ae99
+# ╔═╡ 53c5a159-79ad-4fbb-be77-28d9f5ce355a
 s = :foo
 
-# ╔═╡ 03cc9294-9e19-11eb-0855-d1046682db04
+# ╔═╡ 0ed50b34-bf20-4cae-abbf-a23bb2a6b3e1
 typeof(s)
 
-# ╔═╡ 03cc92b2-9e19-11eb-23d4-7367606e446c
+# ╔═╡ 77270b5d-db24-4034-9acb-df32bfc0046e
 md"""
 The [`Symbol`](@ref) constructor takes any number of arguments and creates a new symbol by concatenating their string representations together:
 """
 
-# ╔═╡ 03cc974e-9e19-11eb-2dfb-b309e6fb7d62
+# ╔═╡ b8e25ef0-31e4-45ca-8641-94a722dcd04c
 :foo == Symbol("foo")
 
-# ╔═╡ 03cc974e-9e19-11eb-2ee0-e398f358f471
+# ╔═╡ 37039812-4c1a-4a83-b226-de3e3bb46708
 Symbol("func",10)
 
-# ╔═╡ 03cc9758-9e19-11eb-2e6c-01bd71a4fb65
+# ╔═╡ 55b7d0c1-2313-4aab-a91d-3f8df3aad0f8
 Symbol(:var,'_',"sym")
 
-# ╔═╡ 03cc9776-9e19-11eb-3dab-f3e90c71561b
+# ╔═╡ d69d7939-28af-4d27-8160-5ce95352d0f5
 md"""
 Note that to use `:` syntax, the symbol's name must be a valid identifier. Otherwise the `Symbol(str)` constructor must be used.
 """
 
-# ╔═╡ 03cc9796-9e19-11eb-11e2-6d091d253787
+# ╔═╡ 80d66efe-4dfd-4b2b-9c8f-086d89c0f57c
 md"""
 In the context of an expression, symbols are used to indicate access to variables; when an expression is evaluated, a symbol is replaced with the value bound to that symbol in the appropriate [scope](@ref scope-of-variables).
 """
 
-# ╔═╡ 03cc97a8-9e19-11eb-0ecd-133988a3fbaa
+# ╔═╡ 3ad47a4e-c1a0-40f6-b060-6e81ba4b5fce
 md"""
 Sometimes extra parentheses around the argument to `:` are needed to avoid ambiguity in parsing:
 """
 
-# ╔═╡ 03cc994c-9e19-11eb-39cc-2d548ab9e6d3
+# ╔═╡ 0d2d15b7-a8db-409c-b583-55ad3b31f7b7
 :(:)
 
-# ╔═╡ 03cc9956-9e19-11eb-109f-19bf82e3f0fd
+# ╔═╡ 89162a72-fc8a-4ae8-b879-92257bfab63f
 :(::)
 
-# ╔═╡ 03cc996a-9e19-11eb-10f4-db43ee899d80
+# ╔═╡ bb530cb9-1ca7-4c97-8d16-18390d77ceb9
 md"""
 ## Expressions and evaluation
 """
 
-# ╔═╡ 03cc997e-9e19-11eb-286b-ed82be0c4860
+# ╔═╡ bd81c653-8361-40b8-9ce7-5996a124fe67
 md"""
 ### Quoting
 """
 
-# ╔═╡ 03cc99ba-9e19-11eb-33a3-8313aaf4a112
+# ╔═╡ 7aee02ac-e84f-4e07-9fd6-29864de59dfd
 md"""
 The second syntactic purpose of the `:` character is to create expression objects without using the explicit [`Expr`](@ref) constructor. This is referred to as *quoting*. The `:` character, followed by paired parentheses around a single statement of Julia code, produces an `Expr` object based on the enclosed code. Here is example of the short form used to quote an arithmetic expression:
 """
 
-# ╔═╡ 03cc9d3e-9e19-11eb-33a3-010163562a0e
+# ╔═╡ 1018af97-73a3-4e9e-9e7e-a2249a37abb9
 ex = :(a+b*c+1)
 
-# ╔═╡ 03cc9d48-9e19-11eb-0f58-b97411cb21fc
+# ╔═╡ e8db5d80-7350-40e3-812d-42fa5293abb0
 typeof(ex)
 
-# ╔═╡ 03cc9d70-9e19-11eb-055f-21c10b36f8b1
+# ╔═╡ ceeea500-f6c8-4743-9d22-9b72c7da7ed7
 md"""
 (to view the structure of this expression, try `ex.head` and `ex.args`, or use [`dump`](@ref) as above or [`Meta.@dump`](@ref))
 """
 
-# ╔═╡ 03cc9d8e-9e19-11eb-3685-717dc6950e96
+# ╔═╡ 37827ba6-65ab-4dd9-82f5-310cb30a0712
 md"""
 Note that equivalent expressions may be constructed using [`Meta.parse`](@ref) or the direct `Expr` form:
 """
 
-# ╔═╡ 03cca432-9e19-11eb-1c03-65675fd183e5
+# ╔═╡ 5a6edb10-f59a-4874-8eaa-a52eb8991771
 :(a + b*c + 1)       ==
-       Meta.parse("a + b*c + 1") ==
-       Expr(:call, :+, :a, Expr(:call, :*, :b, :c), 1)
+ Meta.parse("a + b*c + 1") ==
+ Expr(:call, :+, :a, Expr(:call, :*, :b, :c), 1)
 
-# ╔═╡ 03cca450-9e19-11eb-30e2-3768a34ba9a6
+# ╔═╡ 52404149-600f-48f8-9e8d-5e8c9b0b0a04
 md"""
 Expressions provided by the parser generally only have symbols, other expressions, and literal values as their args, whereas expressions constructed by Julia code can have arbitrary run-time values without literal forms as args. In this specific example, `+` and `a` are symbols, `*(b,c)` is a subexpression, and `1` is a literal 64-bit signed integer.
 """
 
-# ╔═╡ 03cca464-9e19-11eb-2455-f73cf5be85af
+# ╔═╡ 3fcb66c2-4e66-4f45-a7e7-65036efca00a
 md"""
 There is a second syntactic form of quoting for multiple expressions: blocks of code enclosed in `quote ... end`.
 """
 
-# ╔═╡ 03cca876-9e19-11eb-057d-8b9aca075210
+# ╔═╡ d958acef-73fe-4109-9967-24e5f4ca569f
 ex = quote
-           x = 1
-           y = 2
-           x + y
-       end
+     x = 1
+     y = 2
+     x + y
+ end
 
-# ╔═╡ 03cca888-9e19-11eb-046b-65202c3d4387
+# ╔═╡ ba42645b-fb45-4221-8d40-9840cb02264c
 typeof(ex)
 
-# ╔═╡ 03cca8b0-9e19-11eb-016d-55fff28477db
+# ╔═╡ 2128a38f-7b95-449c-b561-06268ddc755b
 md"""
 ### [Interpolation](@id man-expression-interpolation)
 """
 
-# ╔═╡ 03cca8d6-9e19-11eb-0192-5d94215d92bb
+# ╔═╡ 03d378b5-4419-41e2-91e9-cd0ba96e3f0c
 md"""
-Direct construction of [`Expr`](@ref) objects with value arguments is powerful, but `Expr` constructors can be tedious compared to "normal" Julia syntax. As an alternative, Julia allows *interpolation* of literals or expressions into quoted expressions. Interpolation is indicated by a prefix `$`.
+Direct construction of [`Expr`](@ref) objects with value arguments is powerful, but `Expr` constructors can be tedious compared to \"normal\" Julia syntax. As an alternative, Julia allows *interpolation* of literals or expressions into quoted expressions. Interpolation is indicated by a prefix `$`.
 """
 
-# ╔═╡ 03cca8ec-9e19-11eb-37f9-819135641e61
+# ╔═╡ 44e77b14-6cab-46fb-adb7-67e75dc0857b
 md"""
 In this example, the value of variable `a` is interpolated:
 """
 
-# ╔═╡ 03ccab80-9e19-11eb-2908-3fa9398228f4
+# ╔═╡ 63ff3614-7d0f-4c5e-9bb5-49170e5aa724
 a = 1;
 
-# ╔═╡ 03ccab8a-9e19-11eb-0385-3bf11c0e6864
+# ╔═╡ 4d55b495-251d-4306-a7de-96517a0f27db
 ex = :($a + b)
 
-# ╔═╡ 03ccab9e-9e19-11eb-11b9-7d3652c91b5e
+# ╔═╡ 38ceea8c-8c47-40eb-93bd-f1b4d2fb1dd7
 md"""
 Interpolating into an unquoted expression is not supported and will cause a compile-time error:
 """
 
-# ╔═╡ 03ccac5c-9e19-11eb-0e1a-cbb84bb5ca2d
+# ╔═╡ d9435823-a23b-4a48-9b20-a8a60cbd5642
 $a + b
 
-# ╔═╡ 03ccac70-9e19-11eb-2c65-f5b41f747aad
+# ╔═╡ 452953e8-0b5e-4ec1-b186-920c3c3a6a92
 md"""
 In this example, the tuple `(1,2,3)` is interpolated as an expression into a conditional test:
 """
 
-# ╔═╡ 03ccaf22-9e19-11eb-2d7a-21f270336afe
+# ╔═╡ 4252a8c4-fbc1-478e-9853-bd14ae34028b
 ex = :(a in $:((1,2,3)) )
 
-# ╔═╡ 03ccaf4c-9e19-11eb-03c8-d3b7bab13e04
+# ╔═╡ ade9fd13-8cae-4fa4-9177-4d4f95e648fa
 md"""
 The use of `$` for expression interpolation is intentionally reminiscent of [string interpolation](@ref string-interpolation) and [command interpolation](@ref command-interpolation). Expression interpolation allows convenient, readable programmatic construction of complex Julia expressions.
 """
 
-# ╔═╡ 03ccaf5e-9e19-11eb-3bb6-afc472ce01bd
+# ╔═╡ a3abc7e4-82dc-44f9-a36d-2bb887485366
 md"""
 ### Splatting interpolation
 """
 
-# ╔═╡ 03ccaf7a-9e19-11eb-2f58-e753935b3d23
+# ╔═╡ 43cc1bf6-bb71-4283-bcac-9f1e5beb6320
 md"""
 Notice that the `$` interpolation syntax allows inserting only a single expression into an enclosing expression. Occasionally, you have an array of expressions and need them all to become arguments of the surrounding expression. This can be done with the syntax `$(xs...)`. For example, the following code generates a function call where the number of arguments is determined programmatically:
 """
 
-# ╔═╡ 03ccb3be-9e19-11eb-02da-0b34d9945e9f
+# ╔═╡ ee9cdf5f-fbe3-4739-9a0f-0807a71832e1
 args = [:x, :y, :z];
 
-# ╔═╡ 03ccb3c8-9e19-11eb-30bb-bb3e51d6e4ad
+# ╔═╡ 8c80e767-c31e-4b90-a796-3bd172807b99
 :(f(1, $(args...)))
 
-# ╔═╡ 03ccb3d2-9e19-11eb-2c96-ed6de4dd9726
+# ╔═╡ e9060435-8f4d-4d3b-a712-6d4c996ed5a5
 md"""
 ### Nested quote
 """
 
-# ╔═╡ 03ccb3e4-9e19-11eb-3c25-75ed05e6a369
+# ╔═╡ 159f3cb2-3db5-4353-a856-653feacb5e92
 md"""
 Naturally, it is possible for quote expressions to contain other quote expressions. Understanding how interpolation works in these cases can be a bit tricky. Consider this example:
 """
 
-# ╔═╡ 03ccb76a-9e19-11eb-3541-cf00a007bb5b
+# ╔═╡ b9ad3232-5587-4a03-89cf-98538cf6768e
 x = :(1 + 2);
 
-# ╔═╡ 03ccb774-9e19-11eb-17e1-b191b67a42f7
+# ╔═╡ 42e7f30a-da9e-431a-8f3d-6a86c37a42a8
 e = quote quote $x end end
 
-# ╔═╡ 03ccb792-9e19-11eb-07d5-f3000d83796a
+# ╔═╡ f3eee563-1bca-49e9-892a-02f0f7f383fb
 md"""
-Notice that the result contains `$x`, which means that `x` has not been evaluated yet. In other words, the `$` expression "belongs to" the inner quote expression, and so its argument is only evaluated when the inner quote expression is:
+Notice that the result contains `$x`, which means that `x` has not been evaluated yet. In other words, the `$` expression \"belongs to\" the inner quote expression, and so its argument is only evaluated when the inner quote expression is:
 """
 
-# ╔═╡ 03ccb850-9e19-11eb-2fea-858b5c245cd2
+# ╔═╡ c4955aff-fe45-4f25-ba4a-76cf37cbf313
 eval(e)
 
-# ╔═╡ 03ccb86e-9e19-11eb-29d7-dba331ff8ec6
+# ╔═╡ 8f3c873c-ea0a-476b-b976-c4952d0862c4
 md"""
 However, the outer `quote` expression is able to interpolate values inside the `$` in the inner quote. This is done with multiple `$`s:
 """
 
-# ╔═╡ 03ccba12-9e19-11eb-30a1-bb1784975ebf
+# ╔═╡ ccf86fe2-36fb-4cc4-9896-f57908929057
 e = quote quote $$x end end
 
-# ╔═╡ 03ccba30-9e19-11eb-2007-2dfbe805f936
+# ╔═╡ f1f4f452-3a8b-460d-90c4-a8051081baa5
 md"""
 Notice that `(1 + 2)` now appears in the result instead of the symbol `x`. Evaluating this expression yields an interpolated `3`:
 """
 
-# ╔═╡ 03ccbaee-9e19-11eb-10b5-01396515c779
+# ╔═╡ 9eb4d9b8-8d0e-45aa-918f-a4c15f0fc7dd
 eval(e)
 
-# ╔═╡ 03ccbb16-9e19-11eb-35f2-5f87813b7187
+# ╔═╡ 6eb1be2c-1380-40c4-9ad4-97df4bd0c00e
 md"""
 The intuition behind this behavior is that `x` is evaluated once for each `$`: one `$` works similarly to `eval(:x)`, giving `x`'s value, while two `$`s do the equivalent of `eval(eval(:x))`.
 """
 
-# ╔═╡ 03ccbb34-9e19-11eb-01da-af38e0d1a01b
+# ╔═╡ e2fc1d1c-8926-4d6d-b98c-272513971354
 md"""
 ### [QuoteNode](@id man-quote-node)
 """
 
-# ╔═╡ 03ccbb5e-9e19-11eb-3331-a95901ab947d
+# ╔═╡ be25c407-2da0-4a73-8d61-f397809c6a0d
 md"""
 The usual representation of a `quote` form in an AST is an [`Expr`](@ref) with head `:quote`:
 """
 
-# ╔═╡ 03ccbd0a-9e19-11eb-3f90-25127c484cc2
+# ╔═╡ 555a7c0a-19b9-4fa5-bfed-18e87b944a08
 dump(Meta.parse(":(1+2)"))
 
-# ╔═╡ 03ccbd26-9e19-11eb-1c23-517b810e884d
+# ╔═╡ 613595ed-d306-4c9b-a02c-002d8adbfc7c
 md"""
 As we have seen, such expressions support interpolation with `$`. However, in some situations it is necessary to quote code *without* performing interpolation. This kind of quoting does not yet have syntax, but is represented internally as an object of type `QuoteNode`:
 """
 
-# ╔═╡ 03ccc372-9e19-11eb-2d5d-d9aea687e402
+# ╔═╡ f7e81888-47e6-46fc-8328-1fb859e60541
 eval(Meta.quot(Expr(:$, :(1+2))))
 
-# ╔═╡ 03ccc372-9e19-11eb-2dfb-9d6632bcf40e
+# ╔═╡ 86cf0594-0cb9-4385-9eac-931ef2ec7230
 eval(QuoteNode(Expr(:$, :(1+2))))
 
-# ╔═╡ 03ccc390-9e19-11eb-1c75-550e98e9e81b
+# ╔═╡ ee702c43-2fb0-4772-858d-cf8c914a82bf
 md"""
 The parser yields `QuoteNode`s for simple quoted items like symbols:
 """
 
-# ╔═╡ 03ccc516-9e19-11eb-0cf5-cf71cdc5f92c
+# ╔═╡ 56964666-aaa8-4e5b-9032-27899e9e9021
 dump(Meta.parse(":x"))
 
-# ╔═╡ 03ccc536-9e19-11eb-2c1c-859efe77d900
+# ╔═╡ 92b11cbe-9bd5-4ffa-b847-1e49bc399c64
 md"""
 `QuoteNode` can also be used for certain advanced metaprogramming tasks.
 """
 
-# ╔═╡ 03ccc53e-9e19-11eb-29e0-13dfcc440b77
+# ╔═╡ bdd51c19-3ac2-42ee-bce2-cc63d25c45f1
 md"""
 ### Evaluating expressions
 """
 
-# ╔═╡ 03ccc55c-9e19-11eb-1864-4939bec3d292
+# ╔═╡ 8c70bcc3-1f62-43c2-875a-10e0349f6ff7
 md"""
 Given an expression object, one can cause Julia to evaluate (execute) it at global scope using [`eval`](@ref):
 """
 
-# ╔═╡ 03cccc28-9e19-11eb-2986-514455cb26ac
+# ╔═╡ 1bc594e5-f04a-41de-8ae0-83d5e0a0b1c9
 ex1 = :(1 + 2)
 
-# ╔═╡ 03cccc28-9e19-11eb-3adf-afb11a2f1125
+# ╔═╡ e21a813e-1f35-4e61-9d24-dfe075e20bfa
 eval(ex1)
 
-# ╔═╡ 03cccc32-9e19-11eb-1cc5-5d318e79d216
+# ╔═╡ 6537044b-c279-4e5b-8b8d-aeece11678de
 ex = :(a + b)
 
-# ╔═╡ 03cccc32-9e19-11eb-12f1-094dd8915f0a
+# ╔═╡ 0a5e1a3e-9613-4972-b8e5-eebd16fc2538
 eval(ex)
 
-# ╔═╡ 03cccc32-9e19-11eb-24dd-bfee09c6901f
+# ╔═╡ 633972c2-e96d-482e-8a36-55b090d6f31e
 a = 1; b = 2;
 
-# ╔═╡ 03cccc3a-9e19-11eb-3330-cbe48f1d19dd
+# ╔═╡ 094811c3-f379-482c-8e2b-2e31d2b2dae6
 eval(ex)
 
-# ╔═╡ 03cccc6c-9e19-11eb-12a5-e96b8266f720
+# ╔═╡ 1810881a-502d-44d0-9f25-e179b0a3fdc3
 md"""
 Every [module](@ref modules) has its own [`eval`](@ref) function that evaluates expressions in its global scope. Expressions passed to [`eval`](@ref) are not limited to returning values – they can also have side-effects that alter the state of the enclosing module's environment:
 """
 
-# ╔═╡ 03cccf66-9e19-11eb-3ea9-fda557016d9e
+# ╔═╡ b4d7164c-5ebc-4e03-8750-d4303d5040fc
 ex = :(x = 1)
 
-# ╔═╡ 03cccf70-9e19-11eb-00ae-8365a033ff85
+# ╔═╡ 9174d44b-3cb8-481d-8625-89a34974fc5b
 x
 
-# ╔═╡ 03cccf70-9e19-11eb-0a82-434aeed9c11e
+# ╔═╡ 4f685b00-8535-462a-b017-342a94f38c37
 eval(ex)
 
-# ╔═╡ 03cccf7a-9e19-11eb-154b-819289c3b1a0
+# ╔═╡ 408fbb67-959f-4a68-a8b3-1630f41d24d1
 x
 
-# ╔═╡ 03cccf8e-9e19-11eb-368f-afa085b49d7e
+# ╔═╡ ac140b00-a8c3-4e81-8d83-b65155d1f8a0
 md"""
 Here, the evaluation of an expression object causes a value to be assigned to the global variable `x`.
 """
 
-# ╔═╡ 03cccfac-9e19-11eb-19f5-c11b0a07e232
+# ╔═╡ 5511e05a-be65-4295-b1ff-b1204bbf6e8a
 md"""
 Since expressions are just `Expr` objects which can be constructed programmatically and then evaluated, it is possible to dynamically generate arbitrary code which can then be run using [`eval`](@ref). Here is a simple example:
 """
 
-# ╔═╡ 03ccd5a6-9e19-11eb-35df-5b33bd1d5480
+# ╔═╡ af23182f-10e9-4dfb-ac33-6e161a2f4889
 a = 1;
 
-# ╔═╡ 03ccd5b2-9e19-11eb-38cd-6b23f6980e99
+# ╔═╡ 48f159ac-073c-4b4e-bdac-f6d65d24ef6d
 ex = Expr(:call, :+, a, :b)
 
-# ╔═╡ 03ccd5b2-9e19-11eb-39bb-6d72a67f2aac
+# ╔═╡ d4f5c5d2-b6af-4d6c-b1c1-729580dbb94f
 a = 0; b = 2;
 
-# ╔═╡ 03ccd5e0-9e19-11eb-26df-2d5bb58e462b
+# ╔═╡ 590c8581-b7d5-4cb4-acda-b1ceafbd113b
 eval(ex)
 
-# ╔═╡ 03ccd60a-9e19-11eb-05fe-7d9b2d4f9675
+# ╔═╡ 7655bf82-840f-48e0-a0ba-fc2063bc2307
 md"""
 The value of `a` is used to construct the expression `ex` which applies the `+` function to the value 1 and the variable `b`. Note the important distinction between the way `a` and `b` are used:
 """
 
-# ╔═╡ 03ccd6d2-9e19-11eb-2edf-8774cbf35a67
+# ╔═╡ 0a5469c9-ccef-4b62-9f0f-d3552fb3b986
 md"""
   * The value of the *variable* `a` at expression construction time is used as an immediate value in the expression. Thus, the value of `a` when the expression is evaluated no longer matters: the value in the expression is already `1`, independent of whatever the value of `a` might be.
   * On the other hand, the *symbol* `:b` is used in the expression construction, so the value of the variable `b` at that time is irrelevant – `:b` is just a symbol and the variable `b` need not even be defined. At expression evaluation time, however, the value of the symbol `:b` is resolved by looking up the value of the variable `b`.
 """
 
-# ╔═╡ 03ccd6e8-9e19-11eb-0791-1587d247ded6
+# ╔═╡ 91b8a80e-5f65-4387-acf2-5fb87692789d
 md"""
 ### Functions on `Expr`essions
 """
 
-# ╔═╡ 03ccd71a-9e19-11eb-30b5-7f1c69e82504
+# ╔═╡ 9ee35586-1af3-43ab-b1ba-5b3bb67ebb34
 md"""
 As hinted above, one extremely useful feature of Julia is the capability to generate and manipulate Julia code within Julia itself. We have already seen one example of a function returning [`Expr`](@ref) objects: the [`parse`](@ref) function, which takes a string of Julia code and returns the corresponding `Expr`. A function can also take one or more `Expr` objects as arguments, and return another `Expr`. Here is a simple, motivating example:
 """
 
-# ╔═╡ 03ccde70-9e19-11eb-333c-1380492abf02
+# ╔═╡ 5e0c39cc-b506-45de-897e-afd46895836d
 function math_expr(op, op1, op2)
-           expr = Expr(:call, op, op1, op2)
-           return expr
-       end
+     expr = Expr(:call, op, op1, op2)
+     return expr
+ end
 
-# ╔═╡ 03ccde7a-9e19-11eb-16fc-5141099c84c3
+# ╔═╡ 8b221b0f-36b2-4ac5-9957-68b2168ba517
 ex = math_expr(:+, 1, Expr(:call, :*, 4, 5))
 
-# ╔═╡ 03ccde7a-9e19-11eb-3f1d-af4c79b9d3e0
+# ╔═╡ f8cefa6a-eece-4aca-930f-455eb7fe1914
 eval(ex)
 
-# ╔═╡ 03ccde8e-9e19-11eb-3432-0112b47ba011
+# ╔═╡ 5e3b7f2c-e329-4273-9a03-6d8a73608111
 md"""
 As another example, here is a function that doubles any numeric argument, but leaves expressions alone:
 """
 
-# ╔═╡ 03cceb54-9e19-11eb-1394-414aa1085038
+# ╔═╡ 3e01b90a-d9eb-4b71-809b-0dc9be003933
 function make_expr2(op, opr1, opr2)
-           opr1f, opr2f = map(x -> isa(x, Number) ? 2*x : x, (opr1, opr2))
-           retexpr = Expr(:call, op, opr1f, opr2f)
-           return retexpr
-       end
+     opr1f, opr2f = map(x -> isa(x, Number) ? 2*x : x, (opr1, opr2))
+     retexpr = Expr(:call, op, opr1f, opr2f)
+     return retexpr
+ end
 
-# ╔═╡ 03cceb54-9e19-11eb-31af-534946ccbede
+# ╔═╡ 73f1405c-a7c0-498a-a038-dadec51ecd27
 make_expr2(:+, 1, 2)
 
-# ╔═╡ 03cceb5e-9e19-11eb-17be-7b015f9a0aad
+# ╔═╡ 4ded730f-d9bf-4c02-8631-c7c51afe9a87
 ex = make_expr2(:+, 1, Expr(:call, :*, 5, 8))
 
-# ╔═╡ 03cceb5e-9e19-11eb-0e4a-41d8e095a5f7
+# ╔═╡ c3e1d72f-f4a9-49a8-9463-f339cb0b7b2c
 eval(ex)
 
-# ╔═╡ 03cceb7c-9e19-11eb-0ae8-35a2a64cffdd
+# ╔═╡ 64f2099f-1105-44a7-81a6-a994a9a04d42
 md"""
 ## [Macros](@id man-macros)
 """
 
-# ╔═╡ 03cceba4-9e19-11eb-19eb-273c2affc523
+# ╔═╡ f048bbf0-6d7a-4a59-9399-d54097ccf829
 md"""
 Macros provide a method to include generated code in the final body of a program. A macro maps a tuple of arguments to a returned *expression*, and the resulting expression is compiled directly rather than requiring a runtime [`eval`](@ref) call. Macro arguments may include expressions, literal values, and symbols.
 """
 
-# ╔═╡ 03ccebb8-9e19-11eb-1f80-4f94141a1c85
+# ╔═╡ 3ce27869-3376-43d9-b7f2-8f7fec825e2e
 md"""
 ### Basics
 """
 
-# ╔═╡ 03ccebc2-9e19-11eb-0c94-a397af331728
+# ╔═╡ ecf455bc-76fe-4cbe-b953-67371e614292
 md"""
 Here is an extraordinarily simple macro:
 """
 
-# ╔═╡ 03ccee74-9e19-11eb-1945-95f6f63a1a0d
+# ╔═╡ 75c33720-2ad3-4b7f-a793-a9c2d92a984a
 macro sayhello()
-           return :( println("Hello, world!") )
-       end
+     return :( println("Hello, world!") )
+ end
 
-# ╔═╡ 03ccee92-9e19-11eb-2d8e-7dd375b5844b
+# ╔═╡ e22c2662-6933-4715-98cd-6d7c4db46a0c
 md"""
 Macros have a dedicated character in Julia's syntax: the `@` (at-sign), followed by the unique name declared in a `macro NAME ... end` block. In this example, the compiler will replace all instances of `@sayhello` with:
 """
 
-# ╔═╡ 03cceed8-9e19-11eb-23ee-a739d187f47c
+# ╔═╡ ed26c3c1-a93f-4f69-b654-2b419503d422
 md"""
 ```julia
-:( println("Hello, world!") )
+:( println(\"Hello, world!\") )
 ```
 """
 
-# ╔═╡ 03cceeec-9e19-11eb-38bf-bf538b40cf80
+# ╔═╡ 3513f124-bec4-48fc-bf89-f9dafe70f9f4
 md"""
 When `@sayhello` is entered in the REPL, the expression executes immediately, thus we only see the evaluation result:
 """
 
-# ╔═╡ 03cceff0-9e19-11eb-2f3d-75794ca16d99
+# ╔═╡ 71415783-382f-4f44-88b5-61d4d60faa30
 @sayhello()
 
-# ╔═╡ 03ccf002-9e19-11eb-225f-654c7768d3da
+# ╔═╡ 0963a1f3-aac8-40e6-93d5-6fd6e8ba0730
 md"""
 Now, consider a slightly more complex macro:
 """
 
-# ╔═╡ 03ccf310-9e19-11eb-12cc-6f0af8330b87
+# ╔═╡ 3047d86a-1a72-414d-a07e-da6bd9201be9
 macro sayhello(name)
-           return :( println("Hello, ", $name) )
-       end
+     return :( println("Hello, ", $name) )
+ end
 
-# ╔═╡ 03ccf338-9e19-11eb-2e71-ed66ee8fe74c
+# ╔═╡ b46ab3b3-8046-4e89-af4a-50f0b312c9b7
 md"""
 This macro takes one argument: `name`. When `@sayhello` is encountered, the quoted expression is *expanded* to interpolate the value of the argument into the final expression:
 """
 
-# ╔═╡ 03ccf464-9e19-11eb-2290-79db30f6786e
+# ╔═╡ f77e4f70-c123-4c6e-b796-9c04bddf1109
 @sayhello("human")
 
-# ╔═╡ 03ccf48c-9e19-11eb-2c27-43ddb72044e9
+# ╔═╡ fee9f20b-9215-4d74-b8d1-dda548e424d6
 md"""
 We can view the quoted return expression using the function [`macroexpand`](@ref) (**important note:** this is an extremely useful tool for debugging macros):
 """
 
-# ╔═╡ 03ccf798-9e19-11eb-2b04-97090ef5ca7f
+# ╔═╡ 14921103-4720-44b9-bd67-c390278cc0e4
 ex = macroexpand(Main, :(@sayhello("human")) )
 
-# ╔═╡ 03ccf7a2-9e19-11eb-3630-8bffd2de56eb
+# ╔═╡ 0c866a9a-e612-4730-b528-9d506ea19fe7
 typeof(ex)
 
-# ╔═╡ 03ccf7b6-9e19-11eb-2f8d-65356683f234
+# ╔═╡ 63471543-034d-4f19-811b-32d64d4fd115
 md"""
-We can see that the `"human"` literal has been interpolated into the expression.
+We can see that the `\"human\"` literal has been interpolated into the expression.
 """
 
-# ╔═╡ 03ccf7d4-9e19-11eb-10e6-37a1106d0f53
+# ╔═╡ fb4452b8-c16a-4bbf-a6dc-c142c11998cf
 md"""
 There also exists a macro [`@macroexpand`](@ref) that is perhaps a bit more convenient than the `macroexpand` function:
 """
 
-# ╔═╡ 03ccf976-9e19-11eb-32eb-0b2dbfcef976
+# ╔═╡ bc63e678-3b03-4330-bb5c-b00fd610bd46
 @macroexpand @sayhello "human"
 
-# ╔═╡ 03ccf98c-9e19-11eb-0936-3350ac6cd80c
+# ╔═╡ 294ac76a-e11c-43f8-b9b9-1fc5b9a36871
 md"""
 ### Hold up: why macros?
 """
 
-# ╔═╡ 03ccf9b4-9e19-11eb-1ba1-9589e0cf53fa
+# ╔═╡ cd2366f7-6528-4ae6-83cb-dc82b89287b1
 md"""
 We have already seen a function `f(::Expr...) -> Expr` in a previous section. In fact, [`macroexpand`](@ref) is also such a function. So, why do macros exist?
 """
 
-# ╔═╡ 03ccf9d2-9e19-11eb-13cc-9919fe37defa
+# ╔═╡ f978c9c7-ec5b-4162-92b4-95b16efed6ad
 md"""
 Macros are necessary because they execute when code is parsed, therefore, macros allow the programmer to generate and include fragments of customized code *before* the full program is run. To illustrate the difference, consider the following example:
 """
 
-# ╔═╡ 03cd04cc-9e19-11eb-1804-35111aacacdf
+# ╔═╡ c7a9233d-374a-4981-8e43-166d8a3ff042
 macro twostep(arg)
-           println("I execute at parse time. The argument is: ", arg)
-           return :(println("I execute at runtime. The argument is: ", $arg))
-       end
+     println("I execute at parse time. The argument is: ", arg)
+     return :(println("I execute at runtime. The argument is: ", $arg))
+ end
 
-# ╔═╡ 03cd04d6-9e19-11eb-164c-5d54409cb170
+# ╔═╡ f72565d4-8f25-4cb4-9f7f-19dff4cf78da
 ex = macroexpand(Main, :(@twostep :(1, 2, 3)) );
 
-# ╔═╡ 03cd0544-9e19-11eb-0003-61d9e75b047c
+# ╔═╡ 30004803-2216-4b8d-9267-1d3dbd7ab072
 md"""
 The first call to [`println`](@ref) is executed when [`macroexpand`](@ref) is called. The resulting expression contains *only* the second `println`:
 """
 
-# ╔═╡ 03cd082a-9e19-11eb-0996-d100725d1875
+# ╔═╡ 2d4bfe38-5121-4128-a0e0-165f16cacd70
 typeof(ex)
 
-# ╔═╡ 03cd0832-9e19-11eb-3f44-1799723e0feb
+# ╔═╡ 6e65d136-ad27-4db6-abf3-f8e6bfc7b83c
 ex
 
-# ╔═╡ 03cd083c-9e19-11eb-22df-7b6e742b6db5
+# ╔═╡ d650ea8f-589b-4cf3-9c55-d4f24a6b9a3d
 eval(ex)
 
-# ╔═╡ 03cd086e-9e19-11eb-2766-0deeedd1fadd
+# ╔═╡ 95e0e154-7479-4216-952f-55c33200ab17
 md"""
 ### Macro invocation
 """
 
-# ╔═╡ 03cd088a-9e19-11eb-300e-374026c4fefe
+# ╔═╡ 364f58d3-706b-4a99-83a7-d72d2c2acc1b
 md"""
 Macros are invoked with the following general syntax:
 """
 
-# ╔═╡ 03cd08c8-9e19-11eb-238b-ff462de26d67
+# ╔═╡ b90e2c60-561a-4afd-a41f-c0b0b87ca60c
 md"""
 ```julia
 @name expr1 expr2 ...
@@ -620,24 +620,24 @@ md"""
 ```
 """
 
-# ╔═╡ 03cd08fa-9e19-11eb-12ab-bf42ee18dd8e
+# ╔═╡ 589dbb6d-bfa0-449f-8bfe-da83ebaa6f6e
 md"""
 Note the distinguishing `@` before the macro name and the lack of commas between the argument expressions in the first form, and the lack of whitespace after `@name` in the second form. The two styles should not be mixed. For example, the following syntax is different from the examples above; it passes the tuple `(expr1, expr2, ...)` as one argument to the macro:
 """
 
-# ╔═╡ 03cd092c-9e19-11eb-3ea9-eb2012a248b5
+# ╔═╡ cc8f4ed9-7dac-45d2-8d59-4171939c9915
 md"""
 ```julia
 @name (expr1, expr2, ...)
 ```
 """
 
-# ╔═╡ 03cd094a-9e19-11eb-2071-5dbc5e4137d6
+# ╔═╡ 4be03b12-208b-4034-9056-3100b69486d1
 md"""
 An alternative way to invoke a macro over an array literal (or comprehension) is to juxtapose both without using parentheses. In this case, the array will be the only expression fed to the macro. The following syntax is equivalent (and different from `@name [a b] * v`):
 """
 
-# ╔═╡ 03cd0960-9e19-11eb-3f00-8956e48e52fa
+# ╔═╡ 1c556d0a-5525-4e2c-80f2-0207af774553
 md"""
 ```julia
 @name[a b] * v
@@ -645,161 +645,161 @@ md"""
 ```
 """
 
-# ╔═╡ 03cd097c-9e19-11eb-2c7f-6b5de3b9e63d
+# ╔═╡ 309a286b-78d9-4ff0-859c-a6a6f0abf34b
 md"""
 It is important to emphasize that macros receive their arguments as expressions, literals, or symbols. One way to explore macro arguments is to call the [`show`](@ref) function within the macro body:
 """
 
-# ╔═╡ 03cd111a-9e19-11eb-19c7-250bdec48f75
+# ╔═╡ 336da33b-aa63-4bae-a82a-f847fa40b9b0
 macro showarg(x)
-           show(x)
-           # ... remainder of macro, returning an expression
-       end
+     show(x)
+     # ... remainder of macro, returning an expression
+ end
 
-# ╔═╡ 03cd1124-9e19-11eb-1954-19d86d9b6b27
+# ╔═╡ 560f7df8-821d-43cc-8077-ab98b0779296
 @showarg(a)
 
-# ╔═╡ 03cd1124-9e19-11eb-2bbe-89fd8b3a8137
+# ╔═╡ 8953fe37-0e8b-4d00-816e-a1050acc8635
 @showarg(1+1)
 
-# ╔═╡ 03cd112c-9e19-11eb-2c61-af7b463556f5
+# ╔═╡ a64d78c8-8728-4fbe-9bb6-311bde057a43
 @showarg(println("Yo!"))
 
-# ╔═╡ 03cd114c-9e19-11eb-102e-736fc08dd38a
+# ╔═╡ 58a065aa-b40e-46e9-be19-733bdad3837b
 md"""
 In addition to the given argument list, every macro is passed extra arguments named `__source__` and `__module__`.
 """
 
-# ╔═╡ 03cd117e-9e19-11eb-1117-33e9dd9b9425
+# ╔═╡ 9aba8e4a-3f76-45ed-add5-e0f5f6fc5485
 md"""
 The argument `__source__` provides information (in the form of a `LineNumberNode` object) about the parser location of the `@` sign from the macro invocation. This allows macros to include better error diagnostic information, and is commonly used by logging, string-parser macros, and docs, for example, as well as to implement the [`@__LINE__`](@ref), [`@__FILE__`](@ref), and [`@__DIR__`](@ref) macros.
 """
 
-# ╔═╡ 03cd1192-9e19-11eb-3edb-a910fc1d7452
+# ╔═╡ 884121d0-9980-40bc-bcb3-c941ca75f206
 md"""
 The location information can be accessed by referencing `__source__.line` and `__source__.file`:
 """
 
-# ╔═╡ 03cd14bc-9e19-11eb-0372-612840e525b3
+# ╔═╡ a66a975e-1af7-4403-b9ce-c88ba9695a86
 macro __LOCATION__(); return QuoteNode(__source__); end
 
-# ╔═╡ 03cd14bc-9e19-11eb-3b07-83e99c23ef2c
+# ╔═╡ df7198a4-b334-44c5-9396-ca0dc79f2395
 dump(
-            @__LOCATION__(
-       ))
+      @__LOCATION__(
+ ))
 
-# ╔═╡ 03cd14e4-9e19-11eb-1657-9dc520b2eb24
+# ╔═╡ 2211b1cc-d9dd-4bd5-bf55-0dcdab169317
 md"""
 The argument `__module__` provides information (in the form of a `Module` object) about the expansion context of the macro invocation. This allows macros to look up contextual information, such as existing bindings, or to insert the value as an extra argument to a runtime function call doing self-reflection in the current module.
 """
 
-# ╔═╡ 03cd14ee-9e19-11eb-3d3c-e70ee9a8eb0f
+# ╔═╡ 1a620020-ab6d-4454-bc60-fa727d2be594
 md"""
 ### Building an advanced macro
 """
 
-# ╔═╡ 03cd150c-9e19-11eb-015f-c58895a933b4
+# ╔═╡ 9057076e-ab4f-46d2-9f50-9b56f86f9445
 md"""
 Here is a simplified definition of Julia's [`@assert`](@ref) macro:
 """
 
-# ╔═╡ 03cd1962-9e19-11eb-09c2-4b2e2c520fd9
+# ╔═╡ 214b0788-a678-482a-b9e1-ba388ee41207
 macro assert(ex)
-           return :( $ex ? nothing : throw(AssertionError($(string(ex)))) )
-       end
+     return :( $ex ? nothing : throw(AssertionError($(string(ex)))) )
+ end
 
-# ╔═╡ 03cd1976-9e19-11eb-1d27-5319f043cbb9
+# ╔═╡ 91bc0ab4-44ca-4bb6-8543-4dcd0eb042ed
 md"""
 This macro can be used like this:
 """
 
-# ╔═╡ 03cd1d2c-9e19-11eb-0ee5-0bd7971e49f4
+# ╔═╡ 3fb1e2a0-393b-4051-8fc1-caf74e997ca2
 @assert 1 == 1.0
 
-# ╔═╡ 03cd1d36-9e19-11eb-241e-c99277f46dff
+# ╔═╡ 38f53163-88f0-4532-b6c0-cda08ed9f551
 @assert 1 == 0
 
-# ╔═╡ 03cd1d3e-9e19-11eb-0e38-f5208ede4834
+# ╔═╡ cb20682c-1d0c-4d88-b5e8-6792ec54bbd9
 md"""
 In place of the written syntax, the macro call is expanded at parse time to its returned result. This is equivalent to writing:
 """
 
-# ╔═╡ 03cd1d5e-9e19-11eb-2ff5-492d1297c666
+# ╔═╡ bb43e482-196c-4864-a0ff-40e767914429
 md"""
 ```julia
-1 == 1.0 ? nothing : throw(AssertionError("1 == 1.0"))
-1 == 0 ? nothing : throw(AssertionError("1 == 0"))
+1 == 1.0 ? nothing : throw(AssertionError(\"1 == 1.0\"))
+1 == 0 ? nothing : throw(AssertionError(\"1 == 0\"))
 ```
 """
 
-# ╔═╡ 03cd1dae-9e19-11eb-1998-5f59254b419b
+# ╔═╡ 1c4f7db3-c88a-4bde-a418-5bfdc7809409
 md"""
 That is, in the first call, the expression `:(1 == 1.0)` is spliced into the test condition slot, while the value of `string(:(1 == 1.0))` is spliced into the assertion message slot. The entire expression, thus constructed, is placed into the syntax tree where the `@assert` macro call occurs. Then at execution time, if the test expression evaluates to true, then [`nothing`](@ref) is returned, whereas if the test is false, an error is raised indicating the asserted expression that was false. Notice that it would not be possible to write this as a function, since only the *value* of the condition is available and it would be impossible to display the expression that computed it in the error message.
 """
 
-# ╔═╡ 03cd1dcc-9e19-11eb-0897-69267a4e91aa
+# ╔═╡ e8777260-736f-4006-a3ed-23e2b61b52de
 md"""
 The actual definition of `@assert` in Julia Base is more complicated. It allows the user to optionally specify their own error message, instead of just printing the failed expression. Just like in functions with a variable number of arguments ([Varargs Functions](@ref)), this is specified with an ellipses following the last argument:
 """
 
-# ╔═╡ 03cd252e-9e19-11eb-379f-3d1c591b71c9
+# ╔═╡ c0e000b2-f297-47c3-9ad5-5570494a6204
 macro assert(ex, msgs...)
-           msg_body = isempty(msgs) ? ex : msgs[1]
-           msg = string(msg_body)
-           return :($ex ? nothing : throw(AssertionError($msg)))
-       end
+     msg_body = isempty(msgs) ? ex : msgs[1]
+     msg = string(msg_body)
+     return :($ex ? nothing : throw(AssertionError($msg)))
+ end
 
-# ╔═╡ 03cd2556-9e19-11eb-223f-b94d9bbabbb2
+# ╔═╡ ff48656f-4367-49ca-bea6-65d5113fd0cc
 md"""
 Now `@assert` has two modes of operation, depending upon the number of arguments it receives! If there's only one argument, the tuple of expressions captured by `msgs` will be empty and it will behave the same as the simpler definition above. But now if the user specifies a second argument, it is printed in the message body instead of the failing expression. You can inspect the result of a macro expansion with the aptly named [`@macroexpand`](@ref) macro:
 """
 
-# ╔═╡ 03cd2966-9e19-11eb-1e86-776ce6f153e6
+# ╔═╡ 5f71e871-d6d7-4de5-94f4-226d83741df7
 @macroexpand @assert a == b
 
-# ╔═╡ 03cd298e-9e19-11eb-03fd-df5810e073ca
+# ╔═╡ b6db6abb-0c47-4c36-b533-fb23b51cad5c
 @macroexpand @assert a==b "a should equal b!"
 
-# ╔═╡ 03cd29ca-9e19-11eb-3ca2-9bf6d26443f2
+# ╔═╡ 5b78bbfc-41f2-4073-8903-e538da17d0e0
 md"""
-There is yet another case that the actual `@assert` macro handles: what if, in addition to printing "a should equal b," we wanted to print their values? One might naively try to use string interpolation in the custom message, e.g., `@assert a==b "a ($a) should equal b ($b)!"`, but this won't work as expected with the above macro. Can you see why? Recall from [string interpolation](@ref string-interpolation) that an interpolated string is rewritten to a call to [`string`](@ref). Compare:
+There is yet another case that the actual `@assert` macro handles: what if, in addition to printing \"a should equal b,\" we wanted to print their values? One might naively try to use string interpolation in the custom message, e.g., `@assert a==b \"a ($a) should equal b ($b)!\"`, but this won't work as expected with the above macro. Can you see why? Recall from [string interpolation](@ref string-interpolation) that an interpolated string is rewritten to a call to [`string`](@ref). Compare:
 """
 
-# ╔═╡ 03cd2efc-9e19-11eb-28c5-adc1a1c28857
+# ╔═╡ 51429238-d677-471f-b73b-fde1828ed060
 typeof(:("a should equal b"))
 
-# ╔═╡ 03cd2f06-9e19-11eb-2284-01970bd6f89c
+# ╔═╡ f0191618-680f-47c0-b6fa-6e4a6edf3f2f
 typeof(:("a ($a) should equal b ($b)!"))
 
-# ╔═╡ 03cd2f06-9e19-11eb-3d50-cb870973357e
+# ╔═╡ 2d5f5dbc-10a6-4f37-96bb-af98cfeadc42
 dump(:("a ($a) should equal b ($b)!"))
 
-# ╔═╡ 03cd2f38-9e19-11eb-0a47-87949f8fac64
+# ╔═╡ c46af693-c9fc-405f-8b05-70b395f5b8b2
 md"""
 So now instead of getting a plain string in `msg_body`, the macro is receiving a full expression that will need to be evaluated in order to display as expected. This can be spliced directly into the returned expression as an argument to the [`string`](@ref) call; see [`error.jl`](https://github.com/JuliaLang/julia/blob/master/base/error.jl) for the complete implementation.
 """
 
-# ╔═╡ 03cd2f4c-9e19-11eb-2cac-a320b068500a
+# ╔═╡ 72c5f262-09ed-4865-acc0-7819b3e439bd
 md"""
 The `@assert` macro makes great use of splicing into quoted expressions to simplify the manipulation of expressions inside the macro body.
 """
 
-# ╔═╡ 03cd2f54-9e19-11eb-1057-fd3f9ff01526
+# ╔═╡ b02f2238-11bd-4e82-a8d8-e3ba2218dffb
 md"""
 ### Hygiene
 """
 
-# ╔═╡ 03cd2f92-9e19-11eb-2611-d78f6dfd0ef0
+# ╔═╡ f2568ed4-a219-4d42-be7d-cae074280740
 md"""
 An issue that arises in more complex macros is that of [hygiene](https://en.wikipedia.org/wiki/Hygienic_macro). In short, macros must ensure that the variables they introduce in their returned expressions do not accidentally clash with existing variables in the surrounding code they expand into. Conversely, the expressions that are passed into a macro as arguments are often *expected* to evaluate in the context of the surrounding code, interacting with and modifying the existing variables. Another concern arises from the fact that a macro may be called in a different module from where it was defined. In this case we need to ensure that all global variables are resolved to the correct module. Julia already has a major advantage over languages with textual macro expansion (like C) in that it only needs to consider the returned expression. All the other variables (such as `msg` in `@assert` above) follow the [normal scoping block behavior](@ref scope-of-variables).
 """
 
-# ╔═╡ 03cd2fb0-9e19-11eb-21a2-ad8cd5f1c24c
+# ╔═╡ a4697205-d518-4704-a6f0-26d3152da54a
 md"""
 To demonstrate these issues, let us consider writing a `@time` macro that takes an expression as its argument, records the time, evaluates the expression, records the time again, prints the difference between the before and after times, and then has the value of the expression as its final value. The macro might look like this:
 """
 
-# ╔═╡ 03cd2fc6-9e19-11eb-0cc0-8507a919de57
+# ╔═╡ 0ebea417-c177-4636-9d09-5315487a908d
 md"""
 ```julia
 macro time(ex)
@@ -807,29 +807,29 @@ macro time(ex)
         local t0 = time_ns()
         local val = $ex
         local t1 = time_ns()
-        println("elapsed time: ", (t1-t0)/1e9, " seconds")
+        println(\"elapsed time: \", (t1-t0)/1e9, \" seconds\")
         val
     end
 end
 ```
 """
 
-# ╔═╡ 03cd2ff8-9e19-11eb-3045-9b82c9f545e0
+# ╔═╡ 495471b9-722d-420b-b2f6-2bebb570637e
 md"""
 Here, we want `t0`, `t1`, and `val` to be private temporary variables, and we want `time_ns` to refer to the [`time_ns`](@ref) function in Julia Base, not to any `time_ns` variable the user might have (the same applies to `println`). Imagine the problems that could occur if the user expression `ex` also contained assignments to a variable called `t0`, or defined its own `time_ns` variable. We might get errors, or mysteriously incorrect behavior.
 """
 
-# ╔═╡ 03cd3014-9e19-11eb-10d4-ab0ebf868004
+# ╔═╡ 5410304a-635a-4a46-97b3-3f186e548212
 md"""
 Julia's macro expander solves these problems in the following way. First, variables within a macro result are classified as either local or global. A variable is considered local if it is assigned to (and not declared global), declared local, or used as a function argument name. Otherwise, it is considered global. Local variables are then renamed to be unique (using the [`gensym`](@ref) function, which generates new symbols), and global variables are resolved within the macro definition environment. Therefore both of the above concerns are handled; the macro's locals will not conflict with any user variables, and `time_ns` and `println` will refer to the Julia Base definitions.
 """
 
-# ╔═╡ 03cd302a-9e19-11eb-1178-5d4cee34fb76
+# ╔═╡ 59e0100b-34cb-4169-b56e-72b405b47254
 md"""
 One problem remains however. Consider the following use of this macro:
 """
 
-# ╔═╡ 03cd303c-9e19-11eb-2aef-e5083493744e
+# ╔═╡ ef62fc92-8fc8-4979-a224-d0681fb4c4cb
 md"""
 ```julia
 module MyModule
@@ -842,12 +842,12 @@ end
 ```
 """
 
-# ╔═╡ 03cd3064-9e19-11eb-04f5-bfeceb2c090d
+# ╔═╡ 5242bb32-5da5-4bc7-a2f7-a742bcd8dba1
 md"""
-Here the user expression `ex` is a call to `time_ns`, but not the same `time_ns` function that the macro uses. It clearly refers to `MyModule.time_ns`. Therefore we must arrange for the code in `ex` to be resolved in the macro call environment. This is done by "escaping" the expression with [`esc`](@ref):
+Here the user expression `ex` is a call to `time_ns`, but not the same `time_ns` function that the macro uses. It clearly refers to `MyModule.time_ns`. Therefore we must arrange for the code in `ex` to be resolved in the macro call environment. This is done by \"escaping\" the expression with [`esc`](@ref):
 """
 
-# ╔═╡ 03cd3078-9e19-11eb-0a37-2d3e9b26778e
+# ╔═╡ fe083f76-0186-483c-88fb-8cf452c9c572
 md"""
 ```julia
 macro time(ex)
@@ -858,47 +858,47 @@ end
 ```
 """
 
-# ╔═╡ 03cd3082-9e19-11eb-2177-bd230958128d
+# ╔═╡ 315e2bcf-b794-4f34-b158-9b03d3560907
 md"""
 An expression wrapped in this manner is left alone by the macro expander and simply pasted into the output verbatim. Therefore it will be resolved in the macro call environment.
 """
 
-# ╔═╡ 03cd3096-9e19-11eb-1ad8-df02c4524dd6
+# ╔═╡ 30f8abfb-b8f5-4e3a-95e9-493254f393e1
 md"""
-This escaping mechanism can be used to "violate" hygiene when necessary, in order to introduce or manipulate user variables. For example, the following macro sets `x` to zero in the call environment:
+This escaping mechanism can be used to \"violate\" hygiene when necessary, in order to introduce or manipulate user variables. For example, the following macro sets `x` to zero in the call environment:
 """
 
-# ╔═╡ 03cd3758-9e19-11eb-1978-8f5da64fb0fd
+# ╔═╡ a35e724c-990f-4285-803d-8b0f9416c210
 macro zerox()
-           return esc(:(x = 0))
-       end
+     return esc(:(x = 0))
+ end
 
-# ╔═╡ 03cd3758-9e19-11eb-0cb7-85fb9544704d
+# ╔═╡ bc43c33b-c8c5-4c87-830d-f399e3045829
 function foo()
-           x = 1
-           @zerox
-           return x # is zero
-       end
+     x = 1
+     @zerox
+     return x # is zero
+ end
 
-# ╔═╡ 03cd3758-9e19-11eb-3795-add5873ba185
+# ╔═╡ 9e5a5f02-740e-489e-87d0-f36ac029e73a
 foo()
 
-# ╔═╡ 03cd376c-9e19-11eb-087e-252737934fe2
+# ╔═╡ 227d08c8-0058-4da3-a590-5092da62c776
 md"""
 This kind of manipulation of variables should be used judiciously, but is occasionally quite handy.
 """
 
-# ╔═╡ 03cd37bc-9e19-11eb-2e23-f5c48c1923de
+# ╔═╡ c4c18d92-a287-4824-99ba-df08bf1f726e
 md"""
 Getting the hygiene rules correct can be a formidable challenge. Before using a macro, you might want to consider whether a function closure would be sufficient. Another useful strategy is to defer as much work as possible to runtime. For example, many macros simply wrap their arguments in a `QuoteNode` or other similar [`Expr`](@ref). Some examples of this include `@task body` which simply returns `schedule(Task(() -> $body))`, and `@eval expr`, which simply returns `eval(QuoteNode(expr))`.
 """
 
-# ╔═╡ 03cd37d0-9e19-11eb-26d5-3b31299ce41a
+# ╔═╡ 22d6de99-7df5-4c8f-b7e0-52d469f94c83
 md"""
 To demonstrate, we might rewrite the `@time` example above as:
 """
 
-# ╔═╡ 03cd37e4-9e19-11eb-2f5d-2986c1cc897c
+# ╔═╡ 124b5200-4a27-45b7-bd16-10ed18deab49
 md"""
 ```julia
 macro time(expr)
@@ -908,112 +908,112 @@ function timeit(f)
     t0 = time_ns()
     val = f()
     t1 = time_ns()
-    println("elapsed time: ", (t1-t0)/1e9, " seconds")
+    println(\"elapsed time: \", (t1-t0)/1e9, \" seconds\")
     return val
 end
 ```
 """
 
-# ╔═╡ 03cd3804-9e19-11eb-35e1-d972a3033c7c
+# ╔═╡ a016c4cb-3c51-4b13-a303-a399c7b9a72e
 md"""
 However, we don't do this for a good reason: wrapping the `expr` in a new scope block (the anonymous function) also slightly changes the meaning of the expression (the scope of any variables in it), while we want `@time` to be usable with minimum impact on the wrapped code.
 """
 
-# ╔═╡ 03cd3816-9e19-11eb-29c3-5d60527c3080
+# ╔═╡ 1c72d267-1d88-4133-896a-9ff51a3b4a04
 md"""
 ### Macros and dispatch
 """
 
-# ╔═╡ 03cd3836-9e19-11eb-3d76-17a83f805bf9
+# ╔═╡ cc237a28-d512-4cca-b529-45771cc5b4de
 md"""
 Macros, just like Julia functions, are generic. This means they can also have multiple method definitions, thanks to multiple dispatch:
 """
 
-# ╔═╡ 03cd5efc-9e19-11eb-0361-2bb923f7d651
+# ╔═╡ 71771d99-ad11-4ea5-93f6-4f0254548d61
 macro m end
 
-# ╔═╡ 03cd5efc-9e19-11eb-260d-ad649cc3d0f6
+# ╔═╡ de94ec4d-04c9-4568-9ce4-ab938cdb1ac1
 macro m(args...)
-           println("$(length(args)) arguments")
-       end
+     println("$(length(args)) arguments")
+ end
 
-# ╔═╡ 03cd5f08-9e19-11eb-3a05-2bae1d41bdbf
+# ╔═╡ ebf78bef-6d08-4d95-8cd8-35352698d2b4
 macro m(x,y)
-           println("Two arguments")
-       end
+     println("Two arguments")
+ end
 
-# ╔═╡ 03cd5f26-9e19-11eb-33f0-ab86b0452a39
+# ╔═╡ 3ebe7ef8-b9e8-48cf-99c9-d4437299d28f
 @m "asd"
 
-# ╔═╡ 03cd5f26-9e19-11eb-3371-533de75e86f4
+# ╔═╡ ddd41fa7-5f8a-4ed6-bef9-39c2ed9943d0
 @m 1 2
 
-# ╔═╡ 03cd5f44-9e19-11eb-0291-e36ef6f0c1ac
+# ╔═╡ 86facd67-9b0a-417a-9afc-d2aeef1b1f8d
 md"""
 However one should keep in mind, that macro dispatch is based on the types of AST that are handed to the macro, not the types that the AST evaluates to at runtime:
 """
 
-# ╔═╡ 03cd6494-9e19-11eb-34c5-b76597de6b50
+# ╔═╡ 0d9fb05c-a900-4d87-adfd-1ff2c0138095
 macro m(::Int)
-           println("An Integer")
-       end
+     println("An Integer")
+ end
 
-# ╔═╡ 03cd649c-9e19-11eb-17b3-c506e0bfc5c8
+# ╔═╡ b66f0390-cf77-4c99-bc01-18369767114e
 @m 2
 
-# ╔═╡ 03cd64a8-9e19-11eb-3ffb-8fd614361680
+# ╔═╡ 37736dbd-b54a-4f4a-adee-289177b16a40
 x = 2
 
-# ╔═╡ 03cd64b2-9e19-11eb-180c-83fb2840585d
+# ╔═╡ bf82c5af-44c1-4e4e-8f71-112ed0d33ead
 @m x
 
-# ╔═╡ 03cd64e4-9e19-11eb-0d2f-b79fddeacc32
+# ╔═╡ fad933a9-a92e-4dd9-ba0b-93454a2e6c35
 md"""
 ## Code Generation
 """
 
-# ╔═╡ 03cd650c-9e19-11eb-240f-9d095ea97341
+# ╔═╡ 4dcd6922-0e9e-47c3-b967-c54ec43e294b
 md"""
 When a significant amount of repetitive boilerplate code is required, it is common to generate it programmatically to avoid redundancy. In most languages, this requires an extra build step, and a separate program to generate the repetitive code. In Julia, expression interpolation and [`eval`](@ref) allow such code generation to take place in the normal course of program execution. For example, consider the following custom type
 """
 
-# ╔═╡ 03cd6692-9e19-11eb-339e-8936dbb46f64
+# ╔═╡ fb92155a-98b4-4245-9e0a-d36a1a67b6b5
 struct MyNumber
     x::Float64
 end
 
-# ╔═╡ 03cd66a8-9e19-11eb-29c1-41074cb152f1
+# ╔═╡ d18777b3-b477-4194-b9dc-c2e769444776
 md"""
 for which we want to add a number of methods to. We can do this programmatically in the following loop:
 """
 
-# ╔═╡ 03cd6d36-9e19-11eb-189a-cd4267f22c06
+# ╔═╡ a905eca7-1b19-4a2b-a944-07e5820b67c7
 for op = (:sin, :cos, :tan, :log, :exp)
     eval(quote
-        Base.$op(a::MyNumber) = MyNumber($op(a.x))
+  Base.$op(a::MyNumber) = MyNumber($op(a.x))
     end)
 end
 
-# ╔═╡ 03cd6d4a-9e19-11eb-1361-edd3dfee5ac6
+# ╔═╡ 1fbb990a-40b7-4b9f-bf2f-ef75e03f9dd0
 md"""
 and we can now use those functions with our custom type:
 """
 
-# ╔═╡ 03cd6fb6-9e19-11eb-1611-d1526c1a0442
+# ╔═╡ 7782f382-d8c8-41a3-b73e-ed7cfbc9c884
 x = MyNumber(π)
 
-# ╔═╡ 03cd6fb6-9e19-11eb-1f0d-97fcfc2fabca
+# ╔═╡ f280d06b-66ac-407b-9911-cc9539e96eb0
 sin(x)
 
-# ╔═╡ 03cd6fc0-9e19-11eb-2f23-57862f4fe2a2
+# ╔═╡ 30e8b5c6-4d36-4134-8b1f-37febfeb39af
 cos(x)
 
-# ╔═╡ 03cd6fdc-9e19-11eb-0274-e158f47fd303
+# ╔═╡ 3375f5bc-6098-41fc-a0c7-29ce2eea289f
 md"""
 In this manner, Julia acts as its own [preprocessor](https://en.wikipedia.org/wiki/Preprocessor), and allows code generation from inside the language. The above code could be written slightly more tersely using the `:` prefix quoting form:
 """
 
-# ╔═╡ 03cd7010-9e19-11eb-3ba0-ab6a43ae57d7
+# ╔═╡ 78c95206-2805-44dc-87fd-511243b22c7b
 md"""
 ```julia
 for op = (:sin, :cos, :tan, :log, :exp)
@@ -1022,12 +1022,12 @@ end
 ```
 """
 
-# ╔═╡ 03cd7024-9e19-11eb-0d1b-e7ac325614dd
+# ╔═╡ fc581913-770e-4d3b-839c-752396bc21f3
 md"""
 This sort of in-language code generation, however, using the `eval(quote(...))` pattern, is common enough that Julia comes with a macro to abbreviate this pattern:
 """
 
-# ╔═╡ 03cd7038-9e19-11eb-2cd0-6bf82a4bb248
+# ╔═╡ d2340c5a-3466-4f38-8c78-96e6ec55dfcf
 md"""
 ```julia
 for op = (:sin, :cos, :tan, :log, :exp)
@@ -1036,12 +1036,12 @@ end
 ```
 """
 
-# ╔═╡ 03cd706a-9e19-11eb-1d04-b58b999d87d2
+# ╔═╡ 38dbb4e3-5496-40b8-aa01-4fe77b879634
 md"""
 The [`@eval`](@ref) macro rewrites this call to be precisely equivalent to the above longer versions. For longer blocks of generated code, the expression argument given to [`@eval`](@ref) can be a block:
 """
 
-# ╔═╡ 03cd7080-9e19-11eb-3ee3-9b0ddd7a7833
+# ╔═╡ 5aca3a9f-d70a-4f71-b09a-8e8e474f2e4c
 md"""
 ```julia
 @eval begin
@@ -1050,28 +1050,28 @@ end
 ```
 """
 
-# ╔═╡ 03cd7092-9e19-11eb-3f0e-2f44b01fc874
+# ╔═╡ ef356125-0832-4834-b45f-59950912367f
 md"""
 ## Non-Standard String Literals
 """
 
-# ╔═╡ 03cd70b2-9e19-11eb-253a-45674db2f5d2
+# ╔═╡ aff468e4-bb07-4f42-9560-a3faffd4f807
 md"""
 Recall from [Strings](@ref non-standard-string-literals) that string literals prefixed by an identifier are called non-standard string literals, and can have different semantics than un-prefixed string literals. For example:
 """
 
-# ╔═╡ 03cd7150-9e19-11eb-2893-af8f7072e143
+# ╔═╡ e9e7d114-047c-4492-a111-ab7b5ce1f2a2
 md"""
-  * `r"^\s*(?:#|$)"` produces a regular expression object rather than a string
-  * `b"DATA\xff\u2200"` is a byte array literal for `[68,65,84,65,255,226,136,128]`.
+  * `r\"^\s*(?:#|$)\"` produces a regular expression object rather than a string
+  * `b\"DATA\xff\u2200\"` is a byte array literal for `[68,65,84,65,255,226,136,128]`.
 """
 
-# ╔═╡ 03cd7164-9e19-11eb-0598-8b30c99f6d7b
+# ╔═╡ d7298da2-2ca3-4c48-93d4-0b7e175c5d8f
 md"""
 Perhaps surprisingly, these behaviors are not hard-coded into the Julia parser or compiler. Instead, they are custom behaviors provided by a general mechanism that anyone can use: prefixed string literals are parsed as calls to specially-named macros. For example, the regular expression macro is just the following:
 """
 
-# ╔═╡ 03cd7178-9e19-11eb-0c7b-1f4637155c18
+# ╔═╡ deb8ca7d-0f33-4884-a66f-0b4b3072137a
 md"""
 ```julia
 macro r_str(p)
@@ -1080,28 +1080,28 @@ end
 ```
 """
 
-# ╔═╡ 03cd71aa-9e19-11eb-394f-2f008904bfce
+# ╔═╡ 8bdcdd62-8c39-4ef1-b9e2-21f176f49cc4
 md"""
-That's all. This macro says that the literal contents of the string literal `r"^\s*(?:#|$)"` should be passed to the `@r_str` macro and the result of that expansion should be placed in the syntax tree where the string literal occurs. In other words, the expression `r"^\s*(?:#|$)"` is equivalent to placing the following object directly into the syntax tree:
+That's all. This macro says that the literal contents of the string literal `r\"^\s*(?:#|$)\"` should be passed to the `@r_str` macro and the result of that expansion should be placed in the syntax tree where the string literal occurs. In other words, the expression `r\"^\s*(?:#|$)\"` is equivalent to placing the following object directly into the syntax tree:
 """
 
-# ╔═╡ 03cd71b6-9e19-11eb-2060-d9ab741af14e
+# ╔═╡ d6e7eb38-a2d4-4846-878a-f78cfc2b5004
 md"""
 ```julia
-Regex("^\\s*(?:#|\$)")
+Regex(\"^\\s*(?:#|\$)\")
 ```
 """
 
-# ╔═╡ 03cd71d2-9e19-11eb-315e-35ec80e8c140
+# ╔═╡ 501c6b95-4e46-48d6-bc70-be780c9d2aab
 md"""
 Not only is the string literal form shorter and far more convenient, but it is also more efficient: since the regular expression is compiled and the `Regex` object is actually created *when the code is compiled*, the compilation occurs only once, rather than every time the code is executed. Consider if the regular expression occurs in a loop:
 """
 
-# ╔═╡ 03cd71f0-9e19-11eb-0091-d581a3f38933
+# ╔═╡ 5693c15b-81d9-4c36-84cd-3ef7f3a8f0eb
 md"""
 ```julia
 for line = lines
-    m = match(r"^\s*(?:#|$)", line)
+    m = match(r\"^\s*(?:#|$)\", line)
     if m === nothing
         # non-comment
     else
@@ -1111,15 +1111,15 @@ end
 ```
 """
 
-# ╔═╡ 03cd7204-9e19-11eb-3f42-6febfe74ee83
+# ╔═╡ 15c73617-caa2-4b52-a10c-bd0a0e45453d
 md"""
-Since the regular expression `r"^\s*(?:#|$)"` is compiled and inserted into the syntax tree when this code is parsed, the expression is only compiled once instead of each time the loop is executed. In order to accomplish this without macros, one would have to write this loop like this:
+Since the regular expression `r\"^\s*(?:#|$)\"` is compiled and inserted into the syntax tree when this code is parsed, the expression is only compiled once instead of each time the loop is executed. In order to accomplish this without macros, one would have to write this loop like this:
 """
 
-# ╔═╡ 03cd721a-9e19-11eb-1356-43be64345a28
+# ╔═╡ b15381b7-ac69-43fd-b7ab-c77dc6f866cf
 md"""
 ```julia
-re = Regex("^\\s*(?:#|\$)")
+re = Regex(\"^\\s*(?:#|\$)\")
 for line = lines
     m = match(re, line)
     if m === nothing
@@ -1131,27 +1131,27 @@ end
 ```
 """
 
-# ╔═╡ 03cd7236-9e19-11eb-1c5a-75fc976a2a01
+# ╔═╡ 3e031818-f012-4748-bcd9-74a717623375
 md"""
 Moreover, if the compiler could not determine that the regex object was constant over all loops, certain optimizations might not be possible, making this version still less efficient than the more convenient literal form above. Of course, there are still situations where the non-literal form is more convenient: if one needs to interpolate a variable into the regular expression, one must take this more verbose approach; in cases where the regular expression pattern itself is dynamic, potentially changing upon each loop iteration, a new regular expression object must be constructed on each iteration. In the vast majority of use cases, however, regular expressions are not constructed based on run-time data. In this majority of cases, the ability to write regular expressions as compile-time values is invaluable.
 """
 
-# ╔═╡ 03cd729a-9e19-11eb-0534-e5e73f6f80d9
+# ╔═╡ fad0230b-41d7-4c1a-855b-6f72690cf1f0
 md"""
-Like non-standard string literals, non-standard command literals exist using a prefixed variant of the command literal syntax. The command literal ```custom`literal` ``` is parsed as `@custom_cmd "literal"`. Julia itself does not contain any non-standard command literals, but packages can make use of this syntax. Aside from the different syntax and the `_cmd` suffix instead of the `_str` suffix, non-standard command literals behave exactly like non-standard string literals.
+Like non-standard string literals, non-standard command literals exist using a prefixed variant of the command literal syntax. The command literal ```custom`literal` ``` is parsed as `@custom_cmd \"literal\"`. Julia itself does not contain any non-standard command literals, but packages can make use of this syntax. Aside from the different syntax and the `_cmd` suffix instead of the `_str` suffix, non-standard command literals behave exactly like non-standard string literals.
 """
 
-# ╔═╡ 03cd72b8-9e19-11eb-2843-0757fb2ef607
+# ╔═╡ b60b7528-0cd6-477b-a9f1-966c1b819a67
 md"""
-In the event that two modules provide non-standard string or command literals with the same name, it is possible to qualify the string or command literal with a module name. For instance, if both `Foo` and `Bar` provide non-standard string literal `@x_str`, then one can write `Foo.x"literal"` or `Bar.x"literal"` to disambiguate between the two.
+In the event that two modules provide non-standard string or command literals with the same name, it is possible to qualify the string or command literal with a module name. For instance, if both `Foo` and `Bar` provide non-standard string literal `@x_str`, then one can write `Foo.x\"literal\"` or `Bar.x\"literal\"` to disambiguate between the two.
 """
 
-# ╔═╡ 03cd72e0-9e19-11eb-3c56-490dff5bde04
+# ╔═╡ 3acd84f8-5063-442b-8c6d-84d9fa3da551
 md"""
-The mechanism for user-defined string literals is deeply, profoundly powerful. Not only are Julia's non-standard literals implemented using it, but also the command literal syntax (``` `echo "Hello, $person"` ```) is implemented with the following innocuous-looking macro:
+The mechanism for user-defined string literals is deeply, profoundly powerful. Not only are Julia's non-standard literals implemented using it, but also the command literal syntax (``` `echo \"Hello, $person\"` ```) is implemented with the following innocuous-looking macro:
 """
 
-# ╔═╡ 03cd72f4-9e19-11eb-2b9e-7f54e71e9825
+# ╔═╡ d52dc4c0-320e-4312-b1c8-9957fbcbe0ec
 md"""
 ```julia
 macro cmd(str)
@@ -1160,17 +1160,17 @@ end
 ```
 """
 
-# ╔═╡ 03cd7308-9e19-11eb-1d30-699d03105cae
+# ╔═╡ 4d33de66-b849-42f8-adc3-172e3c082e40
 md"""
 Of course, a large amount of complexity is hidden in the functions used in this macro definition, but they are just functions, written entirely in Julia. You can read their source and see precisely what they do – and all they do is construct expression objects to be inserted into your program's syntax tree.
 """
 
-# ╔═╡ 03cd7326-9e19-11eb-1891-71b406f75d19
+# ╔═╡ e2d74274-6701-45cf-8fca-726dca6d05ab
 md"""
 Another way to define a macro would be like this:
 """
 
-# ╔═╡ 03cd733a-9e19-11eb-21da-31e76b3652f2
+# ╔═╡ da981e1e-91e7-4d46-a20c-61a652c38b90
 md"""
 ```julia
 macro foo_str(str, flag)
@@ -1179,44 +1179,44 @@ end
 ```
 """
 
-# ╔═╡ 03cd7350-9e19-11eb-2af5-1d12b98c2350
+# ╔═╡ 64b7d7e0-4ebe-4509-be04-d584610ca55e
 md"""
 This macro can then be called with the following syntax:
 """
 
-# ╔═╡ 03cd7358-9e19-11eb-3239-f346edb51e43
+# ╔═╡ 8a03cf63-4fa6-43da-8321-937b33852ad5
 md"""
 ```julia
-foo"str"flag
+foo\"str\"flag
 ```
 """
 
-# ╔═╡ 03cd7376-9e19-11eb-3556-0b7ea7f1fd2c
+# ╔═╡ e03fdba1-f58f-48d3-b05f-78097460a707
 md"""
 The type of flag in the above mentioned syntax would be a `String` with contents of whatever trails after the string literal.
 """
 
-# ╔═╡ 03cd737e-9e19-11eb-177e-efe2c0b96563
+# ╔═╡ 7d2fa4ec-e581-4787-9e55-265982dba199
 md"""
 ## Generated functions
 """
 
-# ╔═╡ 03cd73b0-9e19-11eb-2586-b926d0958e22
+# ╔═╡ e9e6eb0b-e7cc-457f-8608-e9b5fd3ceeb7
 md"""
 A very special macro is [`@generated`](@ref), which allows you to define so-called *generated functions*. These have the capability to generate specialized code depending on the types of their arguments with more flexibility and/or less code than what can be achieved with multiple dispatch. While macros work with expressions at parse time and cannot access the types of their inputs, a generated function gets expanded at a time when the types of the arguments are known, but the function is not yet compiled.
 """
 
-# ╔═╡ 03cd73d0-9e19-11eb-1788-676d2701e496
+# ╔═╡ 19a984ab-194f-48a0-aff6-a6b69dab98e3
 md"""
 Instead of performing some calculation or action, a generated function declaration returns a quoted expression which then forms the body for the method corresponding to the types of the arguments. When a generated function is called, the expression it returns is compiled and then run. To make this efficient, the result is usually cached. And to make this inferable, only a limited subset of the language is usable. Thus, generated functions provide a flexible way to move work from run time to compile time, at the expense of greater restrictions on allowed constructs.
 """
 
-# ╔═╡ 03cd73e2-9e19-11eb-1a21-d3b456a9a478
+# ╔═╡ e4e8daba-8130-4f21-a707-9ef2e4f1a192
 md"""
 When defining generated functions, there are five main differences to ordinary functions:
 """
 
-# ╔═╡ 03cd7542-9e19-11eb-36bc-89add66424f3
+# ╔═╡ f6de1aea-5714-4ca3-b478-cb5eee5054b1
 md"""
 1. You annotate the function declaration with the `@generated` macro. This adds some information to the AST that lets the compiler know that this is a generated function.
 2. In the body of the generated function you only have access to the *types* of the arguments – not their values.
@@ -1225,200 +1225,200 @@ md"""
 5. Generated functions must not *mutate* or *observe* any non-constant global state (including, for example, IO, locks, non-local dictionaries, or using [`hasmethod`](@ref)). This means they can only read global constants, and cannot have any side effects. In other words, they must be completely pure. Due to an implementation limitation, this also means that they currently cannot define a closure or generator.
 """
 
-# ╔═╡ 03cd7560-9e19-11eb-205e-f9812cd742fb
+# ╔═╡ 16ac01e2-6beb-4e0e-9773-2fa302043dc3
 md"""
 It's easiest to illustrate this with an example. We can declare a generated function `foo` as
 """
 
-# ╔═╡ 03cd7902-9e19-11eb-332f-0d20ccde8141
+# ╔═╡ b2ec8dfd-041b-4a57-bcfe-0906c019b353
 @generated function foo(x)
-           Core.println(x)
-           return :(x * x)
-       end
+     Core.println(x)
+     return :(x * x)
+ end
 
-# ╔═╡ 03cd791e-9e19-11eb-0a8f-25daf9c263ca
+# ╔═╡ 242e2d58-eafb-43a3-bf8b-ed3f26691fd3
 md"""
 Note that the body returns a quoted expression, namely `:(x * x)`, rather than just the value of `x * x`.
 """
 
-# ╔═╡ 03cd7950-9e19-11eb-1774-99ebc58eb7dc
+# ╔═╡ 8922b5b5-70d0-42c4-8034-5dbb5ef2dd20
 md"""
 From the caller's perspective, this is identical to a regular function; in fact, you don't have to know whether you're calling a regular or generated function. Let's see how `foo` behaves:
 """
 
-# ╔═╡ 03cd7d62-9e19-11eb-2faf-ed964fbd22cc
+# ╔═╡ 41fb6483-a8a7-419c-abea-980d87f8ed5d
 x = foo(2); # note: output is from println() statement in the body
 
-# ╔═╡ 03cd7d6c-9e19-11eb-3bdf-cb50304b4d42
+# ╔═╡ b2654112-85e1-405b-8420-60180adf4b35
 x           # now we print x
 
-# ╔═╡ 03cd7d6c-9e19-11eb-36d9-c1ecb3c9e744
+# ╔═╡ 34c1984f-aa9c-4258-9e99-7e8b41498c31
 y = foo("bar");
 
-# ╔═╡ 03cd7d76-9e19-11eb-1ea0-81ce1e83b834
+# ╔═╡ 84b13f6d-2b85-4589-ab82-29a7ecb08a00
 y
 
-# ╔═╡ 03cd7da8-9e19-11eb-0faa-9b1a947644d6
+# ╔═╡ 7914eb3d-060c-495a-ba47-e7204b3a7373
 md"""
 So, we see that in the body of the generated function, `x` is the *type* of the passed argument, and the value returned by the generated function, is the result of evaluating the quoted expression we returned from the definition, now with the *value* of `x`.
 """
 
-# ╔═╡ 03cd7dbc-9e19-11eb-147e-7bd238ae25a8
+# ╔═╡ a1f74101-99e5-48ce-be90-f1b545f5868d
 md"""
 What happens if we evaluate `foo` again with a type that we have already used?
 """
 
-# ╔═╡ 03cd7ea2-9e19-11eb-16b2-f7fb8b1a3030
+# ╔═╡ 3a415fce-84c3-4efa-bdaa-aa0c2782d1a7
 foo(4)
 
-# ╔═╡ 03cd7ebe-9e19-11eb-3f7c-97b90ea7db66
+# ╔═╡ 3d9585f3-3996-4e7d-a4ca-7ba635743347
 md"""
 Note that there is no printout of [`Int64`](@ref). We can see that the body of the generated function was only executed once here, for the specific set of argument types, and the result was cached. After that, for this example, the expression returned from the generated function on the first invocation was re-used as the method body. However, the actual caching behavior is an implementation-defined performance optimization, so it is invalid to depend too closely on this behavior.
 """
 
-# ╔═╡ 03cd7efc-9e19-11eb-03e0-9d3ad1fe1a8c
+# ╔═╡ 9012e6b7-d2c1-44e7-bc78-23d535b6a18a
 md"""
 The number of times a generated function is generated *might* be only once, but it *might* also be more often, or appear to not happen at all. As a consequence, you should *never* write a generated function with side effects - when, and how often, the side effects occur is undefined. (This is true for macros too - and just like for macros, the use of [`eval`](@ref) in a generated function is a sign that you're doing something the wrong way.) However, unlike macros, the runtime system cannot correctly handle a call to [`eval`](@ref), so it is disallowed.
 """
 
-# ╔═╡ 03cd7f1a-9e19-11eb-361c-553b080a252f
+# ╔═╡ 838e8e45-8fb4-485b-8d11-73310a1314d2
 md"""
 It is also important to see how `@generated` functions interact with method redefinition. Following the principle that a correct `@generated` function must not observe any mutable state or cause any mutation of global state, we see the following behavior. Observe that the generated function *cannot* call any method that was not defined prior to the *definition* of the generated function itself.
 """
 
-# ╔═╡ 03cd7f2e-9e19-11eb-123e-713a436d24e0
+# ╔═╡ 933605ca-5578-475a-9169-3bebb045e51c
 md"""
 Initially `f(x)` has one definition
 """
 
-# ╔═╡ 03cd80a0-9e19-11eb-03e6-3b1c4865ad17
+# ╔═╡ bd0504fa-bcb2-46c0-85ca-3621fe1d9830
 f(x) = "original definition";
 
-# ╔═╡ 03cd80be-9e19-11eb-1ef9-5315c181dae0
+# ╔═╡ 806fb8ea-3fd8-4027-a186-57c7e0743c82
 md"""
 Define other operations that use `f(x)`:
 """
 
-# ╔═╡ 03cd85be-9e19-11eb-023a-b1d205fd855a
+# ╔═╡ 210cc6be-378c-4dfb-88a7-1765a7a14851
 g(x) = f(x);
 
-# ╔═╡ 03cd85be-9e19-11eb-2fc9-b3b345257105
+# ╔═╡ ad530ede-8977-4f58-890c-8030f960bc32
 @generated gen1(x) = f(x);
 
-# ╔═╡ 03cd85d2-9e19-11eb-2307-13adacf8340f
+# ╔═╡ 439ab82d-58e1-403e-8970-5839552cd8b2
 @generated gen2(x) = :(f(x));
 
-# ╔═╡ 03cd85f0-9e19-11eb-0b44-2728ae796d70
+# ╔═╡ a83906a7-14ca-43e2-b834-a8ec2b98a5dd
 md"""
 We now add some new definitions for `f(x)`:
 """
 
-# ╔═╡ 03cd8992-9e19-11eb-029e-130184bd93e8
+# ╔═╡ 4c4316da-6f1a-4b25-96ee-f6e9dc3abac0
 f(x::Int) = "definition for Int";
 
-# ╔═╡ 03cd89a6-9e19-11eb-0164-075c1ab96b38
+# ╔═╡ 5b7b3927-4835-440a-9e3d-584e743f4f54
 f(x::Type{Int}) = "definition for Type{Int}";
 
-# ╔═╡ 03cd89ba-9e19-11eb-090a-6b03001c732a
+# ╔═╡ c738db8f-c24f-4d13-b000-3117feae379b
 md"""
 and compare how these results differ:
 """
 
-# ╔═╡ 03cd8cd0-9e19-11eb-08f7-7ddd7842e5f2
+# ╔═╡ 77f7e7b3-796a-4beb-a914-e6633e56a7dd
 f(1)
 
-# ╔═╡ 03cd8cda-9e19-11eb-1e1b-658f1a3f7de4
+# ╔═╡ be9c7a89-1e8c-4727-9589-ab0b6af16afd
 g(1)
 
-# ╔═╡ 03cd8cda-9e19-11eb-136b-535a0eb92050
+# ╔═╡ 4f314c1b-b440-4f32-babc-4682c89923ce
 gen1(1)
 
-# ╔═╡ 03cd8ce4-9e19-11eb-26ad-17270398a659
+# ╔═╡ 9274d996-a232-4260-b99a-59ce173b63dd
 gen2(1)
 
-# ╔═╡ 03cd8cf8-9e19-11eb-3db8-43b3db69cdfd
+# ╔═╡ c23e0eb2-4161-4644-bc61-3c6a219d02ed
 md"""
 Each method of a generated function has its own view of defined functions:
 """
 
-# ╔═╡ 03cd9022-9e19-11eb-1471-694b2d5ba5ef
+# ╔═╡ 60ba4628-3485-44a7-aa8d-67d1e8a17f8a
 @generated gen1(x::Real) = f(x);
 
-# ╔═╡ 03cd9022-9e19-11eb-3942-a161757ec5ab
+# ╔═╡ b237b619-f911-4320-baeb-652e1406dbca
 gen1(1)
 
-# ╔═╡ 03cd904a-9e19-11eb-3576-e552feea282b
+# ╔═╡ 742b5b59-2c44-41d8-95d7-79e530c65721
 md"""
 The example generated function `foo` above did not do anything a normal function `foo(x) = x * x` could not do (except printing the type on the first invocation, and incurring higher overhead). However, the power of a generated function lies in its ability to compute different quoted expressions depending on the types passed to it:
 """
 
-# ╔═╡ 03cd96da-9e19-11eb-2b93-c3268ad77882
+# ╔═╡ 7671f642-4a26-4a46-9c8b-6b2817477dee
 @generated function bar(x)
-           if x <: Integer
-               return :(x ^ 2)
-           else
-               return :(x)
-           end
-       end
+     if x <: Integer
+         return :(x ^ 2)
+     else
+         return :(x)
+     end
+ end
 
-# ╔═╡ 03cd96e6-9e19-11eb-1a60-734ee5665157
+# ╔═╡ a99a377c-ad48-47e7-bdff-3b8c0207170c
 bar(4)
 
-# ╔═╡ 03cd96e6-9e19-11eb-32d0-fbe0ce8931f1
+# ╔═╡ 23bebd84-e366-4f2e-a99a-968d30b1f490
 bar("baz")
 
-# ╔═╡ 03cd96f8-9e19-11eb-3692-510832d7ed7d
+# ╔═╡ 37276c83-dfb9-4002-9ca3-a417c219ca11
 md"""
 (although of course this contrived example would be more easily implemented using multiple dispatch...)
 """
 
-# ╔═╡ 03cd9720-9e19-11eb-2e26-c36bd829f007
+# ╔═╡ 98c1e77c-c7e8-49a5-b4dc-3e19eea29093
 md"""
 Abusing this will corrupt the runtime system and cause undefined behavior:
 """
 
-# ╔═╡ 03cd9c70-9e19-11eb-342c-778b54deae57
+# ╔═╡ db663f82-e093-438f-bbcd-5cebc2a0548d
 @generated function baz(x)
-           if rand() < .9
-               return :(x^2)
-           else
-               return :("boo!")
-           end
-       end
+     if rand() < .9
+         return :(x^2)
+     else
+         return :("boo!")
+     end
+ end
 
-# ╔═╡ 03cd9c8e-9e19-11eb-3eb0-979aae68ddad
+# ╔═╡ 6e5143ee-076e-49c4-845e-14b458287a8e
 md"""
 Since the body of the generated function is non-deterministic, its behavior, *and the behavior of all subsequent code* is undefined.
 """
 
-# ╔═╡ 03cd9cb4-9e19-11eb-39d8-a94c4b55eae7
+# ╔═╡ 63990f70-c15f-4bc2-9e5a-097fd5b5716f
 md"""
 *Don't copy these examples!*
 """
 
-# ╔═╡ 03cd9cca-9e19-11eb-378d-79f4d7d98cfd
+# ╔═╡ ba3c037c-450b-4077-855c-1a640f78adb2
 md"""
 These examples are hopefully helpful to illustrate how generated functions work, both in the definition end and at the call site; however, *don't copy them*, for the following reasons:
 """
 
-# ╔═╡ 03cd9d6a-9e19-11eb-3b35-055a0345219e
+# ╔═╡ 16e28d47-1ef9-4dc6-a065-e3c0a743b977
 md"""
   * the `foo` function has side-effects (the call to `Core.println`), and it is undefined exactly when, how often or how many times these side-effects will occur
   * the `bar` function solves a problem that is better solved with multiple dispatch - defining `bar(x) = x` and `bar(x::Integer) = x ^ 2` will do the same thing, but it is both simpler and faster.
   * the `baz` function is pathological
 """
 
-# ╔═╡ 03cd9d74-9e19-11eb-17c1-73c7971c459a
+# ╔═╡ 354ffe45-cff7-4f73-9b55-78eca85bb41e
 md"""
 Note that the set of operations that should not be attempted in a generated function is unbounded, and the runtime system can currently only detect a subset of the invalid operations. There are many other operations that will simply corrupt the runtime system without notification, usually in subtle ways not obviously connected to the bad definition. Because the function generator is run during inference, it must respect all of the limitations of that code.
 """
 
-# ╔═╡ 03cd9d92-9e19-11eb-0d56-75795090094a
+# ╔═╡ a66c9cd1-664c-46d1-a0c2-c1a10f519a37
 md"""
 Some operations that should not be attempted include:
 """
 
-# ╔═╡ 03cd9ea0-9e19-11eb-2d37-b52adc690419
+# ╔═╡ 4b42461c-b12c-41e0-8081-b7daf9c3c3b2
 md"""
 1. Caching of native pointers.
 2. Interacting with the contents or methods of `Core.Compiler` in any way.
@@ -1429,136 +1429,136 @@ md"""
 5. Calling any function that is defined after the body of the generated function. This condition is relaxed for incrementally-loaded precompiled modules to allow calling any function in the module.
 """
 
-# ╔═╡ 03cd9eb4-9e19-11eb-1146-1beb5bd7da4f
+# ╔═╡ f57ef7f0-9445-4faf-863c-d94b13376af1
 md"""
 Alright, now that we have a better understanding of how generated functions work, let's use them to build some more advanced (and valid) functionality...
 """
 
-# ╔═╡ 03cd9ee6-9e19-11eb-2f27-038cfb454e36
+# ╔═╡ 80c28ca8-b2d8-4ff8-b986-86f0e2e787dc
 md"""
 ### An advanced example
 """
 
-# ╔═╡ 03cd9f18-9e19-11eb-2cf2-a14db1bebe09
+# ╔═╡ e9f91650-e273-43c1-b2d5-286c4b2525d9
 md"""
 Julia's base library has an internal `sub2ind` function to calculate a linear index into an n-dimensional array, based on a set of n multilinear indices - in other words, to calculate the index `i` that can be used to index into an array `A` using `A[i]`, instead of `A[x,y,z,...]`. One possible implementation is the following:
 """
 
-# ╔═╡ 03cdaa4e-9e19-11eb-3020-35b27062d54b
+# ╔═╡ 02f6bb46-bf93-49db-969d-50a5af73c457
 function sub2ind_loop(dims::NTuple{N}, I::Integer...) where N
-           ind = I[N] - 1
-           for i = N-1:-1:1
-               ind = I[i]-1 + dims[i]*ind
-           end
-           return ind + 1
-       end
+     ind = I[N] - 1
+     for i = N-1:-1:1
+         ind = I[i]-1 + dims[i]*ind
+     end
+     return ind + 1
+ end
 
-# ╔═╡ 03cdaa58-9e19-11eb-0333-2588358a6e86
+# ╔═╡ 6f085ece-1eb4-47a5-90a0-4d80324d2ff9
 sub2ind_loop((3, 5), 1, 2)
 
-# ╔═╡ 03cdaa80-9e19-11eb-1d85-035e6c4a5d59
+# ╔═╡ e045ff5a-a8cf-4cde-bbb5-0c9464a37e4b
 md"""
 The same thing can be done using recursion:
 """
 
-# ╔═╡ 03cdbbd8-9e19-11eb-0666-fb5e87b8d609
+# ╔═╡ ce38fa53-bad6-47d0-9886-a34313efaef2
 sub2ind_rec(dims::Tuple{}) = 1;
 
-# ╔═╡ 03cdbbe4-9e19-11eb-1574-5514673c271e
+# ╔═╡ 28aed164-1400-4dd6-b099-5ac4e8572933
 sub2ind_rec(dims::Tuple{}, i1::Integer, I::Integer...) =
-           i1 == 1 ? sub2ind_rec(dims, I...) : throw(BoundsError());
+     i1 == 1 ? sub2ind_rec(dims, I...) : throw(BoundsError());
 
-# ╔═╡ 03cdbbe4-9e19-11eb-38d0-cfa03f1106af
+# ╔═╡ 408352ef-8851-4b93-8b2d-404c9946ad49
 sub2ind_rec(dims::Tuple{Integer, Vararg{Integer}}, i1::Integer) = i1;
 
-# ╔═╡ 03cdbbf6-9e19-11eb-2194-91a0d5fb4161
+# ╔═╡ 353360c4-941a-42f1-8b3a-8521033be9b3
 sub2ind_rec(dims::Tuple{Integer, Vararg{Integer}}, i1::Integer, I::Integer...) =
-           i1 + dims[1] * (sub2ind_rec(Base.tail(dims), I...) - 1);
+     i1 + dims[1] * (sub2ind_rec(Base.tail(dims), I...) - 1);
 
-# ╔═╡ 03cdbbf6-9e19-11eb-0242-5b7537e9f33e
+# ╔═╡ 226d50ce-e797-45f4-8b67-17c3b717ded2
 sub2ind_rec((3, 5), 1, 2)
 
-# ╔═╡ 03cdbc0a-9e19-11eb-0cf1-791b85bbe556
+# ╔═╡ 5abc77ec-21f2-408b-963b-8d99c61566c8
 md"""
 Both these implementations, although different, do essentially the same thing: a runtime loop over the dimensions of the array, collecting the offset in each dimension into the final index.
 """
 
-# ╔═╡ 03cdbc32-9e19-11eb-32bd-bd1b327fd8ff
+# ╔═╡ 1b7bc694-dbb6-4d81-91a0-b8f858f399cb
 md"""
 However, all the information we need for the loop is embedded in the type information of the arguments. Thus, we can utilize generated functions to move the iteration to compile-time; in compiler parlance, we use generated functions to manually unroll the loop. The body becomes almost identical, but instead of calculating the linear index, we build up an *expression* that calculates the index:
 """
 
-# ╔═╡ 03cdc9ca-9e19-11eb-3785-018d13c592e3
+# ╔═╡ 10574023-f668-424a-8e62-450a2a333e0a
 @generated function sub2ind_gen(dims::NTuple{N}, I::Integer...) where N
-           ex = :(I[$N] - 1)
-           for i = (N - 1):-1:1
-               ex = :(I[$i] - 1 + dims[$i] * $ex)
-           end
-           return :($ex + 1)
-       end
+     ex = :(I[$N] - 1)
+     for i = (N - 1):-1:1
+         ex = :(I[$i] - 1 + dims[$i] * $ex)
+     end
+     return :($ex + 1)
+ end
 
-# ╔═╡ 03cdc9d4-9e19-11eb-0844-4d9ea3c86d28
+# ╔═╡ 0bc77d7b-8e7f-4270-876b-09e6ee331829
 sub2ind_gen((3, 5), 1, 2)
 
-# ╔═╡ 03cdc9f0-9e19-11eb-25f1-792296e70efd
+# ╔═╡ 03f3e1ef-c878-47cf-8167-7d192076bc98
 md"""
 **What code will this generate?**
 """
 
-# ╔═╡ 03cdca06-9e19-11eb-1634-652296e6ffc6
+# ╔═╡ 809c0aae-d8e3-4b9c-a0a7-2ebc97723808
 md"""
 An easy way to find out is to extract the body into another (regular) function:
 """
 
-# ╔═╡ 03cddcc6-9e19-11eb-0af2-03d258b37911
+# ╔═╡ 752f1e07-b45f-4be9-802d-c8c26a42ea4b
 @generated function sub2ind_gen(dims::NTuple{N}, I::Integer...) where N
-           return sub2ind_gen_impl(dims, I...)
-       end
+     return sub2ind_gen_impl(dims, I...)
+ end
 
-# ╔═╡ 03cddcc6-9e19-11eb-0dfc-5981f9b4e4ab
+# ╔═╡ 9cfe79cd-4754-4f86-a616-53a38e084d26
 function sub2ind_gen_impl(dims::Type{T}, I...) where T <: NTuple{N,Any} where N
-           length(I) == N || return :(error("partial indexing is unsupported"))
-           ex = :(I[$N] - 1)
-           for i = (N - 1):-1:1
-               ex = :(I[$i] - 1 + dims[$i] * $ex)
-           end
-           return :($ex + 1)
-       end
+     length(I) == N || return :(error("partial indexing is unsupported"))
+     ex = :(I[$N] - 1)
+     for i = (N - 1):-1:1
+         ex = :(I[$i] - 1 + dims[$i] * $ex)
+     end
+     return :($ex + 1)
+ end
 
-# ╔═╡ 03cddce4-9e19-11eb-31af-692efced2caa
+# ╔═╡ 0820e03a-6840-46e8-a082-d592fb1b0037
 md"""
 We can now execute `sub2ind_gen_impl` and examine the expression it returns:
 """
 
-# ╔═╡ 03cdde6a-9e19-11eb-016c-4b712612f349
+# ╔═╡ d93b1e4c-414a-460d-8f8b-9b12b54a5de8
 sub2ind_gen_impl(Tuple{Int,Int}, Int, Int)
 
-# ╔═╡ 03cddeba-9e19-11eb-2743-61f0946f53e2
+# ╔═╡ 62aa2363-a8df-4615-9787-e2ecba4097be
 md"""
 So, the method body that will be used here doesn't include a loop at all - just indexing into the two tuples, multiplication and addition/subtraction. All the looping is performed compile-time, and we avoid looping during execution entirely. Thus, we only loop *once per type*, in this case once per `N` (except in edge cases where the function is generated more than once - see disclaimer above).
 """
 
-# ╔═╡ 03cddece-9e19-11eb-2cc1-594f553e2e86
+# ╔═╡ 18ab1044-01a6-4c5a-baec-2cf83cae7563
 md"""
 ### Optionally-generated functions
 """
 
-# ╔═╡ 03cddee2-9e19-11eb-2571-599fb08a2b78
+# ╔═╡ e77fb294-a7e1-48f4-977a-a58f86d758ef
 md"""
-Generated functions can achieve high efficiency at run time, but come with a compile time cost: a new function body must be generated for every combination of concrete argument types. Typically, Julia is able to compile "generic" versions of functions that will work for any arguments, but with generated functions this is impossible. This means that programs making heavy use of generated functions might be impossible to statically compile.
+Generated functions can achieve high efficiency at run time, but come with a compile time cost: a new function body must be generated for every combination of concrete argument types. Typically, Julia is able to compile \"generic\" versions of functions that will work for any arguments, but with generated functions this is impossible. This means that programs making heavy use of generated functions might be impossible to statically compile.
 """
 
-# ╔═╡ 03cddf00-9e19-11eb-2f9a-c71a2e8e6c3c
+# ╔═╡ f293b8c6-8876-4889-afb6-5c87c09612ae
 md"""
 To solve this problem, the language provides syntax for writing normal, non-generated alternative implementations of generated functions. Applied to the `sub2ind` example above, it would look like this:
 """
 
-# ╔═╡ 03cddf1e-9e19-11eb-0020-5f2c71987728
+# ╔═╡ 6544c7fb-4ca5-451f-bcf2-4b99ef3ae587
 md"""
 ```julia
 function sub2ind_gen(dims::NTuple{N}, I::Integer...) where N
     if N != length(I)
-        throw(ArgumentError("Number of dimensions must match number of indices."))
+        throw(ArgumentError(\"Number of dimensions must match number of indices.\"))
     end
     if @generated
         ex = :(I[$N] - 1)
@@ -1577,348 +1577,348 @@ end
 ```
 """
 
-# ╔═╡ 03cddf48-9e19-11eb-3f64-91f9e18374ed
+# ╔═╡ e140027f-3121-4527-949b-cebad95a19e5
 md"""
 Internally, this code creates two implementations of the function: a generated one where the first block in `if @generated` is used, and a normal one where the `else` block is used. Inside the `then` part of the `if @generated` block, code has the same semantics as other generated functions: argument names refer to types, and the code should return an expression. Multiple `if @generated` blocks may occur, in which case the generated implementation uses all of the `then` blocks and the alternate implementation uses all of the `else` blocks.
 """
 
-# ╔═╡ 03cddf64-9e19-11eb-2f6e-913953039646
+# ╔═╡ 045a2a80-9398-4af0-ab31-a4bf574af334
 md"""
 Notice that we added an error check to the top of the function. This code will be common to both versions, and is run-time code in both versions (it will be quoted and returned as an expression from the generated version). That means that the values and types of local variables are not available at code generation time –- the code-generation code can only see the types of arguments.
 """
 
-# ╔═╡ 03cddf82-9e19-11eb-0585-81be59ad06cc
+# ╔═╡ 9eca1b24-e770-46d5-9ede-2bd74e4f1879
 md"""
 In this style of definition, the code generation feature is essentially an optional optimization. The compiler will use it if convenient, but otherwise may choose to use the normal implementation instead. This style is preferred, since it allows the compiler to make more decisions and compile programs in more ways, and since normal code is more readable than code-generating code. However, which implementation is used depends on compiler implementation details, so it is essential for the two implementations to behave identically.
 """
 
 # ╔═╡ Cell order:
-# ╟─03cc7e80-9e19-11eb-179f-4bf4a585b92d
-# ╟─03cc7f20-9e19-11eb-30cd-37f12222466e
-# ╟─03cc7f52-9e19-11eb-1dd7-513c3b81eaa4
-# ╟─03cc7f66-9e19-11eb-1740-ad59d009c55e
-# ╠═03cc8290-9e19-11eb-362a-9b0d830d3d49
-# ╟─03cc8308-9e19-11eb-0262-fb641b7b9eb1
-# ╟─03cc833a-9e19-11eb-2b63-e586aa13ce0a
-# ╠═03cc85d8-9e19-11eb-013e-a9313c0e9c28
-# ╠═03cc85e4-9e19-11eb-1b3d-af4a02cad3e8
-# ╟─03cc85f6-9e19-11eb-3b26-1b26dc0d2ca1
-# ╟─03cc86c8-9e19-11eb-2505-4b7a1b7c87a5
-# ╠═03cc8786-9e19-11eb-1b3d-f56f5722f522
-# ╟─03cc87b8-9e19-11eb-1efe-210c0c70032c
-# ╠═03cc8862-9e19-11eb-30fb-b5a96714d4c4
-# ╟─03cc8882-9e19-11eb-1029-2d678baac0ec
-# ╠═03cc8b5a-9e19-11eb-29bc-55a2209ccbbe
-# ╟─03cc8b6e-9e19-11eb-18bf-176fb3b2b960
-# ╠═03cc8c68-9e19-11eb-2142-5b1451dc2cb6
-# ╟─03cc8c7c-9e19-11eb-1b83-2d04c94fbead
-# ╟─03cc8ca4-9e19-11eb-11d0-116ce78bca37
-# ╠═03cc8d7e-9e19-11eb-334b-cb583b903a7f
-# ╟─03cc8d94-9e19-11eb-3359-4f4ff083227d
-# ╠═03cc8f58-9e19-11eb-037e-e77ee52b29d3
-# ╟─03cc8f8a-9e19-11eb-3e40-97cde36a12f8
-# ╠═03cc9078-9e19-11eb-1dd6-653d66742c97
-# ╟─03cc90aa-9e19-11eb-0b50-11402012df26
-# ╟─03cc90dc-9e19-11eb-222d-6d6786a046c4
-# ╠═03cc9280-9e19-11eb-0a8c-a5ec8724ae99
-# ╠═03cc9294-9e19-11eb-0855-d1046682db04
-# ╟─03cc92b2-9e19-11eb-23d4-7367606e446c
-# ╠═03cc974e-9e19-11eb-2dfb-b309e6fb7d62
-# ╠═03cc974e-9e19-11eb-2ee0-e398f358f471
-# ╠═03cc9758-9e19-11eb-2e6c-01bd71a4fb65
-# ╟─03cc9776-9e19-11eb-3dab-f3e90c71561b
-# ╟─03cc9796-9e19-11eb-11e2-6d091d253787
-# ╟─03cc97a8-9e19-11eb-0ecd-133988a3fbaa
-# ╠═03cc994c-9e19-11eb-39cc-2d548ab9e6d3
-# ╠═03cc9956-9e19-11eb-109f-19bf82e3f0fd
-# ╟─03cc996a-9e19-11eb-10f4-db43ee899d80
-# ╟─03cc997e-9e19-11eb-286b-ed82be0c4860
-# ╟─03cc99ba-9e19-11eb-33a3-8313aaf4a112
-# ╠═03cc9d3e-9e19-11eb-33a3-010163562a0e
-# ╠═03cc9d48-9e19-11eb-0f58-b97411cb21fc
-# ╟─03cc9d70-9e19-11eb-055f-21c10b36f8b1
-# ╟─03cc9d8e-9e19-11eb-3685-717dc6950e96
-# ╠═03cca432-9e19-11eb-1c03-65675fd183e5
-# ╟─03cca450-9e19-11eb-30e2-3768a34ba9a6
-# ╟─03cca464-9e19-11eb-2455-f73cf5be85af
-# ╠═03cca876-9e19-11eb-057d-8b9aca075210
-# ╠═03cca888-9e19-11eb-046b-65202c3d4387
-# ╟─03cca8b0-9e19-11eb-016d-55fff28477db
-# ╟─03cca8d6-9e19-11eb-0192-5d94215d92bb
-# ╟─03cca8ec-9e19-11eb-37f9-819135641e61
-# ╠═03ccab80-9e19-11eb-2908-3fa9398228f4
-# ╠═03ccab8a-9e19-11eb-0385-3bf11c0e6864
-# ╟─03ccab9e-9e19-11eb-11b9-7d3652c91b5e
-# ╠═03ccac5c-9e19-11eb-0e1a-cbb84bb5ca2d
-# ╟─03ccac70-9e19-11eb-2c65-f5b41f747aad
-# ╠═03ccaf22-9e19-11eb-2d7a-21f270336afe
-# ╟─03ccaf4c-9e19-11eb-03c8-d3b7bab13e04
-# ╟─03ccaf5e-9e19-11eb-3bb6-afc472ce01bd
-# ╟─03ccaf7a-9e19-11eb-2f58-e753935b3d23
-# ╠═03ccb3be-9e19-11eb-02da-0b34d9945e9f
-# ╠═03ccb3c8-9e19-11eb-30bb-bb3e51d6e4ad
-# ╟─03ccb3d2-9e19-11eb-2c96-ed6de4dd9726
-# ╟─03ccb3e4-9e19-11eb-3c25-75ed05e6a369
-# ╠═03ccb76a-9e19-11eb-3541-cf00a007bb5b
-# ╠═03ccb774-9e19-11eb-17e1-b191b67a42f7
-# ╟─03ccb792-9e19-11eb-07d5-f3000d83796a
-# ╠═03ccb850-9e19-11eb-2fea-858b5c245cd2
-# ╟─03ccb86e-9e19-11eb-29d7-dba331ff8ec6
-# ╠═03ccba12-9e19-11eb-30a1-bb1784975ebf
-# ╟─03ccba30-9e19-11eb-2007-2dfbe805f936
-# ╠═03ccbaee-9e19-11eb-10b5-01396515c779
-# ╟─03ccbb16-9e19-11eb-35f2-5f87813b7187
-# ╟─03ccbb34-9e19-11eb-01da-af38e0d1a01b
-# ╟─03ccbb5e-9e19-11eb-3331-a95901ab947d
-# ╠═03ccbd0a-9e19-11eb-3f90-25127c484cc2
-# ╟─03ccbd26-9e19-11eb-1c23-517b810e884d
-# ╠═03ccc372-9e19-11eb-2d5d-d9aea687e402
-# ╠═03ccc372-9e19-11eb-2dfb-9d6632bcf40e
-# ╟─03ccc390-9e19-11eb-1c75-550e98e9e81b
-# ╠═03ccc516-9e19-11eb-0cf5-cf71cdc5f92c
-# ╟─03ccc536-9e19-11eb-2c1c-859efe77d900
-# ╟─03ccc53e-9e19-11eb-29e0-13dfcc440b77
-# ╟─03ccc55c-9e19-11eb-1864-4939bec3d292
-# ╠═03cccc28-9e19-11eb-2986-514455cb26ac
-# ╠═03cccc28-9e19-11eb-3adf-afb11a2f1125
-# ╠═03cccc32-9e19-11eb-1cc5-5d318e79d216
-# ╠═03cccc32-9e19-11eb-12f1-094dd8915f0a
-# ╠═03cccc32-9e19-11eb-24dd-bfee09c6901f
-# ╠═03cccc3a-9e19-11eb-3330-cbe48f1d19dd
-# ╟─03cccc6c-9e19-11eb-12a5-e96b8266f720
-# ╠═03cccf66-9e19-11eb-3ea9-fda557016d9e
-# ╠═03cccf70-9e19-11eb-00ae-8365a033ff85
-# ╠═03cccf70-9e19-11eb-0a82-434aeed9c11e
-# ╠═03cccf7a-9e19-11eb-154b-819289c3b1a0
-# ╟─03cccf8e-9e19-11eb-368f-afa085b49d7e
-# ╟─03cccfac-9e19-11eb-19f5-c11b0a07e232
-# ╠═03ccd5a6-9e19-11eb-35df-5b33bd1d5480
-# ╠═03ccd5b2-9e19-11eb-38cd-6b23f6980e99
-# ╠═03ccd5b2-9e19-11eb-39bb-6d72a67f2aac
-# ╠═03ccd5e0-9e19-11eb-26df-2d5bb58e462b
-# ╟─03ccd60a-9e19-11eb-05fe-7d9b2d4f9675
-# ╟─03ccd6d2-9e19-11eb-2edf-8774cbf35a67
-# ╟─03ccd6e8-9e19-11eb-0791-1587d247ded6
-# ╟─03ccd71a-9e19-11eb-30b5-7f1c69e82504
-# ╠═03ccde70-9e19-11eb-333c-1380492abf02
-# ╠═03ccde7a-9e19-11eb-16fc-5141099c84c3
-# ╠═03ccde7a-9e19-11eb-3f1d-af4c79b9d3e0
-# ╟─03ccde8e-9e19-11eb-3432-0112b47ba011
-# ╠═03cceb54-9e19-11eb-1394-414aa1085038
-# ╠═03cceb54-9e19-11eb-31af-534946ccbede
-# ╠═03cceb5e-9e19-11eb-17be-7b015f9a0aad
-# ╠═03cceb5e-9e19-11eb-0e4a-41d8e095a5f7
-# ╟─03cceb7c-9e19-11eb-0ae8-35a2a64cffdd
-# ╟─03cceba4-9e19-11eb-19eb-273c2affc523
-# ╟─03ccebb8-9e19-11eb-1f80-4f94141a1c85
-# ╟─03ccebc2-9e19-11eb-0c94-a397af331728
-# ╠═03ccee74-9e19-11eb-1945-95f6f63a1a0d
-# ╟─03ccee92-9e19-11eb-2d8e-7dd375b5844b
-# ╟─03cceed8-9e19-11eb-23ee-a739d187f47c
-# ╟─03cceeec-9e19-11eb-38bf-bf538b40cf80
-# ╠═03cceff0-9e19-11eb-2f3d-75794ca16d99
-# ╟─03ccf002-9e19-11eb-225f-654c7768d3da
-# ╠═03ccf310-9e19-11eb-12cc-6f0af8330b87
-# ╟─03ccf338-9e19-11eb-2e71-ed66ee8fe74c
-# ╠═03ccf464-9e19-11eb-2290-79db30f6786e
-# ╟─03ccf48c-9e19-11eb-2c27-43ddb72044e9
-# ╠═03ccf798-9e19-11eb-2b04-97090ef5ca7f
-# ╠═03ccf7a2-9e19-11eb-3630-8bffd2de56eb
-# ╟─03ccf7b6-9e19-11eb-2f8d-65356683f234
-# ╟─03ccf7d4-9e19-11eb-10e6-37a1106d0f53
-# ╠═03ccf976-9e19-11eb-32eb-0b2dbfcef976
-# ╟─03ccf98c-9e19-11eb-0936-3350ac6cd80c
-# ╟─03ccf9b4-9e19-11eb-1ba1-9589e0cf53fa
-# ╟─03ccf9d2-9e19-11eb-13cc-9919fe37defa
-# ╠═03cd04cc-9e19-11eb-1804-35111aacacdf
-# ╠═03cd04d6-9e19-11eb-164c-5d54409cb170
-# ╟─03cd0544-9e19-11eb-0003-61d9e75b047c
-# ╠═03cd082a-9e19-11eb-0996-d100725d1875
-# ╠═03cd0832-9e19-11eb-3f44-1799723e0feb
-# ╠═03cd083c-9e19-11eb-22df-7b6e742b6db5
-# ╟─03cd086e-9e19-11eb-2766-0deeedd1fadd
-# ╟─03cd088a-9e19-11eb-300e-374026c4fefe
-# ╟─03cd08c8-9e19-11eb-238b-ff462de26d67
-# ╟─03cd08fa-9e19-11eb-12ab-bf42ee18dd8e
-# ╟─03cd092c-9e19-11eb-3ea9-eb2012a248b5
-# ╟─03cd094a-9e19-11eb-2071-5dbc5e4137d6
-# ╟─03cd0960-9e19-11eb-3f00-8956e48e52fa
-# ╟─03cd097c-9e19-11eb-2c7f-6b5de3b9e63d
-# ╠═03cd111a-9e19-11eb-19c7-250bdec48f75
-# ╠═03cd1124-9e19-11eb-1954-19d86d9b6b27
-# ╠═03cd1124-9e19-11eb-2bbe-89fd8b3a8137
-# ╠═03cd112c-9e19-11eb-2c61-af7b463556f5
-# ╟─03cd114c-9e19-11eb-102e-736fc08dd38a
-# ╟─03cd117e-9e19-11eb-1117-33e9dd9b9425
-# ╟─03cd1192-9e19-11eb-3edb-a910fc1d7452
-# ╠═03cd14bc-9e19-11eb-0372-612840e525b3
-# ╠═03cd14bc-9e19-11eb-3b07-83e99c23ef2c
-# ╟─03cd14e4-9e19-11eb-1657-9dc520b2eb24
-# ╟─03cd14ee-9e19-11eb-3d3c-e70ee9a8eb0f
-# ╟─03cd150c-9e19-11eb-015f-c58895a933b4
-# ╠═03cd1962-9e19-11eb-09c2-4b2e2c520fd9
-# ╟─03cd1976-9e19-11eb-1d27-5319f043cbb9
-# ╠═03cd1d2c-9e19-11eb-0ee5-0bd7971e49f4
-# ╠═03cd1d36-9e19-11eb-241e-c99277f46dff
-# ╟─03cd1d3e-9e19-11eb-0e38-f5208ede4834
-# ╟─03cd1d5e-9e19-11eb-2ff5-492d1297c666
-# ╟─03cd1dae-9e19-11eb-1998-5f59254b419b
-# ╟─03cd1dcc-9e19-11eb-0897-69267a4e91aa
-# ╠═03cd252e-9e19-11eb-379f-3d1c591b71c9
-# ╟─03cd2556-9e19-11eb-223f-b94d9bbabbb2
-# ╠═03cd2966-9e19-11eb-1e86-776ce6f153e6
-# ╠═03cd298e-9e19-11eb-03fd-df5810e073ca
-# ╟─03cd29ca-9e19-11eb-3ca2-9bf6d26443f2
-# ╠═03cd2efc-9e19-11eb-28c5-adc1a1c28857
-# ╠═03cd2f06-9e19-11eb-2284-01970bd6f89c
-# ╠═03cd2f06-9e19-11eb-3d50-cb870973357e
-# ╟─03cd2f38-9e19-11eb-0a47-87949f8fac64
-# ╟─03cd2f4c-9e19-11eb-2cac-a320b068500a
-# ╟─03cd2f54-9e19-11eb-1057-fd3f9ff01526
-# ╟─03cd2f92-9e19-11eb-2611-d78f6dfd0ef0
-# ╟─03cd2fb0-9e19-11eb-21a2-ad8cd5f1c24c
-# ╟─03cd2fc6-9e19-11eb-0cc0-8507a919de57
-# ╟─03cd2ff8-9e19-11eb-3045-9b82c9f545e0
-# ╟─03cd3014-9e19-11eb-10d4-ab0ebf868004
-# ╟─03cd302a-9e19-11eb-1178-5d4cee34fb76
-# ╟─03cd303c-9e19-11eb-2aef-e5083493744e
-# ╟─03cd3064-9e19-11eb-04f5-bfeceb2c090d
-# ╟─03cd3078-9e19-11eb-0a37-2d3e9b26778e
-# ╟─03cd3082-9e19-11eb-2177-bd230958128d
-# ╟─03cd3096-9e19-11eb-1ad8-df02c4524dd6
-# ╠═03cd3758-9e19-11eb-1978-8f5da64fb0fd
-# ╠═03cd3758-9e19-11eb-0cb7-85fb9544704d
-# ╠═03cd3758-9e19-11eb-3795-add5873ba185
-# ╟─03cd376c-9e19-11eb-087e-252737934fe2
-# ╟─03cd37bc-9e19-11eb-2e23-f5c48c1923de
-# ╟─03cd37d0-9e19-11eb-26d5-3b31299ce41a
-# ╟─03cd37e4-9e19-11eb-2f5d-2986c1cc897c
-# ╟─03cd3804-9e19-11eb-35e1-d972a3033c7c
-# ╟─03cd3816-9e19-11eb-29c3-5d60527c3080
-# ╟─03cd3836-9e19-11eb-3d76-17a83f805bf9
-# ╠═03cd5efc-9e19-11eb-0361-2bb923f7d651
-# ╠═03cd5efc-9e19-11eb-260d-ad649cc3d0f6
-# ╠═03cd5f08-9e19-11eb-3a05-2bae1d41bdbf
-# ╠═03cd5f26-9e19-11eb-33f0-ab86b0452a39
-# ╠═03cd5f26-9e19-11eb-3371-533de75e86f4
-# ╟─03cd5f44-9e19-11eb-0291-e36ef6f0c1ac
-# ╠═03cd6494-9e19-11eb-34c5-b76597de6b50
-# ╠═03cd649c-9e19-11eb-17b3-c506e0bfc5c8
-# ╠═03cd64a8-9e19-11eb-3ffb-8fd614361680
-# ╠═03cd64b2-9e19-11eb-180c-83fb2840585d
-# ╟─03cd64e4-9e19-11eb-0d2f-b79fddeacc32
-# ╟─03cd650c-9e19-11eb-240f-9d095ea97341
-# ╠═03cd6692-9e19-11eb-339e-8936dbb46f64
-# ╟─03cd66a8-9e19-11eb-29c1-41074cb152f1
-# ╠═03cd6d36-9e19-11eb-189a-cd4267f22c06
-# ╟─03cd6d4a-9e19-11eb-1361-edd3dfee5ac6
-# ╠═03cd6fb6-9e19-11eb-1611-d1526c1a0442
-# ╠═03cd6fb6-9e19-11eb-1f0d-97fcfc2fabca
-# ╠═03cd6fc0-9e19-11eb-2f23-57862f4fe2a2
-# ╟─03cd6fdc-9e19-11eb-0274-e158f47fd303
-# ╟─03cd7010-9e19-11eb-3ba0-ab6a43ae57d7
-# ╟─03cd7024-9e19-11eb-0d1b-e7ac325614dd
-# ╟─03cd7038-9e19-11eb-2cd0-6bf82a4bb248
-# ╟─03cd706a-9e19-11eb-1d04-b58b999d87d2
-# ╟─03cd7080-9e19-11eb-3ee3-9b0ddd7a7833
-# ╟─03cd7092-9e19-11eb-3f0e-2f44b01fc874
-# ╟─03cd70b2-9e19-11eb-253a-45674db2f5d2
-# ╟─03cd7150-9e19-11eb-2893-af8f7072e143
-# ╟─03cd7164-9e19-11eb-0598-8b30c99f6d7b
-# ╟─03cd7178-9e19-11eb-0c7b-1f4637155c18
-# ╟─03cd71aa-9e19-11eb-394f-2f008904bfce
-# ╟─03cd71b6-9e19-11eb-2060-d9ab741af14e
-# ╟─03cd71d2-9e19-11eb-315e-35ec80e8c140
-# ╟─03cd71f0-9e19-11eb-0091-d581a3f38933
-# ╟─03cd7204-9e19-11eb-3f42-6febfe74ee83
-# ╟─03cd721a-9e19-11eb-1356-43be64345a28
-# ╟─03cd7236-9e19-11eb-1c5a-75fc976a2a01
-# ╟─03cd729a-9e19-11eb-0534-e5e73f6f80d9
-# ╟─03cd72b8-9e19-11eb-2843-0757fb2ef607
-# ╟─03cd72e0-9e19-11eb-3c56-490dff5bde04
-# ╟─03cd72f4-9e19-11eb-2b9e-7f54e71e9825
-# ╟─03cd7308-9e19-11eb-1d30-699d03105cae
-# ╟─03cd7326-9e19-11eb-1891-71b406f75d19
-# ╟─03cd733a-9e19-11eb-21da-31e76b3652f2
-# ╟─03cd7350-9e19-11eb-2af5-1d12b98c2350
-# ╟─03cd7358-9e19-11eb-3239-f346edb51e43
-# ╟─03cd7376-9e19-11eb-3556-0b7ea7f1fd2c
-# ╟─03cd737e-9e19-11eb-177e-efe2c0b96563
-# ╟─03cd73b0-9e19-11eb-2586-b926d0958e22
-# ╟─03cd73d0-9e19-11eb-1788-676d2701e496
-# ╟─03cd73e2-9e19-11eb-1a21-d3b456a9a478
-# ╟─03cd7542-9e19-11eb-36bc-89add66424f3
-# ╟─03cd7560-9e19-11eb-205e-f9812cd742fb
-# ╠═03cd7902-9e19-11eb-332f-0d20ccde8141
-# ╟─03cd791e-9e19-11eb-0a8f-25daf9c263ca
-# ╟─03cd7950-9e19-11eb-1774-99ebc58eb7dc
-# ╠═03cd7d62-9e19-11eb-2faf-ed964fbd22cc
-# ╠═03cd7d6c-9e19-11eb-3bdf-cb50304b4d42
-# ╠═03cd7d6c-9e19-11eb-36d9-c1ecb3c9e744
-# ╠═03cd7d76-9e19-11eb-1ea0-81ce1e83b834
-# ╟─03cd7da8-9e19-11eb-0faa-9b1a947644d6
-# ╟─03cd7dbc-9e19-11eb-147e-7bd238ae25a8
-# ╠═03cd7ea2-9e19-11eb-16b2-f7fb8b1a3030
-# ╟─03cd7ebe-9e19-11eb-3f7c-97b90ea7db66
-# ╟─03cd7efc-9e19-11eb-03e0-9d3ad1fe1a8c
-# ╟─03cd7f1a-9e19-11eb-361c-553b080a252f
-# ╟─03cd7f2e-9e19-11eb-123e-713a436d24e0
-# ╠═03cd80a0-9e19-11eb-03e6-3b1c4865ad17
-# ╟─03cd80be-9e19-11eb-1ef9-5315c181dae0
-# ╠═03cd85be-9e19-11eb-023a-b1d205fd855a
-# ╠═03cd85be-9e19-11eb-2fc9-b3b345257105
-# ╠═03cd85d2-9e19-11eb-2307-13adacf8340f
-# ╟─03cd85f0-9e19-11eb-0b44-2728ae796d70
-# ╠═03cd8992-9e19-11eb-029e-130184bd93e8
-# ╠═03cd89a6-9e19-11eb-0164-075c1ab96b38
-# ╟─03cd89ba-9e19-11eb-090a-6b03001c732a
-# ╠═03cd8cd0-9e19-11eb-08f7-7ddd7842e5f2
-# ╠═03cd8cda-9e19-11eb-1e1b-658f1a3f7de4
-# ╠═03cd8cda-9e19-11eb-136b-535a0eb92050
-# ╠═03cd8ce4-9e19-11eb-26ad-17270398a659
-# ╟─03cd8cf8-9e19-11eb-3db8-43b3db69cdfd
-# ╠═03cd9022-9e19-11eb-1471-694b2d5ba5ef
-# ╠═03cd9022-9e19-11eb-3942-a161757ec5ab
-# ╟─03cd904a-9e19-11eb-3576-e552feea282b
-# ╠═03cd96da-9e19-11eb-2b93-c3268ad77882
-# ╠═03cd96e6-9e19-11eb-1a60-734ee5665157
-# ╠═03cd96e6-9e19-11eb-32d0-fbe0ce8931f1
-# ╟─03cd96f8-9e19-11eb-3692-510832d7ed7d
-# ╟─03cd9720-9e19-11eb-2e26-c36bd829f007
-# ╠═03cd9c70-9e19-11eb-342c-778b54deae57
-# ╟─03cd9c8e-9e19-11eb-3eb0-979aae68ddad
-# ╟─03cd9cb4-9e19-11eb-39d8-a94c4b55eae7
-# ╟─03cd9cca-9e19-11eb-378d-79f4d7d98cfd
-# ╟─03cd9d6a-9e19-11eb-3b35-055a0345219e
-# ╟─03cd9d74-9e19-11eb-17c1-73c7971c459a
-# ╟─03cd9d92-9e19-11eb-0d56-75795090094a
-# ╟─03cd9ea0-9e19-11eb-2d37-b52adc690419
-# ╟─03cd9eb4-9e19-11eb-1146-1beb5bd7da4f
-# ╟─03cd9ee6-9e19-11eb-2f27-038cfb454e36
-# ╟─03cd9f18-9e19-11eb-2cf2-a14db1bebe09
-# ╠═03cdaa4e-9e19-11eb-3020-35b27062d54b
-# ╠═03cdaa58-9e19-11eb-0333-2588358a6e86
-# ╟─03cdaa80-9e19-11eb-1d85-035e6c4a5d59
-# ╠═03cdbbd8-9e19-11eb-0666-fb5e87b8d609
-# ╠═03cdbbe4-9e19-11eb-1574-5514673c271e
-# ╠═03cdbbe4-9e19-11eb-38d0-cfa03f1106af
-# ╠═03cdbbf6-9e19-11eb-2194-91a0d5fb4161
-# ╠═03cdbbf6-9e19-11eb-0242-5b7537e9f33e
-# ╟─03cdbc0a-9e19-11eb-0cf1-791b85bbe556
-# ╟─03cdbc32-9e19-11eb-32bd-bd1b327fd8ff
-# ╠═03cdc9ca-9e19-11eb-3785-018d13c592e3
-# ╠═03cdc9d4-9e19-11eb-0844-4d9ea3c86d28
-# ╟─03cdc9f0-9e19-11eb-25f1-792296e70efd
-# ╟─03cdca06-9e19-11eb-1634-652296e6ffc6
-# ╠═03cddcc6-9e19-11eb-0af2-03d258b37911
-# ╠═03cddcc6-9e19-11eb-0dfc-5981f9b4e4ab
-# ╟─03cddce4-9e19-11eb-31af-692efced2caa
-# ╠═03cdde6a-9e19-11eb-016c-4b712612f349
-# ╟─03cddeba-9e19-11eb-2743-61f0946f53e2
-# ╟─03cddece-9e19-11eb-2cc1-594f553e2e86
-# ╟─03cddee2-9e19-11eb-2571-599fb08a2b78
-# ╟─03cddf00-9e19-11eb-2f9a-c71a2e8e6c3c
-# ╟─03cddf1e-9e19-11eb-0020-5f2c71987728
-# ╟─03cddf48-9e19-11eb-3f64-91f9e18374ed
-# ╟─03cddf64-9e19-11eb-2f6e-913953039646
-# ╟─03cddf82-9e19-11eb-0585-81be59ad06cc
+# ╟─4a329a4e-1fe3-431d-98ec-8161764a3ee1
+# ╟─fcf7fb90-a229-4a34-af4d-e1da308a1e78
+# ╟─7e910758-9b9d-4eb0-a161-f1b7eac39129
+# ╟─0167e817-d8d3-4c51-87fe-9bf0619dcff2
+# ╠═36097fc2-d38d-4a6f-9c59-5942f2758803
+# ╟─11d110f1-7629-4af9-b3d9-703dcd1b387d
+# ╟─96b8f192-6774-4dde-87a2-64a81f8dbf1f
+# ╠═8fcfafa3-f229-44c9-a431-2214b02726d0
+# ╠═7859f9f6-1443-46db-9657-9f1615e279d6
+# ╟─15a2df63-e2ff-46df-9369-baad4e4dc748
+# ╟─54613218-df4b-4419-a139-cbfc03600cee
+# ╠═36ef56a5-6220-4626-92d5-bee76a2328f7
+# ╟─55904141-a6a2-4cb4-b062-73783a1f5cbf
+# ╠═4e1a9122-0c7f-4f28-93f5-656daf84ecf7
+# ╟─e7318bff-ae20-4ddc-b0d9-2ad950123f1a
+# ╠═33ee25b5-147f-40ec-a245-10752bdf73d5
+# ╟─6187fc22-7e83-4b7d-876f-e1b18f597a56
+# ╠═f3db3506-1417-4d5c-9d3c-550ce11b12a2
+# ╟─d5505c6f-8897-467b-aec3-ac106f7d2a81
+# ╟─da20398b-0959-4024-be1a-cd336f6fd596
+# ╠═208960e1-6204-4df6-93e3-5586c8111e54
+# ╟─0f99abc3-4700-4846-8128-572e88c1c426
+# ╠═1c3802e8-d7e9-4454-9729-dd108c1fdf8f
+# ╟─620275f6-5e71-4a48-8df8-cc8e6e3d91e9
+# ╠═fefeb34f-3d1e-4b18-bb37-26f7a08de741
+# ╟─5a251167-1ca2-4311-800c-8a65fd8bce27
+# ╟─c3875772-7266-475c-82f0-f574df3e00f9
+# ╠═53c5a159-79ad-4fbb-be77-28d9f5ce355a
+# ╠═0ed50b34-bf20-4cae-abbf-a23bb2a6b3e1
+# ╟─77270b5d-db24-4034-9acb-df32bfc0046e
+# ╠═b8e25ef0-31e4-45ca-8641-94a722dcd04c
+# ╠═37039812-4c1a-4a83-b226-de3e3bb46708
+# ╠═55b7d0c1-2313-4aab-a91d-3f8df3aad0f8
+# ╟─d69d7939-28af-4d27-8160-5ce95352d0f5
+# ╟─80d66efe-4dfd-4b2b-9c8f-086d89c0f57c
+# ╟─3ad47a4e-c1a0-40f6-b060-6e81ba4b5fce
+# ╠═0d2d15b7-a8db-409c-b583-55ad3b31f7b7
+# ╠═89162a72-fc8a-4ae8-b879-92257bfab63f
+# ╟─bb530cb9-1ca7-4c97-8d16-18390d77ceb9
+# ╟─bd81c653-8361-40b8-9ce7-5996a124fe67
+# ╟─7aee02ac-e84f-4e07-9fd6-29864de59dfd
+# ╠═1018af97-73a3-4e9e-9e7e-a2249a37abb9
+# ╠═e8db5d80-7350-40e3-812d-42fa5293abb0
+# ╟─ceeea500-f6c8-4743-9d22-9b72c7da7ed7
+# ╟─37827ba6-65ab-4dd9-82f5-310cb30a0712
+# ╠═5a6edb10-f59a-4874-8eaa-a52eb8991771
+# ╟─52404149-600f-48f8-9e8d-5e8c9b0b0a04
+# ╟─3fcb66c2-4e66-4f45-a7e7-65036efca00a
+# ╠═d958acef-73fe-4109-9967-24e5f4ca569f
+# ╠═ba42645b-fb45-4221-8d40-9840cb02264c
+# ╟─2128a38f-7b95-449c-b561-06268ddc755b
+# ╟─03d378b5-4419-41e2-91e9-cd0ba96e3f0c
+# ╟─44e77b14-6cab-46fb-adb7-67e75dc0857b
+# ╠═63ff3614-7d0f-4c5e-9bb5-49170e5aa724
+# ╠═4d55b495-251d-4306-a7de-96517a0f27db
+# ╟─38ceea8c-8c47-40eb-93bd-f1b4d2fb1dd7
+# ╠═d9435823-a23b-4a48-9b20-a8a60cbd5642
+# ╟─452953e8-0b5e-4ec1-b186-920c3c3a6a92
+# ╠═4252a8c4-fbc1-478e-9853-bd14ae34028b
+# ╟─ade9fd13-8cae-4fa4-9177-4d4f95e648fa
+# ╟─a3abc7e4-82dc-44f9-a36d-2bb887485366
+# ╟─43cc1bf6-bb71-4283-bcac-9f1e5beb6320
+# ╠═ee9cdf5f-fbe3-4739-9a0f-0807a71832e1
+# ╠═8c80e767-c31e-4b90-a796-3bd172807b99
+# ╟─e9060435-8f4d-4d3b-a712-6d4c996ed5a5
+# ╟─159f3cb2-3db5-4353-a856-653feacb5e92
+# ╠═b9ad3232-5587-4a03-89cf-98538cf6768e
+# ╠═42e7f30a-da9e-431a-8f3d-6a86c37a42a8
+# ╟─f3eee563-1bca-49e9-892a-02f0f7f383fb
+# ╠═c4955aff-fe45-4f25-ba4a-76cf37cbf313
+# ╟─8f3c873c-ea0a-476b-b976-c4952d0862c4
+# ╠═ccf86fe2-36fb-4cc4-9896-f57908929057
+# ╟─f1f4f452-3a8b-460d-90c4-a8051081baa5
+# ╠═9eb4d9b8-8d0e-45aa-918f-a4c15f0fc7dd
+# ╟─6eb1be2c-1380-40c4-9ad4-97df4bd0c00e
+# ╟─e2fc1d1c-8926-4d6d-b98c-272513971354
+# ╟─be25c407-2da0-4a73-8d61-f397809c6a0d
+# ╠═555a7c0a-19b9-4fa5-bfed-18e87b944a08
+# ╟─613595ed-d306-4c9b-a02c-002d8adbfc7c
+# ╠═f7e81888-47e6-46fc-8328-1fb859e60541
+# ╠═86cf0594-0cb9-4385-9eac-931ef2ec7230
+# ╟─ee702c43-2fb0-4772-858d-cf8c914a82bf
+# ╠═56964666-aaa8-4e5b-9032-27899e9e9021
+# ╟─92b11cbe-9bd5-4ffa-b847-1e49bc399c64
+# ╟─bdd51c19-3ac2-42ee-bce2-cc63d25c45f1
+# ╟─8c70bcc3-1f62-43c2-875a-10e0349f6ff7
+# ╠═1bc594e5-f04a-41de-8ae0-83d5e0a0b1c9
+# ╠═e21a813e-1f35-4e61-9d24-dfe075e20bfa
+# ╠═6537044b-c279-4e5b-8b8d-aeece11678de
+# ╠═0a5e1a3e-9613-4972-b8e5-eebd16fc2538
+# ╠═633972c2-e96d-482e-8a36-55b090d6f31e
+# ╠═094811c3-f379-482c-8e2b-2e31d2b2dae6
+# ╟─1810881a-502d-44d0-9f25-e179b0a3fdc3
+# ╠═b4d7164c-5ebc-4e03-8750-d4303d5040fc
+# ╠═9174d44b-3cb8-481d-8625-89a34974fc5b
+# ╠═4f685b00-8535-462a-b017-342a94f38c37
+# ╠═408fbb67-959f-4a68-a8b3-1630f41d24d1
+# ╟─ac140b00-a8c3-4e81-8d83-b65155d1f8a0
+# ╟─5511e05a-be65-4295-b1ff-b1204bbf6e8a
+# ╠═af23182f-10e9-4dfb-ac33-6e161a2f4889
+# ╠═48f159ac-073c-4b4e-bdac-f6d65d24ef6d
+# ╠═d4f5c5d2-b6af-4d6c-b1c1-729580dbb94f
+# ╠═590c8581-b7d5-4cb4-acda-b1ceafbd113b
+# ╟─7655bf82-840f-48e0-a0ba-fc2063bc2307
+# ╟─0a5469c9-ccef-4b62-9f0f-d3552fb3b986
+# ╟─91b8a80e-5f65-4387-acf2-5fb87692789d
+# ╟─9ee35586-1af3-43ab-b1ba-5b3bb67ebb34
+# ╠═5e0c39cc-b506-45de-897e-afd46895836d
+# ╠═8b221b0f-36b2-4ac5-9957-68b2168ba517
+# ╠═f8cefa6a-eece-4aca-930f-455eb7fe1914
+# ╟─5e3b7f2c-e329-4273-9a03-6d8a73608111
+# ╠═3e01b90a-d9eb-4b71-809b-0dc9be003933
+# ╠═73f1405c-a7c0-498a-a038-dadec51ecd27
+# ╠═4ded730f-d9bf-4c02-8631-c7c51afe9a87
+# ╠═c3e1d72f-f4a9-49a8-9463-f339cb0b7b2c
+# ╟─64f2099f-1105-44a7-81a6-a994a9a04d42
+# ╟─f048bbf0-6d7a-4a59-9399-d54097ccf829
+# ╟─3ce27869-3376-43d9-b7f2-8f7fec825e2e
+# ╟─ecf455bc-76fe-4cbe-b953-67371e614292
+# ╠═75c33720-2ad3-4b7f-a793-a9c2d92a984a
+# ╟─e22c2662-6933-4715-98cd-6d7c4db46a0c
+# ╟─ed26c3c1-a93f-4f69-b654-2b419503d422
+# ╟─3513f124-bec4-48fc-bf89-f9dafe70f9f4
+# ╠═71415783-382f-4f44-88b5-61d4d60faa30
+# ╟─0963a1f3-aac8-40e6-93d5-6fd6e8ba0730
+# ╠═3047d86a-1a72-414d-a07e-da6bd9201be9
+# ╟─b46ab3b3-8046-4e89-af4a-50f0b312c9b7
+# ╠═f77e4f70-c123-4c6e-b796-9c04bddf1109
+# ╟─fee9f20b-9215-4d74-b8d1-dda548e424d6
+# ╠═14921103-4720-44b9-bd67-c390278cc0e4
+# ╠═0c866a9a-e612-4730-b528-9d506ea19fe7
+# ╟─63471543-034d-4f19-811b-32d64d4fd115
+# ╟─fb4452b8-c16a-4bbf-a6dc-c142c11998cf
+# ╠═bc63e678-3b03-4330-bb5c-b00fd610bd46
+# ╟─294ac76a-e11c-43f8-b9b9-1fc5b9a36871
+# ╟─cd2366f7-6528-4ae6-83cb-dc82b89287b1
+# ╟─f978c9c7-ec5b-4162-92b4-95b16efed6ad
+# ╠═c7a9233d-374a-4981-8e43-166d8a3ff042
+# ╠═f72565d4-8f25-4cb4-9f7f-19dff4cf78da
+# ╟─30004803-2216-4b8d-9267-1d3dbd7ab072
+# ╠═2d4bfe38-5121-4128-a0e0-165f16cacd70
+# ╠═6e65d136-ad27-4db6-abf3-f8e6bfc7b83c
+# ╠═d650ea8f-589b-4cf3-9c55-d4f24a6b9a3d
+# ╟─95e0e154-7479-4216-952f-55c33200ab17
+# ╟─364f58d3-706b-4a99-83a7-d72d2c2acc1b
+# ╟─b90e2c60-561a-4afd-a41f-c0b0b87ca60c
+# ╟─589dbb6d-bfa0-449f-8bfe-da83ebaa6f6e
+# ╟─cc8f4ed9-7dac-45d2-8d59-4171939c9915
+# ╟─4be03b12-208b-4034-9056-3100b69486d1
+# ╟─1c556d0a-5525-4e2c-80f2-0207af774553
+# ╟─309a286b-78d9-4ff0-859c-a6a6f0abf34b
+# ╠═336da33b-aa63-4bae-a82a-f847fa40b9b0
+# ╠═560f7df8-821d-43cc-8077-ab98b0779296
+# ╠═8953fe37-0e8b-4d00-816e-a1050acc8635
+# ╠═a64d78c8-8728-4fbe-9bb6-311bde057a43
+# ╟─58a065aa-b40e-46e9-be19-733bdad3837b
+# ╟─9aba8e4a-3f76-45ed-add5-e0f5f6fc5485
+# ╟─884121d0-9980-40bc-bcb3-c941ca75f206
+# ╠═a66a975e-1af7-4403-b9ce-c88ba9695a86
+# ╠═df7198a4-b334-44c5-9396-ca0dc79f2395
+# ╟─2211b1cc-d9dd-4bd5-bf55-0dcdab169317
+# ╟─1a620020-ab6d-4454-bc60-fa727d2be594
+# ╟─9057076e-ab4f-46d2-9f50-9b56f86f9445
+# ╠═214b0788-a678-482a-b9e1-ba388ee41207
+# ╟─91bc0ab4-44ca-4bb6-8543-4dcd0eb042ed
+# ╠═3fb1e2a0-393b-4051-8fc1-caf74e997ca2
+# ╠═38f53163-88f0-4532-b6c0-cda08ed9f551
+# ╟─cb20682c-1d0c-4d88-b5e8-6792ec54bbd9
+# ╟─bb43e482-196c-4864-a0ff-40e767914429
+# ╟─1c4f7db3-c88a-4bde-a418-5bfdc7809409
+# ╟─e8777260-736f-4006-a3ed-23e2b61b52de
+# ╠═c0e000b2-f297-47c3-9ad5-5570494a6204
+# ╟─ff48656f-4367-49ca-bea6-65d5113fd0cc
+# ╠═5f71e871-d6d7-4de5-94f4-226d83741df7
+# ╠═b6db6abb-0c47-4c36-b533-fb23b51cad5c
+# ╟─5b78bbfc-41f2-4073-8903-e538da17d0e0
+# ╠═51429238-d677-471f-b73b-fde1828ed060
+# ╠═f0191618-680f-47c0-b6fa-6e4a6edf3f2f
+# ╠═2d5f5dbc-10a6-4f37-96bb-af98cfeadc42
+# ╟─c46af693-c9fc-405f-8b05-70b395f5b8b2
+# ╟─72c5f262-09ed-4865-acc0-7819b3e439bd
+# ╟─b02f2238-11bd-4e82-a8d8-e3ba2218dffb
+# ╟─f2568ed4-a219-4d42-be7d-cae074280740
+# ╟─a4697205-d518-4704-a6f0-26d3152da54a
+# ╟─0ebea417-c177-4636-9d09-5315487a908d
+# ╟─495471b9-722d-420b-b2f6-2bebb570637e
+# ╟─5410304a-635a-4a46-97b3-3f186e548212
+# ╟─59e0100b-34cb-4169-b56e-72b405b47254
+# ╟─ef62fc92-8fc8-4979-a224-d0681fb4c4cb
+# ╟─5242bb32-5da5-4bc7-a2f7-a742bcd8dba1
+# ╟─fe083f76-0186-483c-88fb-8cf452c9c572
+# ╟─315e2bcf-b794-4f34-b158-9b03d3560907
+# ╟─30f8abfb-b8f5-4e3a-95e9-493254f393e1
+# ╠═a35e724c-990f-4285-803d-8b0f9416c210
+# ╠═bc43c33b-c8c5-4c87-830d-f399e3045829
+# ╠═9e5a5f02-740e-489e-87d0-f36ac029e73a
+# ╟─227d08c8-0058-4da3-a590-5092da62c776
+# ╟─c4c18d92-a287-4824-99ba-df08bf1f726e
+# ╟─22d6de99-7df5-4c8f-b7e0-52d469f94c83
+# ╟─124b5200-4a27-45b7-bd16-10ed18deab49
+# ╟─a016c4cb-3c51-4b13-a303-a399c7b9a72e
+# ╟─1c72d267-1d88-4133-896a-9ff51a3b4a04
+# ╟─cc237a28-d512-4cca-b529-45771cc5b4de
+# ╠═71771d99-ad11-4ea5-93f6-4f0254548d61
+# ╠═de94ec4d-04c9-4568-9ce4-ab938cdb1ac1
+# ╠═ebf78bef-6d08-4d95-8cd8-35352698d2b4
+# ╠═3ebe7ef8-b9e8-48cf-99c9-d4437299d28f
+# ╠═ddd41fa7-5f8a-4ed6-bef9-39c2ed9943d0
+# ╟─86facd67-9b0a-417a-9afc-d2aeef1b1f8d
+# ╠═0d9fb05c-a900-4d87-adfd-1ff2c0138095
+# ╠═b66f0390-cf77-4c99-bc01-18369767114e
+# ╠═37736dbd-b54a-4f4a-adee-289177b16a40
+# ╠═bf82c5af-44c1-4e4e-8f71-112ed0d33ead
+# ╟─fad933a9-a92e-4dd9-ba0b-93454a2e6c35
+# ╟─4dcd6922-0e9e-47c3-b967-c54ec43e294b
+# ╠═fb92155a-98b4-4245-9e0a-d36a1a67b6b5
+# ╟─d18777b3-b477-4194-b9dc-c2e769444776
+# ╠═a905eca7-1b19-4a2b-a944-07e5820b67c7
+# ╟─1fbb990a-40b7-4b9f-bf2f-ef75e03f9dd0
+# ╠═7782f382-d8c8-41a3-b73e-ed7cfbc9c884
+# ╠═f280d06b-66ac-407b-9911-cc9539e96eb0
+# ╠═30e8b5c6-4d36-4134-8b1f-37febfeb39af
+# ╟─3375f5bc-6098-41fc-a0c7-29ce2eea289f
+# ╟─78c95206-2805-44dc-87fd-511243b22c7b
+# ╟─fc581913-770e-4d3b-839c-752396bc21f3
+# ╟─d2340c5a-3466-4f38-8c78-96e6ec55dfcf
+# ╟─38dbb4e3-5496-40b8-aa01-4fe77b879634
+# ╟─5aca3a9f-d70a-4f71-b09a-8e8e474f2e4c
+# ╟─ef356125-0832-4834-b45f-59950912367f
+# ╟─aff468e4-bb07-4f42-9560-a3faffd4f807
+# ╟─e9e7d114-047c-4492-a111-ab7b5ce1f2a2
+# ╟─d7298da2-2ca3-4c48-93d4-0b7e175c5d8f
+# ╟─deb8ca7d-0f33-4884-a66f-0b4b3072137a
+# ╟─8bdcdd62-8c39-4ef1-b9e2-21f176f49cc4
+# ╟─d6e7eb38-a2d4-4846-878a-f78cfc2b5004
+# ╟─501c6b95-4e46-48d6-bc70-be780c9d2aab
+# ╟─5693c15b-81d9-4c36-84cd-3ef7f3a8f0eb
+# ╟─15c73617-caa2-4b52-a10c-bd0a0e45453d
+# ╟─b15381b7-ac69-43fd-b7ab-c77dc6f866cf
+# ╟─3e031818-f012-4748-bcd9-74a717623375
+# ╟─fad0230b-41d7-4c1a-855b-6f72690cf1f0
+# ╟─b60b7528-0cd6-477b-a9f1-966c1b819a67
+# ╟─3acd84f8-5063-442b-8c6d-84d9fa3da551
+# ╟─d52dc4c0-320e-4312-b1c8-9957fbcbe0ec
+# ╟─4d33de66-b849-42f8-adc3-172e3c082e40
+# ╟─e2d74274-6701-45cf-8fca-726dca6d05ab
+# ╟─da981e1e-91e7-4d46-a20c-61a652c38b90
+# ╟─64b7d7e0-4ebe-4509-be04-d584610ca55e
+# ╟─8a03cf63-4fa6-43da-8321-937b33852ad5
+# ╟─e03fdba1-f58f-48d3-b05f-78097460a707
+# ╟─7d2fa4ec-e581-4787-9e55-265982dba199
+# ╟─e9e6eb0b-e7cc-457f-8608-e9b5fd3ceeb7
+# ╟─19a984ab-194f-48a0-aff6-a6b69dab98e3
+# ╟─e4e8daba-8130-4f21-a707-9ef2e4f1a192
+# ╟─f6de1aea-5714-4ca3-b478-cb5eee5054b1
+# ╟─16ac01e2-6beb-4e0e-9773-2fa302043dc3
+# ╠═b2ec8dfd-041b-4a57-bcfe-0906c019b353
+# ╟─242e2d58-eafb-43a3-bf8b-ed3f26691fd3
+# ╟─8922b5b5-70d0-42c4-8034-5dbb5ef2dd20
+# ╠═41fb6483-a8a7-419c-abea-980d87f8ed5d
+# ╠═b2654112-85e1-405b-8420-60180adf4b35
+# ╠═34c1984f-aa9c-4258-9e99-7e8b41498c31
+# ╠═84b13f6d-2b85-4589-ab82-29a7ecb08a00
+# ╟─7914eb3d-060c-495a-ba47-e7204b3a7373
+# ╟─a1f74101-99e5-48ce-be90-f1b545f5868d
+# ╠═3a415fce-84c3-4efa-bdaa-aa0c2782d1a7
+# ╟─3d9585f3-3996-4e7d-a4ca-7ba635743347
+# ╟─9012e6b7-d2c1-44e7-bc78-23d535b6a18a
+# ╟─838e8e45-8fb4-485b-8d11-73310a1314d2
+# ╟─933605ca-5578-475a-9169-3bebb045e51c
+# ╠═bd0504fa-bcb2-46c0-85ca-3621fe1d9830
+# ╟─806fb8ea-3fd8-4027-a186-57c7e0743c82
+# ╠═210cc6be-378c-4dfb-88a7-1765a7a14851
+# ╠═ad530ede-8977-4f58-890c-8030f960bc32
+# ╠═439ab82d-58e1-403e-8970-5839552cd8b2
+# ╟─a83906a7-14ca-43e2-b834-a8ec2b98a5dd
+# ╠═4c4316da-6f1a-4b25-96ee-f6e9dc3abac0
+# ╠═5b7b3927-4835-440a-9e3d-584e743f4f54
+# ╟─c738db8f-c24f-4d13-b000-3117feae379b
+# ╠═77f7e7b3-796a-4beb-a914-e6633e56a7dd
+# ╠═be9c7a89-1e8c-4727-9589-ab0b6af16afd
+# ╠═4f314c1b-b440-4f32-babc-4682c89923ce
+# ╠═9274d996-a232-4260-b99a-59ce173b63dd
+# ╟─c23e0eb2-4161-4644-bc61-3c6a219d02ed
+# ╠═60ba4628-3485-44a7-aa8d-67d1e8a17f8a
+# ╠═b237b619-f911-4320-baeb-652e1406dbca
+# ╟─742b5b59-2c44-41d8-95d7-79e530c65721
+# ╠═7671f642-4a26-4a46-9c8b-6b2817477dee
+# ╠═a99a377c-ad48-47e7-bdff-3b8c0207170c
+# ╠═23bebd84-e366-4f2e-a99a-968d30b1f490
+# ╟─37276c83-dfb9-4002-9ca3-a417c219ca11
+# ╟─98c1e77c-c7e8-49a5-b4dc-3e19eea29093
+# ╠═db663f82-e093-438f-bbcd-5cebc2a0548d
+# ╟─6e5143ee-076e-49c4-845e-14b458287a8e
+# ╟─63990f70-c15f-4bc2-9e5a-097fd5b5716f
+# ╟─ba3c037c-450b-4077-855c-1a640f78adb2
+# ╟─16e28d47-1ef9-4dc6-a065-e3c0a743b977
+# ╟─354ffe45-cff7-4f73-9b55-78eca85bb41e
+# ╟─a66c9cd1-664c-46d1-a0c2-c1a10f519a37
+# ╟─4b42461c-b12c-41e0-8081-b7daf9c3c3b2
+# ╟─f57ef7f0-9445-4faf-863c-d94b13376af1
+# ╟─80c28ca8-b2d8-4ff8-b986-86f0e2e787dc
+# ╟─e9f91650-e273-43c1-b2d5-286c4b2525d9
+# ╠═02f6bb46-bf93-49db-969d-50a5af73c457
+# ╠═6f085ece-1eb4-47a5-90a0-4d80324d2ff9
+# ╟─e045ff5a-a8cf-4cde-bbb5-0c9464a37e4b
+# ╠═ce38fa53-bad6-47d0-9886-a34313efaef2
+# ╠═28aed164-1400-4dd6-b099-5ac4e8572933
+# ╠═408352ef-8851-4b93-8b2d-404c9946ad49
+# ╠═353360c4-941a-42f1-8b3a-8521033be9b3
+# ╠═226d50ce-e797-45f4-8b67-17c3b717ded2
+# ╟─5abc77ec-21f2-408b-963b-8d99c61566c8
+# ╟─1b7bc694-dbb6-4d81-91a0-b8f858f399cb
+# ╠═10574023-f668-424a-8e62-450a2a333e0a
+# ╠═0bc77d7b-8e7f-4270-876b-09e6ee331829
+# ╟─03f3e1ef-c878-47cf-8167-7d192076bc98
+# ╟─809c0aae-d8e3-4b9c-a0a7-2ebc97723808
+# ╠═752f1e07-b45f-4be9-802d-c8c26a42ea4b
+# ╠═9cfe79cd-4754-4f86-a616-53a38e084d26
+# ╟─0820e03a-6840-46e8-a082-d592fb1b0037
+# ╠═d93b1e4c-414a-460d-8f8b-9b12b54a5de8
+# ╟─62aa2363-a8df-4615-9787-e2ecba4097be
+# ╟─18ab1044-01a6-4c5a-baec-2cf83cae7563
+# ╟─e77fb294-a7e1-48f4-977a-a58f86d758ef
+# ╟─f293b8c6-8876-4889-afb6-5c87c09612ae
+# ╟─6544c7fb-4ca5-451f-bcf2-4b99ef3ae587
+# ╟─e140027f-3121-4527-949b-cebad95a19e5
+# ╟─045a2a80-9398-4af0-ab31-a4bf574af334
+# ╟─9eca1b24-e770-46d5-9ede-2bd74e4f1879

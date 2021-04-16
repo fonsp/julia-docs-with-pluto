@@ -1,30 +1,30 @@
 ### A Pluto.jl notebook ###
-# v0.14.2
+# v0.14.1
 
 using Markdown
 using InteractiveUtils
 
-# ╔═╡ 03cb0226-9e19-11eb-0c66-1fb779369ec4
+# ╔═╡ fd25058d-d37b-4013-b21e-4950b879de03
 md"""
 # Mathematical Operations and Elementary Functions
 """
 
-# ╔═╡ 03cb0242-9e19-11eb-3170-b5ebfb1875b8
+# ╔═╡ ab66b973-7a3b-4ea3-a335-41155dc9ca1a
 md"""
 Julia provides a complete collection of basic arithmetic and bitwise operators across all of its numeric primitive types, as well as providing portable, efficient implementations of a comprehensive collection of standard mathematical functions.
 """
 
-# ╔═╡ 03cb0274-9e19-11eb-336f-a384f87e5754
+# ╔═╡ dac8b889-14fa-422d-a616-2321f8d032c0
 md"""
 ## Arithmetic Operators
 """
 
-# ╔═╡ 03cb02ee-9e19-11eb-3ce5-7955bd7c803c
+# ╔═╡ 5a10b091-f2c3-449e-a155-1bca35f861c0
 md"""
 The following [arithmetic operators](https://en.wikipedia.org/wiki/Arithmetic#Arithmetic_operations) are supported on all primitive numeric types:
 """
 
-# ╔═╡ 03cb0582-9e19-11eb-2956-b72b602d93d3
+# ╔═╡ ff47c163-94a1-4150-93e8-a0f2d4ad450b
 md"""
 | Expression | Name           | Description                            |
 |:---------- |:-------------- |:-------------------------------------- |
@@ -40,62 +40,62 @@ md"""
 | `x % y`    | remainder      | equivalent to `rem(x,y)`               |
 """
 
-# ╔═╡ 03cb05a0-9e19-11eb-02bf-150c552f7ba2
+# ╔═╡ f1ea4ca7-2543-46a8-9b5d-84493af941f1
 md"""
 A numeric literal placed directly before an identifier or parentheses, e.g. `2x` or `2(x+y)`, is treated as a multiplication, except with higher precedence than other binary operations.  See [Numeric Literal Coefficients](@ref man-numeric-literal-coefficients) for details.
 """
 
-# ╔═╡ 03cb05be-9e19-11eb-3bc9-81b74a35a94e
+# ╔═╡ 554c9105-3256-4efd-bea2-e3dd1af54b89
 md"""
-Julia's promotion system makes arithmetic operations on mixtures of argument types "just work" naturally and automatically. See [Conversion and Promotion](@ref conversion-and-promotion) for details of the promotion system.
+Julia's promotion system makes arithmetic operations on mixtures of argument types \"just work\" naturally and automatically. See [Conversion and Promotion](@ref conversion-and-promotion) for details of the promotion system.
 """
 
-# ╔═╡ 03cb05c8-9e19-11eb-1461-a569863b2df8
+# ╔═╡ 46e65749-8c2c-40ab-9d13-055467927fab
 md"""
 Here are some simple examples using arithmetic operators:
 """
 
-# ╔═╡ 03cb0c58-9e19-11eb-26c9-151178ccabc9
+# ╔═╡ 072707e3-9522-4fb7-96df-a0ac3771068c
 1 + 2 + 3
 
-# ╔═╡ 03cb0c58-9e19-11eb-0b90-31721c7b0694
+# ╔═╡ bdb923f6-1947-4e90-b846-6ef117222978
 1 - 2
 
-# ╔═╡ 03cb0c62-9e19-11eb-23df-1dcb95231b47
+# ╔═╡ 048760a4-c778-4417-910e-1f063d653197
 3*2/12
 
-# ╔═╡ 03cb0c80-9e19-11eb-2d94-1b6931ab68d9
+# ╔═╡ 8f19fef0-ef4a-4ec7-aed4-e33392246974
 md"""
 (By convention, we tend to space operators more tightly if they get applied before other nearby operators. For instance, we would generally write `-x + 2` to reflect that first `x` gets negated, and then `2` is added to that result.)
 """
 
-# ╔═╡ 03cb0ca8-9e19-11eb-3ddd-a513148bbc6d
+# ╔═╡ 015bd278-690f-4c58-94e9-a83a2931f06c
 md"""
 When used in multiplication, `false` acts as a *strong zero*:
 """
 
-# ╔═╡ 03cb0e58-9e19-11eb-1d3b-0b9408ffdd53
+# ╔═╡ 5555fb86-37ec-47da-b23b-9ca6f823a131
 NaN * false
 
-# ╔═╡ 03cb0e58-9e19-11eb-0b4a-679e5f34725f
+# ╔═╡ be4bdb1d-30a5-4db5-88a8-7736e5959ee7
 false * Inf
 
-# ╔═╡ 03cb0e7e-9e19-11eb-2ba0-f515768a0811
+# ╔═╡ 7ff74f8d-9b00-495e-b18f-62b4be88cdd1
 md"""
 This is useful for preventing the propagation of `NaN` values in quantities that are known to be zero. See [Knuth (1992)](https://arxiv.org/abs/math/9205211) for motivation.
 """
 
-# ╔═╡ 03cb0e92-9e19-11eb-23fb-17fe3b6ef0a7
+# ╔═╡ b6c5d1ed-fc74-4c84-818b-6050e56f4977
 md"""
 ## Boolean Operators
 """
 
-# ╔═╡ 03cb0eb0-9e19-11eb-10a4-358084651633
+# ╔═╡ 6fbbccaf-ef96-4dda-97b5-b879ad33a173
 md"""
 The following [Boolean operators](https://en.wikipedia.org/wiki/Boolean_algebra#Operations) are supported on [`Bool`](@ref) types:
 """
 
-# ╔═╡ 03cb0f3c-9e19-11eb-3959-7d184d31853e
+# ╔═╡ ebd4a088-cbc3-4bfe-bb30-1bc4beb89a18
 md"""
 | Expression | Name                                                    |
 |:---------- |:------------------------------------------------------- |
@@ -104,27 +104,27 @@ md"""
 | `x \|\| y` | [short-circuiting or](@ref man-conditional-evaluation)  |
 """
 
-# ╔═╡ 03cb0f5c-9e19-11eb-2cc8-ad3e513c3111
+# ╔═╡ 4a89b4ff-6aff-497f-9cc4-a004cb104956
 md"""
 Negation changes `true` to `false` and vice versa. The short-circuiting opeations are explained on the linked page.
 """
 
-# ╔═╡ 03cb0f64-9e19-11eb-0367-9daf5321eb08
+# ╔═╡ 861a2af9-5095-47f0-938f-246d3dfbf244
 md"""
 Note that `Bool` is an integer type and all the usual promotion rules and numeric operators are also defined on it.
 """
 
-# ╔═╡ 03cb0f78-9e19-11eb-351b-8b112ebbaac1
+# ╔═╡ 43a7f905-6017-43eb-a758-4410f2d584a1
 md"""
 ## Bitwise Operators
 """
 
-# ╔═╡ 03cb0f96-9e19-11eb-1597-c30dda38bd4f
+# ╔═╡ 2b9da4b7-d099-4227-b38a-67161260b507
 md"""
 The following [bitwise operators](https://en.wikipedia.org/wiki/Bitwise_operation#Bitwise_operators) are supported on all primitive integer types:
 """
 
-# ╔═╡ 03cb1054-9e19-11eb-01ec-ddd8f533b2b4
+# ╔═╡ c2dde3a7-901b-4b42-af49-f8ba9bc746b8
 md"""
 | Expression | Name                                                                     |
 |:---------- |:------------------------------------------------------------------------ |
@@ -137,60 +137,64 @@ md"""
 | `x << y`   | logical/arithmetic shift left                                            |
 """
 
-# ╔═╡ 03cb1068-9e19-11eb-04cc-1b1d6faba1a7
+# ╔═╡ fe014784-b49c-4444-80d8-3899b8bb5c24
 md"""
 Here are some examples with bitwise operators:
 """
 
-# ╔═╡ 03cb172a-9e19-11eb-3a7a-4fc72bff1014
+# ╔═╡ d862a756-85f8-4200-94af-dedee918c188
 ~123
 
-# ╔═╡ 03cb1734-9e19-11eb-0e25-33ae9d4185c2
+# ╔═╡ 73f12f9c-1706-411b-a2ad-b3c2c9a071e5
 123 & 234
 
-# ╔═╡ 03cb1734-9e19-11eb-35ad-6bdd98116e10
+# ╔═╡ b57d62da-70e8-456a-9f83-b0881458b1d8
 123 | 234
 
-# ╔═╡ 03cb173e-9e19-11eb-1131-cbe40545510f
+# ╔═╡ af975d32-c51e-40ea-b6f2-ee2902e5e858
 123 ⊻ 234
 
-# ╔═╡ 03cb1748-9e19-11eb-0070-67c705a7a9a4
+# ╔═╡ f739bfec-48c0-4140-8977-b26b05eae500
 xor(123, 234)
 
-# ╔═╡ 03cb1748-9e19-11eb-3a93-63f1c8b2ab22
+# ╔═╡ 12a5385d-a3f3-4b87-8cde-4f9b29b63a98
 ~UInt32(123)
 
-# ╔═╡ 03cb1748-9e19-11eb-232c-4d007326d2a4
+# ╔═╡ 94624ba4-8109-4c47-8d4d-cdcaa7943a39
 ~UInt8(123)
 
-# ╔═╡ 03cb175c-9e19-11eb-23b1-473e7adf265a
+# ╔═╡ 9c530d9b-4b25-4a9d-9890-28ea52b6826c
 md"""
 ## Updating operators
 """
 
-# ╔═╡ 03cb1784-9e19-11eb-1aaa-279484641f14
+# ╔═╡ 249fbec5-e753-469e-801c-d827c2eef710
 md"""
 Every binary arithmetic and bitwise operator also has an updating version that assigns the result of the operation back into its left operand. The updating version of the binary operator is formed by placing a `=` immediately after the operator. For example, writing `x += 3` is equivalent to writing `x = x + 3`:
 """
 
-# ╔═╡ 03cb1a04-9e19-11eb-24bd-cdfe4ab97967
+# ╔═╡ 4b691387-0895-47eb-9df3-08405af31513
 x = 1
 
-# ╔═╡ 03cb1a0e-9e19-11eb-2464-99cedeeba8e4
+# ╔═╡ 79f2e17a-bd36-4bcb-96c8-9fc257673590
 x += 3
 
-# ╔═╡ 03cb1a18-9e19-11eb-39f1-09112a177428
+# ╔═╡ ba5ca060-a5ea-428a-9524-d7e4bf5b2a03
 x
 
-# ╔═╡ 03cb1a22-9e19-11eb-19f4-2d880d3831f8
+# ╔═╡ 2b7ae945-f283-4215-a582-5e2172a36e55
 md"""
 The updating versions of all the binary arithmetic and bitwise operators are:
 """
 
-# ╔═╡ 03cb1ab8-9e19-11eb-2dff-f34f269994e3
-+=
+# ╔═╡ 2c4fdfa6-a56e-49e0-b851-031d42e13b66
+md"""
+```
++=  -=  *=  /=  \=  ÷=  %=  ^=  &=  |=  ⊻=  >>>=  >>=  <<=
+```
+"""
 
-# ╔═╡ 03cb1bd2-9e19-11eb-334d-51bcca51080c
+# ╔═╡ 6d1614f1-6c52-4c0b-a0a3-3571277007ea
 md"""
 !!! note
     An updating operator rebinds the variable on the left-hand side. As a result, the type of the variable may change.
@@ -207,50 +211,50 @@ md"""
     ```
 """
 
-# ╔═╡ 03cb1be4-9e19-11eb-3bb8-238c1b8d1f58
+# ╔═╡ 34ea63db-e79c-4d69-bacf-1a9ad2bcf198
 md"""
-## [Vectorized "dot" operators](@id man-dot-operators)
+## [Vectorized \"dot\" operators](@id man-dot-operators)
 """
 
-# ╔═╡ 03cb1c2a-9e19-11eb-01e4-055a61aeacb8
+# ╔═╡ 5db242d0-4704-4ac4-b72e-2a0182eea021
 md"""
-For *every* binary operation like `^`, there is a corresponding "dot" operation `.^` that is *automatically* defined to perform `^` element-by-element on arrays. For example, `[1,2,3] ^ 3` is not defined, since there is no standard mathematical meaning to "cubing" a (non-square) array, but `[1,2,3] .^ 3` is defined as computing the elementwise (or "vectorized") result `[1^3, 2^3, 3^3]`.  Similarly for unary operators like `!` or `√`, there is a corresponding `.√` that applies the operator elementwise.
+For *every* binary operation like `^`, there is a corresponding \"dot\" operation `.^` that is *automatically* defined to perform `^` element-by-element on arrays. For example, `[1,2,3] ^ 3` is not defined, since there is no standard mathematical meaning to \"cubing\" a (non-square) array, but `[1,2,3] .^ 3` is defined as computing the elementwise (or \"vectorized\") result `[1^3, 2^3, 3^3]`.  Similarly for unary operators like `!` or `√`, there is a corresponding `.√` that applies the operator elementwise.
 """
 
-# ╔═╡ 03cb1dd8-9e19-11eb-1938-879a25ca0535
+# ╔═╡ 20f1bf41-169e-488f-adab-3de74e8f8117
 [1,2,3] .^ 3
 
-# ╔═╡ 03cb1e28-9e19-11eb-16c0-39bec19be201
+# ╔═╡ 4ab61792-18f9-4fbe-a0b9-80d78f9939df
 md"""
-More specifically, `a .^ b` is parsed as the ["dot" call](@ref man-vectorized) `(^).(a,b)`, which performs a [broadcast](@ref Broadcasting) operation: it can combine arrays and scalars, arrays of the same size (performing the operation elementwise), and even arrays of different shapes (e.g. combining row and column vectors to produce a matrix). Moreover, like all vectorized "dot calls," these "dot operators" are *fusing*. For example, if you compute `2 .* A.^2 .+ sin.(A)` (or equivalently `@. 2A^2 + sin(A)`, using the [`@.`](@ref @__dot__) macro) for an array `A`, it performs a *single* loop over `A`, computing `2a^2 + sin(a)` for each element of `A`. In particular, nested dot calls like `f.(g.(x))` are fused, and "adjacent" binary operators like `x .+ 3 .* x.^2` are equivalent to nested dot calls `(+).(x, (*).(3, (^).(x, 2)))`.
+More specifically, `a .^ b` is parsed as the [\"dot\" call](@ref man-vectorized) `(^).(a,b)`, which performs a [broadcast](@ref Broadcasting) operation: it can combine arrays and scalars, arrays of the same size (performing the operation elementwise), and even arrays of different shapes (e.g. combining row and column vectors to produce a matrix). Moreover, like all vectorized \"dot calls,\" these \"dot operators\" are *fusing*. For example, if you compute `2 .* A.^2 .+ sin.(A)` (or equivalently `@. 2A^2 + sin(A)`, using the [`@.`](@ref @__dot__) macro) for an array `A`, it performs a *single* loop over `A`, computing `2a^2 + sin(a)` for each element of `A`. In particular, nested dot calls like `f.(g.(x))` are fused, and \"adjacent\" binary operators like `x .+ 3 .* x.^2` are equivalent to nested dot calls `(+).(x, (*).(3, (^).(x, 2)))`.
 """
 
-# ╔═╡ 03cb1e50-9e19-11eb-3908-d189c2911842
+# ╔═╡ a442c76d-ffc7-49fd-b96a-bb2c23ab95d8
 md"""
-Furthermore, "dotted" updating operators like `a .+= b` (or `@. a += b`) are parsed as `a .= a .+ b`, where `.=` is a fused *in-place* assignment operation (see the [dot syntax documentation](@ref man-vectorized)).
+Furthermore, \"dotted\" updating operators like `a .+= b` (or `@. a += b`) are parsed as `a .= a .+ b`, where `.=` is a fused *in-place* assignment operation (see the [dot syntax documentation](@ref man-vectorized)).
 """
 
-# ╔═╡ 03cb1e70-9e19-11eb-12e5-c95381972049
+# ╔═╡ b4c7a9b1-5733-44e0-ae9c-ec9d6b0c7786
 md"""
 Note the dot syntax is also applicable to user-defined operators. For example, if you define `⊗(A,B) = kron(A,B)` to give a convenient infix syntax `A ⊗ B` for Kronecker products ([`kron`](@ref)), then `[A,B] .⊗ [C,D]` will compute `[A⊗C, B⊗D]` with no additional coding.
 """
 
-# ╔═╡ 03cb1e8c-9e19-11eb-064e-93d9ec3272d7
+# ╔═╡ 3c7dcac6-7ada-4377-bb66-7c67d49b43fe
 md"""
 Combining dot operators with numeric literals can be ambiguous. For example, it is not clear whether `1.+x` means `1. + x` or `1 .+ x`. Therefore this syntax is disallowed, and spaces must be used around the operator in such cases.
 """
 
-# ╔═╡ 03cb1e96-9e19-11eb-34e5-cb76bd5f9936
+# ╔═╡ 362416cb-9799-4086-989c-36e9a100e77c
 md"""
 ## Numeric Comparisons
 """
 
-# ╔═╡ 03cb1eaa-9e19-11eb-30da-6d7136cf442b
+# ╔═╡ b68fdd2a-e7cb-4f09-a34a-1af6e2c195c0
 md"""
 Standard comparison operations are defined for all the primitive numeric types:
 """
 
-# ╔═╡ 03cb1f86-9e19-11eb-3d01-69d892d522fb
+# ╔═╡ 6cf238f4-27dd-47ee-9bb2-9a21d10bcbb7
 md"""
 | Operator                     | Name                     |
 |:---------------------------- |:------------------------ |
@@ -262,50 +266,50 @@ md"""
 | [`>=`](@ref), [`≥`](@ref >=) | greater than or equal to |
 """
 
-# ╔═╡ 03cb1f9a-9e19-11eb-061b-b1fa47fd011c
+# ╔═╡ 097c1342-62e7-4c0a-ae96-9345848565b0
 md"""
 Here are some simple examples:
 """
 
-# ╔═╡ 03cb2a10-9e19-11eb-17eb-c71ff2961c31
+# ╔═╡ 32157d18-6faf-4e7a-babe-ee3ecf1f1a70
 1 == 1
 
-# ╔═╡ 03cb2a10-9e19-11eb-1f6d-3b323d518377
+# ╔═╡ d62922c3-d994-4c53-9dd6-51b37e2cbe45
 1 == 2
 
-# ╔═╡ 03cb2a1c-9e19-11eb-0a77-9136ad8b4033
+# ╔═╡ 9888f460-188c-4c2e-963f-b7487e83555b
 1 != 2
 
-# ╔═╡ 03cb2a26-9e19-11eb-3920-a52e85dfb0af
+# ╔═╡ 197f815b-6555-456a-a869-d72936d899ce
 1 == 1.0
 
-# ╔═╡ 03cb2a26-9e19-11eb-36c3-65fd79ef0aae
+# ╔═╡ 468ab8c8-e627-4fb3-a8ad-d0ecc82aa36c
 1 < 2
 
-# ╔═╡ 03cb2a30-9e19-11eb-3e41-8d591cb7e5e6
+# ╔═╡ 8316b803-3cc2-43a5-b774-9efd8b6177b2
 1.0 > 3
 
-# ╔═╡ 03cb2a30-9e19-11eb-0f3c-9f017cdae550
+# ╔═╡ eefaecf8-bd4a-4c93-9371-792949b8a86a
 1 >= 1.0
 
-# ╔═╡ 03cb2a30-9e19-11eb-0775-c714beb2d2f2
+# ╔═╡ 762ff7b1-38c0-4e0a-bc44-cb6a16720307
 -1 <= 1
 
-# ╔═╡ 03cb2a3a-9e19-11eb-0ee9-d7072653124d
+# ╔═╡ aa81a051-b62e-4d87-a044-7675895a1585
 -1 <= -1
 
-# ╔═╡ 03cb2a3a-9e19-11eb-0b2d-a5d1d1916b49
+# ╔═╡ f0671a76-e45a-4d0c-84d0-f1b9e253201f
 -1 <= -2
 
-# ╔═╡ 03cb2a42-9e19-11eb-2ae7-0d0468a74694
+# ╔═╡ cfcba3a5-20f0-4e66-9203-1ae0a8bf05ff
 3 < -0.5
 
-# ╔═╡ 03cb2a62-9e19-11eb-06c1-17de75aca710
+# ╔═╡ cab3a32d-36a9-4351-ab99-07939b02e1a6
 md"""
 Integers are compared in the standard manner – by comparison of bits. Floating-point numbers are compared according to the [IEEE 754 standard](https://en.wikipedia.org/wiki/IEEE_754-2008):
 """
 
-# ╔═╡ 03cb2b3e-9e19-11eb-3b6b-ab6808e1181e
+# ╔═╡ 005859a5-bced-456f-81de-7c486a678ebd
 md"""
   * Finite numbers are ordered in the usual manner.
   * Positive zero is equal but not greater than negative zero.
@@ -314,37 +318,37 @@ md"""
   * `NaN` is not equal to, not less than, and not greater than anything, including itself.
 """
 
-# ╔═╡ 03cb2b46-9e19-11eb-2aa6-4d9402b72ff8
+# ╔═╡ 48b5b93b-6d85-4e4e-ac3d-3b229956d9ee
 md"""
 The last point is potentially surprising and thus worth noting:
 """
 
-# ╔═╡ 03cb2e22-9e19-11eb-31db-83d4f33b3b0e
+# ╔═╡ d13d8015-0764-44f3-b6cf-24ec7a005668
 NaN == NaN
 
-# ╔═╡ 03cb2e2c-9e19-11eb-2068-431059c85e0c
+# ╔═╡ 47c8ab81-ea02-410f-8c79-28da475225be
 NaN != NaN
 
-# ╔═╡ 03cb2e36-9e19-11eb-3e1a-f91f70d0d7ff
+# ╔═╡ d143429d-cf62-4f88-8a0a-1dc35d660424
 NaN < NaN
 
-# ╔═╡ 03cb2e36-9e19-11eb-27f5-3f8df0fd9d00
+# ╔═╡ 7762e13f-2677-412a-aa15-232a828278cf
 NaN > NaN
 
-# ╔═╡ 03cb2e54-9e19-11eb-2a6d-8fc3ca1c80e8
+# ╔═╡ 7e499e70-16c5-4080-9444-03cef5a2b436
 md"""
 and can cause headaches when working with [arrays](@ref man-multi-dim-arrays):
 """
 
-# ╔═╡ 03cb308e-9e19-11eb-3299-3b3d2444e08c
+# ╔═╡ 1957c97d-fba3-4450-a4f2-9dad21a962a8
 [1 NaN] == [1 NaN]
 
-# ╔═╡ 03cb30a2-9e19-11eb-2743-c9acdd998239
+# ╔═╡ 0e9e8fdc-5095-4bcf-a7ca-588f7a5cde08
 md"""
 Julia provides additional functions to test numbers for special values, which can be useful in situations like hash key comparisons:
 """
 
-# ╔═╡ 03cb314c-9e19-11eb-1798-f725c727f0b9
+# ╔═╡ 0c0d4f16-c04c-4900-b8f5-08e36e056440
 md"""
 | Function                | Tests if                  |
 |:----------------------- |:------------------------- |
@@ -354,104 +358,104 @@ md"""
 | [`isnan(x)`](@ref)      | `x` is not a number       |
 """
 
-# ╔═╡ 03cb316a-9e19-11eb-2e8d-6b5617bad825
+# ╔═╡ 627b9690-4f43-4b24-b327-4d6e57a04fea
 md"""
 [`isequal`](@ref) considers `NaN`s equal to each other:
 """
 
-# ╔═╡ 03cb362e-9e19-11eb-1f7c-ad55ebf01b60
+# ╔═╡ fd22bc99-993a-4dfc-892c-4071e2218dd8
 isequal(NaN, NaN)
 
-# ╔═╡ 03cb3638-9e19-11eb-33db-2597b808ea62
+# ╔═╡ f6146444-569f-40b4-a0e4-17a06381fda9
 isequal([1 NaN], [1 NaN])
 
-# ╔═╡ 03cb3638-9e19-11eb-2523-03436261c9c2
+# ╔═╡ d4a319d1-1c87-4af4-93b8-c0874391ddc6
 isequal(NaN, NaN32)
 
-# ╔═╡ 03cb3654-9e19-11eb-2908-93591f277ffc
+# ╔═╡ 17be057d-39b9-4db6-9065-9c7fa68ec4df
 md"""
 `isequal` can also be used to distinguish signed zeros:
 """
 
-# ╔═╡ 03cb38ea-9e19-11eb-3571-552e09bf062d
+# ╔═╡ ecf4edb1-46ad-44bd-99d2-d489693497bd
 -0.0 == 0.0
 
-# ╔═╡ 03cb38ea-9e19-11eb-1f44-c35c59b5fe79
+# ╔═╡ a3b39e69-aa91-4eca-bac9-222a61052142
 isequal(-0.0, 0.0)
 
-# ╔═╡ 03cb38fe-9e19-11eb-26ed-094e0ffb1dfe
+# ╔═╡ 9d8d4034-7abe-4c1e-91e2-f5c1b7f2b248
 md"""
 Mixed-type comparisons between signed integers, unsigned integers, and floats can be tricky. A great deal of care has been taken to ensure that Julia does them correctly.
 """
 
-# ╔═╡ 03cb3930-9e19-11eb-27c1-b7881fb4881c
+# ╔═╡ c79488ab-7770-4e9c-8201-0cd0914b684d
 md"""
 For other types, `isequal` defaults to calling [`==`](@ref), so if you want to define equality for your own types then you only need to add a [`==`](@ref) method.  If you define your own equality function, you should probably define a corresponding [`hash`](@ref) method to ensure that `isequal(x,y)` implies `hash(x) == hash(y)`.
 """
 
-# ╔═╡ 03cb3962-9e19-11eb-18c5-630f7ab3f37f
+# ╔═╡ c9c03f00-5da2-46b9-a07a-4360f79c9138
 md"""
 ### Chaining comparisons
 """
 
-# ╔═╡ 03cb3976-9e19-11eb-1916-83c537ca0ca3
+# ╔═╡ 7a5afaf0-39f4-46fc-b591-9ef0e09f3090
 md"""
 Unlike most languages, with the [notable exception of Python](https://en.wikipedia.org/wiki/Python_syntax_and_semantics#Comparison_operators), comparisons can be arbitrarily chained:
 """
 
-# ╔═╡ 03cb3d5c-9e19-11eb-22c0-cb68e9549d88
+# ╔═╡ 24a29ab6-d728-4305-9bfa-1a3198cc67af
 1 < 2 <= 2 < 3 == 3 > 2 >= 1 == 1 < 3 != 5
 
-# ╔═╡ 03cb3d7c-9e19-11eb-1892-239bfa98b092
+# ╔═╡ 4db9cfda-5d63-41cb-8cc8-eb47fcf6e58f
 md"""
 Chaining comparisons is often quite convenient in numerical code. Chained comparisons use the `&&` operator for scalar comparisons, and the [`&`](@ref) operator for elementwise comparisons, which allows them to work on arrays. For example, `0 .< A .< 1` gives a boolean array whose entries are true where the corresponding elements of `A` are between 0 and 1.
 """
 
-# ╔═╡ 03cb3d90-9e19-11eb-3421-a14d89aa5015
+# ╔═╡ d80e9fef-c1b0-4ff6-9dc1-e7e8abd0de8c
 md"""
 Note the evaluation behavior of chained comparisons:
 """
 
-# ╔═╡ 03cb43a0-9e19-11eb-2bc0-6de282349763
+# ╔═╡ e8623202-db13-4eb5-aef1-411e3a6f1c64
 v(x) = (println(x); x)
 
-# ╔═╡ 03cb43a0-9e19-11eb-0843-4715d8c175d5
+# ╔═╡ 4c238977-3b5f-4637-96ec-c1880bea8878
 v(1) < v(2) <= v(3)
 
-# ╔═╡ 03cb43a8-9e19-11eb-315d-4ff2ef492561
+# ╔═╡ 79d90478-9616-4437-bd12-c2947b761db3
 v(1) > v(2) <= v(3)
 
-# ╔═╡ 03cb43d2-9e19-11eb-3d33-6d5b029d6a7b
+# ╔═╡ d312f6c8-95e1-44ba-9a56-706a1bfa47bf
 md"""
 The middle expression is only evaluated once, rather than twice as it would be if the expression were written as `v(1) < v(2) && v(2) <= v(3)`. However, the order of evaluations in a chained comparison is undefined. It is strongly recommended not to use expressions with side effects (such as printing) in chained comparisons. If side effects are required, the short-circuit `&&` operator should be used explicitly (see [Short-Circuit Evaluation](@ref)).
 """
 
-# ╔═╡ 03cb43da-9e19-11eb-33f5-95adf3077eb8
+# ╔═╡ 9ad3c5f7-5aa1-4007-8da7-41437db3df37
 md"""
 ### Elementary Functions
 """
 
-# ╔═╡ 03cb43ee-9e19-11eb-3f24-9d91110f5968
+# ╔═╡ 7f84887f-fd66-414b-b4c0-6efa10462087
 md"""
 Julia provides a comprehensive collection of mathematical functions and operators. These mathematical operations are defined over as broad a class of numerical values as permit sensible definitions, including integers, floating-point numbers, rationals, and complex numbers, wherever such definitions make sense.
 """
 
-# ╔═╡ 03cb440c-9e19-11eb-12a3-159a0f433524
+# ╔═╡ 1507c0b8-3dfe-48d3-bc5d-e2453e0d323d
 md"""
-Moreover, these functions (like any Julia function) can be applied in "vectorized" fashion to arrays and other collections with the [dot syntax](@ref man-vectorized) `f.(A)`, e.g. `sin.(A)` will compute the sine of each element of an array `A`.
+Moreover, these functions (like any Julia function) can be applied in \"vectorized\" fashion to arrays and other collections with the [dot syntax](@ref man-vectorized) `f.(A)`, e.g. `sin.(A)` will compute the sine of each element of an array `A`.
 """
 
-# ╔═╡ 03cb4420-9e19-11eb-3198-c71cbf0afea2
+# ╔═╡ 42f6cb56-1310-4433-ba58-9a29af5dcfb2
 md"""
 ## Operator Precedence and Associativity
 """
 
-# ╔═╡ 03cb442a-9e19-11eb-2c10-1525a873d264
+# ╔═╡ fad61e50-75b5-4c04-943b-92e85d900020
 md"""
 Julia applies the following order and associativity of operations, from highest precedence to lowest:
 """
 
-# ╔═╡ 03cb45e2-9e19-11eb-33df-c749dc82b062
+# ╔═╡ 352d5533-32b4-4370-872a-5dd4954d345d
 md"""
 | Category       | Operators                                              | Associativity   |
 |:-------------- |:------------------------------------------------------ |:--------------- |
@@ -471,75 +475,75 @@ md"""
 | Assignments    | `= += -= *= /= //= \= ^= ÷= %= \|= &= ⊻= <<= >>= >>>=` | Right           |
 """
 
-# ╔═╡ 03cb4678-9e19-11eb-2a5b-8dd90b827692
+# ╔═╡ 559e6e95-3465-4bb1-a78c-a93646a667f4
 md"""
 [^1]: The unary operators `+` and `-` require explicit parentheses around their argument to disambiguate them from the operator `++`, etc. Other compositions of unary operators are parsed with right-associativity, e. g., `√√-a` as `√(√(-a))`.
 """
 
-# ╔═╡ 03cb46c8-9e19-11eb-16bb-adf210e2395b
+# ╔═╡ 9ab521ff-8689-4b08-9376-2d96a583b784
 md"""
 [^2]: The operators `+`, `++` and `*` are non-associative. `a + b + c` is parsed as `+(a, b, c)` not `+(+(a, b), c)`. However, the fallback methods for `+(a, b, c, d...)` and `*(a, b, c, d...)` both default to left-associative evaluation.
 """
 
-# ╔═╡ 03cb46f0-9e19-11eb-3585-bf699e9c814c
+# ╔═╡ 190a43d2-3ee1-40de-936a-d93d42250784
 md"""
 For a complete list of *every* Julia operator's precedence, see the top of this file: [`src/julia-parser.scm`](https://github.com/JuliaLang/julia/blob/master/src/julia-parser.scm). Note that some of the operators there are not defined in the `Base` module but may be given definitions by standard libraries, packages or user code.
 """
 
-# ╔═╡ 03cb4702-9e19-11eb-2709-43a6d816cef7
+# ╔═╡ ba9389ba-b038-4c9e-b5cf-4740f0412d24
 md"""
 You can also find the numerical precedence for any given operator via the built-in function `Base.operator_precedence`, where higher numbers take precedence:
 """
 
-# ╔═╡ 03cb4d6c-9e19-11eb-1cb3-27a6a55f130f
+# ╔═╡ 24e1adae-10b9-43d3-bfd5-ea66869e20dc
 Base.operator_precedence(:+), Base.operator_precedence(:*), Base.operator_precedence(:.)
 
-# ╔═╡ 03cb4d78-9e19-11eb-105f-eb74897b4981
+# ╔═╡ 470e27e4-ffe6-4c3b-8f42-70448eadf2a9
 Base.operator_precedence(:sin), Base.operator_precedence(:+=), Base.operator_precedence(:(=))  # (Note the necessary parens on `:(=)`)
 
-# ╔═╡ 03cb4d8a-9e19-11eb-38a7-9d7ad0d637a6
+# ╔═╡ 40fa8545-5e81-4829-b56e-39d42f9f4a47
 md"""
 A symbol representing the operator associativity can also be found by calling the built-in function `Base.operator_associativity`:
 """
 
-# ╔═╡ 03cb5352-9e19-11eb-1971-1920394f76c7
+# ╔═╡ 1cf839eb-c6f1-4268-8025-6cb134c98604
 Base.operator_associativity(:-), Base.operator_associativity(:+), Base.operator_associativity(:^)
 
-# ╔═╡ 03cb5352-9e19-11eb-31d3-bff591000518
+# ╔═╡ 27e90f0a-f2cb-4aba-b389-18792a14a3c3
 Base.operator_associativity(:⊗), Base.operator_associativity(:sin), Base.operator_associativity(:→)
 
-# ╔═╡ 03cb5370-9e19-11eb-3938-3f82d9c362ef
+# ╔═╡ 3f979827-b404-44ba-8c81-b30726b957ea
 md"""
 Note that symbols such as `:sin` return precedence `0`. This value represents invalid operators and not operators of lowest precedence. Similarly, such operators are assigned associativity `:none`.
 """
 
-# ╔═╡ 03cb5398-9e19-11eb-32c0-6db731d99f51
+# ╔═╡ 0f6d868b-f3ba-4ea7-b040-b1f98f5e87a6
 md"""
 [Numeric literal coefficients](@ref man-numeric-literal-coefficients), e.g. `2x`, are treated as multiplications with higher precedence than any other binary operation, with the exception of `^` where they have higher precedence only as the exponent.
 """
 
-# ╔═╡ 03cb576c-9e19-11eb-3b55-b1e5b897812b
+# ╔═╡ 3e6e90c8-5231-41ae-acf0-6cca4b362a1b
 x = 3; 2x^2
 
-# ╔═╡ 03cb576c-9e19-11eb-1e79-311810496f73
+# ╔═╡ 4f7eee5f-57ea-4484-bc95-588b3e9c8ded
 x = 3; 2^2x
 
-# ╔═╡ 03cb5794-9e19-11eb-1973-07c7d9734daf
+# ╔═╡ e7779eb3-30ca-4e63-a37e-23533604e5fa
 md"""
 Juxtaposition parses like a unary operator, which has the same natural asymmetry around exponents: `-x^y` and `2x^y` parse as `-(x^y)` and `2(x^y)` whereas `x^-y` and `x^2y` parse as `x^(-y)` and `x^(2y)`.
 """
 
-# ╔═╡ 03cb57a8-9e19-11eb-0900-b552df6e4f92
+# ╔═╡ 7401aa75-a33d-4086-a021-cf274dc4480f
 md"""
 ## Numerical Conversions
 """
 
-# ╔═╡ 03cb57b2-9e19-11eb-2522-2d0bde7cfeda
+# ╔═╡ a43442db-6bb3-4147-ba46-f15dbef3ab42
 md"""
 Julia supports three forms of numerical conversion, which differ in their handling of inexact conversions.
 """
 
-# ╔═╡ 03cb58d4-9e19-11eb-01ff-8194dae4d79f
+# ╔═╡ abea6b51-5ff5-4330-8f5a-6ac6a58e949f
 md"""
   * The notation `T(x)` or `convert(T,x)` converts `x` to a value of type `T`.
 
@@ -549,49 +553,49 @@ md"""
   * The [Rounding functions](@ref) take a type `T` as an optional argument. For example, `round(Int,x)` is a shorthand for `Int(round(x))`.
 """
 
-# ╔═╡ 03cb58e6-9e19-11eb-0037-8138bf5ae0a8
+# ╔═╡ acc16734-a254-4349-b529-123f454d68c0
 md"""
 The following examples show the different forms.
 """
 
-# ╔═╡ 03cb6072-9e19-11eb-37b0-a1cc714a99a4
+# ╔═╡ 33a92934-da45-48df-88b8-881bff42cab2
 Int8(127)
 
-# ╔═╡ 03cb607c-9e19-11eb-136a-d3dcaf55d03e
+# ╔═╡ e8c23040-dc38-4acc-be98-5291ef986766
 Int8(128)
 
-# ╔═╡ 03cb60b8-9e19-11eb-2809-a39ee71d50bf
+# ╔═╡ c0c7c909-6b3d-4cc9-b305-426b294aab03
 Int8(127.0)
 
-# ╔═╡ 03cb60b8-9e19-11eb-3f4b-9da20d42c04e
+# ╔═╡ ce3ace89-cd3f-4ee6-af23-922b6b35d11b
 Int8(3.14)
 
-# ╔═╡ 03cb60c0-9e19-11eb-11df-ef0db1a6c91d
+# ╔═╡ ade835ae-304c-4fdf-9251-e05cd199ef00
 Int8(128.0)
 
-# ╔═╡ 03cb60c0-9e19-11eb-1997-57cf2205bf62
+# ╔═╡ 18a8b3a7-d863-44e8-b1f1-4458666e4487
 127 % Int8
 
-# ╔═╡ 03cb60cc-9e19-11eb-13a2-131263a1704f
+# ╔═╡ a9d84d4c-85b8-42ea-8d17-5df8e0e0d0a8
 128 % Int8
 
-# ╔═╡ 03cb60cc-9e19-11eb-10e0-d1baf6946481
+# ╔═╡ 270a8b9a-090d-4584-8731-c5861085e6a4
 round(Int8,127.4)
 
-# ╔═╡ 03cb60d6-9e19-11eb-2f6c-b35367fe38c9
+# ╔═╡ d43137d9-eece-4f31-835c-ac3c5d394205
 round(Int8,127.6)
 
-# ╔═╡ 03cb60f2-9e19-11eb-3d90-21fde5bb849b
+# ╔═╡ 325806af-f6a1-4108-9689-ee061d719b04
 md"""
 See [Conversion and Promotion](@ref conversion-and-promotion) for how to define your own conversions and promotions.
 """
 
-# ╔═╡ 03cb6108-9e19-11eb-0622-31db48359c44
+# ╔═╡ ed211605-cae5-4482-9983-8bcd712b0de2
 md"""
 ### Rounding functions
 """
 
-# ╔═╡ 03cb6266-9e19-11eb-02e9-47403308855c
+# ╔═╡ b811cd89-00b4-46da-a351-6c04287dfb31
 md"""
 | Function              | Description                      | Return type |
 |:--------------------- |:-------------------------------- |:----------- |
@@ -605,12 +609,12 @@ md"""
 | [`trunc(T, x)`](@ref) | round `x` towards zero           | `T`         |
 """
 
-# ╔═╡ 03cb627a-9e19-11eb-3000-eb8394a0c85d
+# ╔═╡ 1b2c4fba-c808-4feb-9f1d-6906f9b8c9ec
 md"""
 ### Division functions
 """
 
-# ╔═╡ 03cb63ec-9e19-11eb-243c-43bbf316e537
+# ╔═╡ 8e3637ee-647a-490f-b5e1-705c47ce85a2
 md"""
 | Function                  | Description                                                                                             |
 |:------------------------- |:------------------------------------------------------------------------------------------------------- |
@@ -627,12 +631,12 @@ md"""
 | [`lcm(x,y...)`](@ref)     | least positive common multiple of `x`, `y`,...                                                          |
 """
 
-# ╔═╡ 03cb6400-9e19-11eb-251b-d12e77fedc72
+# ╔═╡ befe83cb-cf5d-4701-9e95-08f5e36c9307
 md"""
 ### Sign and absolute value functions
 """
 
-# ╔═╡ 03cb64ca-9e19-11eb-3578-fb0910aeeff6
+# ╔═╡ db589fdf-8d1f-48a0-ab4d-54e57d4849ca
 md"""
 | Function                | Description                                                |
 |:----------------------- |:---------------------------------------------------------- |
@@ -644,12 +648,12 @@ md"""
 | [`flipsign(x,y)`](@ref) | a value with the magnitude of `x` and the sign of `x*y`    |
 """
 
-# ╔═╡ 03cb64dc-9e19-11eb-2312-4d573c19c8b7
+# ╔═╡ 771608cc-eec8-4051-a8df-c80affba61a1
 md"""
 ### Powers, logs and roots
 """
 
-# ╔═╡ 03cb6660-9e19-11eb-09bc-ab05852376e8
+# ╔═╡ 560515c7-f45e-48d0-9e11-02c25ac5ad11
 md"""
 | Function                 | Description                                                                |
 |:------------------------ |:-------------------------------------------------------------------------- |
@@ -668,193 +672,206 @@ md"""
 | [`significand(x)`](@ref) | binary significand (a.k.a. mantissa) of a floating-point number `x`        |
 """
 
-# ╔═╡ 03cb6692-9e19-11eb-2fa5-374aa7a384b6
+# ╔═╡ 6a14508a-3848-462e-bd6e-4082ef2e07a8
 md"""
 For an overview of why functions like [`hypot`](@ref), [`expm1`](@ref), and [`log1p`](@ref) are necessary and useful, see John D. Cook's excellent pair of blog posts on the subject: [expm1, log1p, erfc](https://www.johndcook.com/blog/2010/06/07/math-library-functions-that-seem-unnecessary/), and [hypot](https://www.johndcook.com/blog/2010/06/02/whats-so-hard-about-finding-a-hypotenuse/).
 """
 
-# ╔═╡ 03cb66a8-9e19-11eb-09e1-c3998079396e
+# ╔═╡ 563dc307-af5a-43a6-af7f-3ccfb42c5db7
 md"""
 ### Trigonometric and hyperbolic functions
 """
 
-# ╔═╡ 03cb66bc-9e19-11eb-3265-e1138c81f39c
+# ╔═╡ 093ce0dd-96cc-4e98-a71d-fd23d0aab42e
 md"""
 All the standard trigonometric and hyperbolic functions are also defined:
 """
 
-# ╔═╡ 03cb678e-9e19-11eb-3083-a7bbe21db241
-sin    cos
+# ╔═╡ 140dfa97-c05d-4242-828c-a39f14a7978e
+md"""
+```
+sin    cos    tan    cot    sec    csc
+sinh   cosh   tanh   coth   sech   csch
+asin   acos   atan   acot   asec   acsc
+asinh  acosh  atanh  acoth  asech  acsch
+sinc   cosc
+```
+"""
 
-# ╔═╡ 03cb67b6-9e19-11eb-0c52-59d193ac3477
+# ╔═╡ d952f504-39d8-48e2-897a-83a41b062815
 md"""
 These are all single-argument functions, with [`atan`](@ref) also accepting two arguments corresponding to a traditional [`atan2`](https://en.wikipedia.org/wiki/Atan2) function.
 """
 
-# ╔═╡ 03cb67de-9e19-11eb-1d6a-a3190b168a56
+# ╔═╡ 3f46babf-e7dd-41d2-a9a2-a187b7c858a0
 md"""
 Additionally, [`sinpi(x)`](@ref) and [`cospi(x)`](@ref) are provided for more accurate computations of [`sin(pi*x)`](@ref) and [`cos(pi*x)`](@ref) respectively.
 """
 
-# ╔═╡ 03cb67fa-9e19-11eb-2114-a3e5f154dfb3
+# ╔═╡ d48e84cd-ce77-488c-9d67-7ccc5a0d6f06
 md"""
 In order to compute trigonometric functions with degrees instead of radians, suffix the function with `d`. For example, [`sind(x)`](@ref) computes the sine of `x` where `x` is specified in degrees. The complete list of trigonometric functions with degree variants is:
 """
 
-# ╔═╡ 03cb6892-9e19-11eb-19f6-4d3518734942
-sind   cosd
+# ╔═╡ dbc2eb39-2b0a-4717-b1a6-8ac5dfb18e4b
+md"""
+```
+sind   cosd   tand   cotd   secd   cscd
+asind  acosd  atand  acotd  asecd  acscd
+```
+"""
 
-# ╔═╡ 03cb68a6-9e19-11eb-0595-43e77c37bee9
+# ╔═╡ d00f2ac0-7e04-49b9-9c8e-6306bf5362ba
 md"""
 ### Special functions
 """
 
-# ╔═╡ 03cb68ba-9e19-11eb-07cc-99a0555d8c98
+# ╔═╡ a16a9f5b-3951-45d5-8e77-4c9445ef22d3
 md"""
 Many other special mathematical functions are provided by the package [SpecialFunctions.jl](https://github.com/JuliaMath/SpecialFunctions.jl).
 """
 
 # ╔═╡ Cell order:
-# ╟─03cb0226-9e19-11eb-0c66-1fb779369ec4
-# ╟─03cb0242-9e19-11eb-3170-b5ebfb1875b8
-# ╟─03cb0274-9e19-11eb-336f-a384f87e5754
-# ╟─03cb02ee-9e19-11eb-3ce5-7955bd7c803c
-# ╟─03cb0582-9e19-11eb-2956-b72b602d93d3
-# ╟─03cb05a0-9e19-11eb-02bf-150c552f7ba2
-# ╟─03cb05be-9e19-11eb-3bc9-81b74a35a94e
-# ╟─03cb05c8-9e19-11eb-1461-a569863b2df8
-# ╠═03cb0c58-9e19-11eb-26c9-151178ccabc9
-# ╠═03cb0c58-9e19-11eb-0b90-31721c7b0694
-# ╠═03cb0c62-9e19-11eb-23df-1dcb95231b47
-# ╟─03cb0c80-9e19-11eb-2d94-1b6931ab68d9
-# ╟─03cb0ca8-9e19-11eb-3ddd-a513148bbc6d
-# ╠═03cb0e58-9e19-11eb-1d3b-0b9408ffdd53
-# ╠═03cb0e58-9e19-11eb-0b4a-679e5f34725f
-# ╟─03cb0e7e-9e19-11eb-2ba0-f515768a0811
-# ╟─03cb0e92-9e19-11eb-23fb-17fe3b6ef0a7
-# ╟─03cb0eb0-9e19-11eb-10a4-358084651633
-# ╟─03cb0f3c-9e19-11eb-3959-7d184d31853e
-# ╟─03cb0f5c-9e19-11eb-2cc8-ad3e513c3111
-# ╟─03cb0f64-9e19-11eb-0367-9daf5321eb08
-# ╟─03cb0f78-9e19-11eb-351b-8b112ebbaac1
-# ╟─03cb0f96-9e19-11eb-1597-c30dda38bd4f
-# ╟─03cb1054-9e19-11eb-01ec-ddd8f533b2b4
-# ╟─03cb1068-9e19-11eb-04cc-1b1d6faba1a7
-# ╠═03cb172a-9e19-11eb-3a7a-4fc72bff1014
-# ╠═03cb1734-9e19-11eb-0e25-33ae9d4185c2
-# ╠═03cb1734-9e19-11eb-35ad-6bdd98116e10
-# ╠═03cb173e-9e19-11eb-1131-cbe40545510f
-# ╠═03cb1748-9e19-11eb-0070-67c705a7a9a4
-# ╠═03cb1748-9e19-11eb-3a93-63f1c8b2ab22
-# ╠═03cb1748-9e19-11eb-232c-4d007326d2a4
-# ╟─03cb175c-9e19-11eb-23b1-473e7adf265a
-# ╟─03cb1784-9e19-11eb-1aaa-279484641f14
-# ╠═03cb1a04-9e19-11eb-24bd-cdfe4ab97967
-# ╠═03cb1a0e-9e19-11eb-2464-99cedeeba8e4
-# ╠═03cb1a18-9e19-11eb-39f1-09112a177428
-# ╟─03cb1a22-9e19-11eb-19f4-2d880d3831f8
-# ╠═03cb1ab8-9e19-11eb-2dff-f34f269994e3
-# ╟─03cb1bd2-9e19-11eb-334d-51bcca51080c
-# ╟─03cb1be4-9e19-11eb-3bb8-238c1b8d1f58
-# ╟─03cb1c2a-9e19-11eb-01e4-055a61aeacb8
-# ╠═03cb1dd8-9e19-11eb-1938-879a25ca0535
-# ╟─03cb1e28-9e19-11eb-16c0-39bec19be201
-# ╟─03cb1e50-9e19-11eb-3908-d189c2911842
-# ╟─03cb1e70-9e19-11eb-12e5-c95381972049
-# ╟─03cb1e8c-9e19-11eb-064e-93d9ec3272d7
-# ╟─03cb1e96-9e19-11eb-34e5-cb76bd5f9936
-# ╟─03cb1eaa-9e19-11eb-30da-6d7136cf442b
-# ╟─03cb1f86-9e19-11eb-3d01-69d892d522fb
-# ╟─03cb1f9a-9e19-11eb-061b-b1fa47fd011c
-# ╠═03cb2a10-9e19-11eb-17eb-c71ff2961c31
-# ╠═03cb2a10-9e19-11eb-1f6d-3b323d518377
-# ╠═03cb2a1c-9e19-11eb-0a77-9136ad8b4033
-# ╠═03cb2a26-9e19-11eb-3920-a52e85dfb0af
-# ╠═03cb2a26-9e19-11eb-36c3-65fd79ef0aae
-# ╠═03cb2a30-9e19-11eb-3e41-8d591cb7e5e6
-# ╠═03cb2a30-9e19-11eb-0f3c-9f017cdae550
-# ╠═03cb2a30-9e19-11eb-0775-c714beb2d2f2
-# ╠═03cb2a3a-9e19-11eb-0ee9-d7072653124d
-# ╠═03cb2a3a-9e19-11eb-0b2d-a5d1d1916b49
-# ╠═03cb2a42-9e19-11eb-2ae7-0d0468a74694
-# ╟─03cb2a62-9e19-11eb-06c1-17de75aca710
-# ╟─03cb2b3e-9e19-11eb-3b6b-ab6808e1181e
-# ╟─03cb2b46-9e19-11eb-2aa6-4d9402b72ff8
-# ╠═03cb2e22-9e19-11eb-31db-83d4f33b3b0e
-# ╠═03cb2e2c-9e19-11eb-2068-431059c85e0c
-# ╠═03cb2e36-9e19-11eb-3e1a-f91f70d0d7ff
-# ╠═03cb2e36-9e19-11eb-27f5-3f8df0fd9d00
-# ╟─03cb2e54-9e19-11eb-2a6d-8fc3ca1c80e8
-# ╠═03cb308e-9e19-11eb-3299-3b3d2444e08c
-# ╟─03cb30a2-9e19-11eb-2743-c9acdd998239
-# ╟─03cb314c-9e19-11eb-1798-f725c727f0b9
-# ╟─03cb316a-9e19-11eb-2e8d-6b5617bad825
-# ╠═03cb362e-9e19-11eb-1f7c-ad55ebf01b60
-# ╠═03cb3638-9e19-11eb-33db-2597b808ea62
-# ╠═03cb3638-9e19-11eb-2523-03436261c9c2
-# ╟─03cb3654-9e19-11eb-2908-93591f277ffc
-# ╠═03cb38ea-9e19-11eb-3571-552e09bf062d
-# ╠═03cb38ea-9e19-11eb-1f44-c35c59b5fe79
-# ╟─03cb38fe-9e19-11eb-26ed-094e0ffb1dfe
-# ╟─03cb3930-9e19-11eb-27c1-b7881fb4881c
-# ╟─03cb3962-9e19-11eb-18c5-630f7ab3f37f
-# ╟─03cb3976-9e19-11eb-1916-83c537ca0ca3
-# ╠═03cb3d5c-9e19-11eb-22c0-cb68e9549d88
-# ╟─03cb3d7c-9e19-11eb-1892-239bfa98b092
-# ╟─03cb3d90-9e19-11eb-3421-a14d89aa5015
-# ╠═03cb43a0-9e19-11eb-2bc0-6de282349763
-# ╠═03cb43a0-9e19-11eb-0843-4715d8c175d5
-# ╠═03cb43a8-9e19-11eb-315d-4ff2ef492561
-# ╟─03cb43d2-9e19-11eb-3d33-6d5b029d6a7b
-# ╟─03cb43da-9e19-11eb-33f5-95adf3077eb8
-# ╟─03cb43ee-9e19-11eb-3f24-9d91110f5968
-# ╟─03cb440c-9e19-11eb-12a3-159a0f433524
-# ╟─03cb4420-9e19-11eb-3198-c71cbf0afea2
-# ╟─03cb442a-9e19-11eb-2c10-1525a873d264
-# ╟─03cb45e2-9e19-11eb-33df-c749dc82b062
-# ╟─03cb4678-9e19-11eb-2a5b-8dd90b827692
-# ╟─03cb46c8-9e19-11eb-16bb-adf210e2395b
-# ╟─03cb46f0-9e19-11eb-3585-bf699e9c814c
-# ╟─03cb4702-9e19-11eb-2709-43a6d816cef7
-# ╠═03cb4d6c-9e19-11eb-1cb3-27a6a55f130f
-# ╠═03cb4d78-9e19-11eb-105f-eb74897b4981
-# ╟─03cb4d8a-9e19-11eb-38a7-9d7ad0d637a6
-# ╠═03cb5352-9e19-11eb-1971-1920394f76c7
-# ╠═03cb5352-9e19-11eb-31d3-bff591000518
-# ╟─03cb5370-9e19-11eb-3938-3f82d9c362ef
-# ╟─03cb5398-9e19-11eb-32c0-6db731d99f51
-# ╠═03cb576c-9e19-11eb-3b55-b1e5b897812b
-# ╠═03cb576c-9e19-11eb-1e79-311810496f73
-# ╟─03cb5794-9e19-11eb-1973-07c7d9734daf
-# ╟─03cb57a8-9e19-11eb-0900-b552df6e4f92
-# ╟─03cb57b2-9e19-11eb-2522-2d0bde7cfeda
-# ╟─03cb58d4-9e19-11eb-01ff-8194dae4d79f
-# ╟─03cb58e6-9e19-11eb-0037-8138bf5ae0a8
-# ╠═03cb6072-9e19-11eb-37b0-a1cc714a99a4
-# ╠═03cb607c-9e19-11eb-136a-d3dcaf55d03e
-# ╠═03cb60b8-9e19-11eb-2809-a39ee71d50bf
-# ╠═03cb60b8-9e19-11eb-3f4b-9da20d42c04e
-# ╠═03cb60c0-9e19-11eb-11df-ef0db1a6c91d
-# ╠═03cb60c0-9e19-11eb-1997-57cf2205bf62
-# ╠═03cb60cc-9e19-11eb-13a2-131263a1704f
-# ╠═03cb60cc-9e19-11eb-10e0-d1baf6946481
-# ╠═03cb60d6-9e19-11eb-2f6c-b35367fe38c9
-# ╟─03cb60f2-9e19-11eb-3d90-21fde5bb849b
-# ╟─03cb6108-9e19-11eb-0622-31db48359c44
-# ╟─03cb6266-9e19-11eb-02e9-47403308855c
-# ╟─03cb627a-9e19-11eb-3000-eb8394a0c85d
-# ╟─03cb63ec-9e19-11eb-243c-43bbf316e537
-# ╟─03cb6400-9e19-11eb-251b-d12e77fedc72
-# ╟─03cb64ca-9e19-11eb-3578-fb0910aeeff6
-# ╟─03cb64dc-9e19-11eb-2312-4d573c19c8b7
-# ╟─03cb6660-9e19-11eb-09bc-ab05852376e8
-# ╟─03cb6692-9e19-11eb-2fa5-374aa7a384b6
-# ╟─03cb66a8-9e19-11eb-09e1-c3998079396e
-# ╟─03cb66bc-9e19-11eb-3265-e1138c81f39c
-# ╠═03cb678e-9e19-11eb-3083-a7bbe21db241
-# ╟─03cb67b6-9e19-11eb-0c52-59d193ac3477
-# ╟─03cb67de-9e19-11eb-1d6a-a3190b168a56
-# ╟─03cb67fa-9e19-11eb-2114-a3e5f154dfb3
-# ╠═03cb6892-9e19-11eb-19f6-4d3518734942
-# ╟─03cb68a6-9e19-11eb-0595-43e77c37bee9
-# ╟─03cb68ba-9e19-11eb-07cc-99a0555d8c98
+# ╟─fd25058d-d37b-4013-b21e-4950b879de03
+# ╟─ab66b973-7a3b-4ea3-a335-41155dc9ca1a
+# ╟─dac8b889-14fa-422d-a616-2321f8d032c0
+# ╟─5a10b091-f2c3-449e-a155-1bca35f861c0
+# ╟─ff47c163-94a1-4150-93e8-a0f2d4ad450b
+# ╟─f1ea4ca7-2543-46a8-9b5d-84493af941f1
+# ╟─554c9105-3256-4efd-bea2-e3dd1af54b89
+# ╟─46e65749-8c2c-40ab-9d13-055467927fab
+# ╠═072707e3-9522-4fb7-96df-a0ac3771068c
+# ╠═bdb923f6-1947-4e90-b846-6ef117222978
+# ╠═048760a4-c778-4417-910e-1f063d653197
+# ╟─8f19fef0-ef4a-4ec7-aed4-e33392246974
+# ╟─015bd278-690f-4c58-94e9-a83a2931f06c
+# ╠═5555fb86-37ec-47da-b23b-9ca6f823a131
+# ╠═be4bdb1d-30a5-4db5-88a8-7736e5959ee7
+# ╟─7ff74f8d-9b00-495e-b18f-62b4be88cdd1
+# ╟─b6c5d1ed-fc74-4c84-818b-6050e56f4977
+# ╟─6fbbccaf-ef96-4dda-97b5-b879ad33a173
+# ╟─ebd4a088-cbc3-4bfe-bb30-1bc4beb89a18
+# ╟─4a89b4ff-6aff-497f-9cc4-a004cb104956
+# ╟─861a2af9-5095-47f0-938f-246d3dfbf244
+# ╟─43a7f905-6017-43eb-a758-4410f2d584a1
+# ╟─2b9da4b7-d099-4227-b38a-67161260b507
+# ╟─c2dde3a7-901b-4b42-af49-f8ba9bc746b8
+# ╟─fe014784-b49c-4444-80d8-3899b8bb5c24
+# ╠═d862a756-85f8-4200-94af-dedee918c188
+# ╠═73f12f9c-1706-411b-a2ad-b3c2c9a071e5
+# ╠═b57d62da-70e8-456a-9f83-b0881458b1d8
+# ╠═af975d32-c51e-40ea-b6f2-ee2902e5e858
+# ╠═f739bfec-48c0-4140-8977-b26b05eae500
+# ╠═12a5385d-a3f3-4b87-8cde-4f9b29b63a98
+# ╠═94624ba4-8109-4c47-8d4d-cdcaa7943a39
+# ╟─9c530d9b-4b25-4a9d-9890-28ea52b6826c
+# ╟─249fbec5-e753-469e-801c-d827c2eef710
+# ╠═4b691387-0895-47eb-9df3-08405af31513
+# ╠═79f2e17a-bd36-4bcb-96c8-9fc257673590
+# ╠═ba5ca060-a5ea-428a-9524-d7e4bf5b2a03
+# ╟─2b7ae945-f283-4215-a582-5e2172a36e55
+# ╟─2c4fdfa6-a56e-49e0-b851-031d42e13b66
+# ╟─6d1614f1-6c52-4c0b-a0a3-3571277007ea
+# ╟─34ea63db-e79c-4d69-bacf-1a9ad2bcf198
+# ╟─5db242d0-4704-4ac4-b72e-2a0182eea021
+# ╠═20f1bf41-169e-488f-adab-3de74e8f8117
+# ╟─4ab61792-18f9-4fbe-a0b9-80d78f9939df
+# ╟─a442c76d-ffc7-49fd-b96a-bb2c23ab95d8
+# ╟─b4c7a9b1-5733-44e0-ae9c-ec9d6b0c7786
+# ╟─3c7dcac6-7ada-4377-bb66-7c67d49b43fe
+# ╟─362416cb-9799-4086-989c-36e9a100e77c
+# ╟─b68fdd2a-e7cb-4f09-a34a-1af6e2c195c0
+# ╟─6cf238f4-27dd-47ee-9bb2-9a21d10bcbb7
+# ╟─097c1342-62e7-4c0a-ae96-9345848565b0
+# ╠═32157d18-6faf-4e7a-babe-ee3ecf1f1a70
+# ╠═d62922c3-d994-4c53-9dd6-51b37e2cbe45
+# ╠═9888f460-188c-4c2e-963f-b7487e83555b
+# ╠═197f815b-6555-456a-a869-d72936d899ce
+# ╠═468ab8c8-e627-4fb3-a8ad-d0ecc82aa36c
+# ╠═8316b803-3cc2-43a5-b774-9efd8b6177b2
+# ╠═eefaecf8-bd4a-4c93-9371-792949b8a86a
+# ╠═762ff7b1-38c0-4e0a-bc44-cb6a16720307
+# ╠═aa81a051-b62e-4d87-a044-7675895a1585
+# ╠═f0671a76-e45a-4d0c-84d0-f1b9e253201f
+# ╠═cfcba3a5-20f0-4e66-9203-1ae0a8bf05ff
+# ╟─cab3a32d-36a9-4351-ab99-07939b02e1a6
+# ╟─005859a5-bced-456f-81de-7c486a678ebd
+# ╟─48b5b93b-6d85-4e4e-ac3d-3b229956d9ee
+# ╠═d13d8015-0764-44f3-b6cf-24ec7a005668
+# ╠═47c8ab81-ea02-410f-8c79-28da475225be
+# ╠═d143429d-cf62-4f88-8a0a-1dc35d660424
+# ╠═7762e13f-2677-412a-aa15-232a828278cf
+# ╟─7e499e70-16c5-4080-9444-03cef5a2b436
+# ╠═1957c97d-fba3-4450-a4f2-9dad21a962a8
+# ╟─0e9e8fdc-5095-4bcf-a7ca-588f7a5cde08
+# ╟─0c0d4f16-c04c-4900-b8f5-08e36e056440
+# ╟─627b9690-4f43-4b24-b327-4d6e57a04fea
+# ╠═fd22bc99-993a-4dfc-892c-4071e2218dd8
+# ╠═f6146444-569f-40b4-a0e4-17a06381fda9
+# ╠═d4a319d1-1c87-4af4-93b8-c0874391ddc6
+# ╟─17be057d-39b9-4db6-9065-9c7fa68ec4df
+# ╠═ecf4edb1-46ad-44bd-99d2-d489693497bd
+# ╠═a3b39e69-aa91-4eca-bac9-222a61052142
+# ╟─9d8d4034-7abe-4c1e-91e2-f5c1b7f2b248
+# ╟─c79488ab-7770-4e9c-8201-0cd0914b684d
+# ╟─c9c03f00-5da2-46b9-a07a-4360f79c9138
+# ╟─7a5afaf0-39f4-46fc-b591-9ef0e09f3090
+# ╠═24a29ab6-d728-4305-9bfa-1a3198cc67af
+# ╟─4db9cfda-5d63-41cb-8cc8-eb47fcf6e58f
+# ╟─d80e9fef-c1b0-4ff6-9dc1-e7e8abd0de8c
+# ╠═e8623202-db13-4eb5-aef1-411e3a6f1c64
+# ╠═4c238977-3b5f-4637-96ec-c1880bea8878
+# ╠═79d90478-9616-4437-bd12-c2947b761db3
+# ╟─d312f6c8-95e1-44ba-9a56-706a1bfa47bf
+# ╟─9ad3c5f7-5aa1-4007-8da7-41437db3df37
+# ╟─7f84887f-fd66-414b-b4c0-6efa10462087
+# ╟─1507c0b8-3dfe-48d3-bc5d-e2453e0d323d
+# ╟─42f6cb56-1310-4433-ba58-9a29af5dcfb2
+# ╟─fad61e50-75b5-4c04-943b-92e85d900020
+# ╟─352d5533-32b4-4370-872a-5dd4954d345d
+# ╟─559e6e95-3465-4bb1-a78c-a93646a667f4
+# ╟─9ab521ff-8689-4b08-9376-2d96a583b784
+# ╟─190a43d2-3ee1-40de-936a-d93d42250784
+# ╟─ba9389ba-b038-4c9e-b5cf-4740f0412d24
+# ╠═24e1adae-10b9-43d3-bfd5-ea66869e20dc
+# ╠═470e27e4-ffe6-4c3b-8f42-70448eadf2a9
+# ╟─40fa8545-5e81-4829-b56e-39d42f9f4a47
+# ╠═1cf839eb-c6f1-4268-8025-6cb134c98604
+# ╠═27e90f0a-f2cb-4aba-b389-18792a14a3c3
+# ╟─3f979827-b404-44ba-8c81-b30726b957ea
+# ╟─0f6d868b-f3ba-4ea7-b040-b1f98f5e87a6
+# ╠═3e6e90c8-5231-41ae-acf0-6cca4b362a1b
+# ╠═4f7eee5f-57ea-4484-bc95-588b3e9c8ded
+# ╟─e7779eb3-30ca-4e63-a37e-23533604e5fa
+# ╟─7401aa75-a33d-4086-a021-cf274dc4480f
+# ╟─a43442db-6bb3-4147-ba46-f15dbef3ab42
+# ╟─abea6b51-5ff5-4330-8f5a-6ac6a58e949f
+# ╟─acc16734-a254-4349-b529-123f454d68c0
+# ╠═33a92934-da45-48df-88b8-881bff42cab2
+# ╠═e8c23040-dc38-4acc-be98-5291ef986766
+# ╠═c0c7c909-6b3d-4cc9-b305-426b294aab03
+# ╠═ce3ace89-cd3f-4ee6-af23-922b6b35d11b
+# ╠═ade835ae-304c-4fdf-9251-e05cd199ef00
+# ╠═18a8b3a7-d863-44e8-b1f1-4458666e4487
+# ╠═a9d84d4c-85b8-42ea-8d17-5df8e0e0d0a8
+# ╠═270a8b9a-090d-4584-8731-c5861085e6a4
+# ╠═d43137d9-eece-4f31-835c-ac3c5d394205
+# ╟─325806af-f6a1-4108-9689-ee061d719b04
+# ╟─ed211605-cae5-4482-9983-8bcd712b0de2
+# ╟─b811cd89-00b4-46da-a351-6c04287dfb31
+# ╟─1b2c4fba-c808-4feb-9f1d-6906f9b8c9ec
+# ╟─8e3637ee-647a-490f-b5e1-705c47ce85a2
+# ╟─befe83cb-cf5d-4701-9e95-08f5e36c9307
+# ╟─db589fdf-8d1f-48a0-ab4d-54e57d4849ca
+# ╟─771608cc-eec8-4051-a8df-c80affba61a1
+# ╟─560515c7-f45e-48d0-9e11-02c25ac5ad11
+# ╟─6a14508a-3848-462e-bd6e-4082ef2e07a8
+# ╟─563dc307-af5a-43a6-af7f-3ccfb42c5db7
+# ╟─093ce0dd-96cc-4e98-a71d-fd23d0aab42e
+# ╟─140dfa97-c05d-4242-828c-a39f14a7978e
+# ╟─d952f504-39d8-48e2-897a-83a41b062815
+# ╟─3f46babf-e7dd-41d2-a9a2-a187b7c858a0
+# ╟─d48e84cd-ce77-488c-9d67-7ccc5a0d6f06
+# ╟─dbc2eb39-2b0a-4717-b1a6-8ac5dfb18e4b
+# ╟─d00f2ac0-7e04-49b9-9c8e-6306bf5362ba
+# ╟─a16a9f5b-3951-45d5-8e77-4c9445ef22d3
