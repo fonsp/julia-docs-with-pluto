@@ -1239,6 +1239,8 @@ end
 # ╔═╡ cc28ff34-63a7-4a85-b8c3-932d0c96d220
 to_pluto_cells(c::Markdown.Code) = if occursin("julia-repl", c.language) || occursin("jldoctest", c.language)
 	split_to_cells(c.code)
+elseif c.language == "@eval"
+	[Pluto.Cell(code="let\n$(c.code)\nend", code_folded=true)]
 else
 	[markdown_cell(c)]
 end
